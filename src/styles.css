@@ -1,0 +1,214 @@
+@import "tailwindcss" source(none);
+@source "../src";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --radius-2xl: calc(var(--radius) + 8px);
+  --radius-3xl: calc(var(--radius) + 12px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-copper: var(--copper);
+  --color-copper-foreground: var(--copper-foreground);
+  --color-sand: var(--sand);
+  --font-display: "Fraunces", "Times New Roman", serif;
+  --font-body: "Inter", system-ui, -apple-system, sans-serif;
+  --font-arabic: "Noto Naskh Arabic", "Amiri", serif;
+}
+
+:root {
+  --radius: 0.875rem;
+
+  /* Terra Nova — warm editorial travel palette.
+     Every color below is declared twice: a plain hex/rgba value first (the
+     value old WebViews without oklch() support — e.g. Chrome 74 on some
+     Android 9 devices — actually use), then the oklch value inside
+     @supports, which overrides it on browsers that can parse oklch().
+     Custom properties accept any token stream at declaration time, so the
+     oklch() strings never fail to parse; they only fail at *use* time
+     (e.g. in `background-color`), at which point the whole declaration is
+     dropped and the property falls back to transparent — which is exactly
+     what caused dialogs and buttons to render with no background on that
+     device. The plain hex/rgba pair below is the fix. */
+  --background: #f9f5ed;        /* parchment cream */
+  --foreground: #101e1b;        /* deep ink */
+  --card: #fcfaf4;
+  --card-foreground: #101e1b;
+  --popover: #fcfaf4;
+  --popover-foreground: #101e1b;
+
+  --primary: #10473b;           /* deep emerald */
+  --primary-foreground: #f9f5ec;
+
+  --secondary: #ede7db;         /* warm cream */
+  --secondary-foreground: #172e29;
+
+  --muted: #ece7de;
+  --muted-foreground: #52625e;
+
+  --accent: #eedacb;
+  --accent-foreground: #411e0d;
+
+  --copper: #c96736;            /* burnished copper */
+  --copper-foreground: #fcf8f0;
+  --sand: #e3d5c2;
+
+  --destructive: #cc2827;
+  --destructive-foreground: #f9f5ec;
+
+  --border: #dbd7cf;
+  --input: #dbd7cf;
+  --ring: #36816f;
+
+  --gradient-hero: linear-gradient(180deg, rgba(249, 245, 237, 0) 0%, rgba(248, 245, 237, 0.6) 60%, rgb(249, 245, 237) 100%);
+  --gradient-copper: linear-gradient(135deg, rgb(217, 126, 56), rgb(184, 73, 46));
+  --gradient-emerald: linear-gradient(135deg, rgb(0, 91, 75), rgb(0, 50, 47));
+  --shadow-soft: 0 1px 2px rgba(0, 26, 26, 0.039), 0 12px 40px -12px rgba(14, 28, 21, 0.141);
+  --shadow-lift: 0 2px 4px rgba(17, 17, 17, 0.059), 0 24px 60px -20px rgba(9, 23, 23, 0.22);
+}
+
+.dark {
+  --background: #071413;
+  --foreground: #f1eee7;
+  --card: #0b1e1d;
+  --card-foreground: #f1eee7;
+  --popover: #0b1e1d;
+  --popover-foreground: #f1eee7;
+  --primary: #6bc1ab;
+  --primary-foreground: #071413;
+  --secondary: #152827;
+  --secondary-foreground: #f1eee7;
+  --muted: #152827;
+  --muted-foreground: #8c9d97;
+  --accent: #402712;
+  --accent-foreground: #f8d7be;
+  --copper: #e0843e;
+  --copper-foreground: #071413;
+  --sand: #443829;
+  --border: rgba(255, 255, 255, 0.122);
+  --input: rgba(255, 255, 255, 0.122);
+  --ring: #46907d;
+}
+
+/* Plain style rules above are the values old WebViews without oklch()
+   support (e.g. Chrome 74 on some Android 9 devices) actually use. This
+   block — ordinary top-level @supports, not nested inside :root/.dark, so
+   even engines without native CSS nesting can still parse it — overrides
+   them with the oklch versions on browsers that support oklch(). Custom
+   properties accept any token stream at declaration time, so oklch()
+   strings never fail to *parse*; they only fail at *use* time (e.g. in
+   `background-color`), at which point the whole declaration is dropped and
+   the property resolves to transparent — which is exactly what caused
+   dialogs and buttons to render with no background on that device. */
+@supports (color: oklch(0 0 0)) {
+  :root {
+    --background: oklch(0.972 0.012 85);
+    --foreground: oklch(0.22 0.02 180);
+    --card: oklch(0.985 0.008 85);
+    --card-foreground: oklch(0.22 0.02 180);
+    --popover: oklch(0.985 0.008 85);
+    --popover-foreground: oklch(0.22 0.02 180);
+
+    --primary: oklch(0.36 0.06 175);
+    --primary-foreground: oklch(0.97 0.012 85);
+
+    --secondary: oklch(0.93 0.018 85);
+    --secondary-foreground: oklch(0.28 0.03 180);
+
+    --muted: oklch(0.93 0.014 85);
+    --muted-foreground: oklch(0.48 0.02 180);
+
+    --accent: oklch(0.9 0.03 60);
+    --accent-foreground: oklch(0.28 0.06 45);
+
+    --copper: oklch(0.62 0.14 45);
+    --copper-foreground: oklch(0.98 0.012 85);
+    --sand: oklch(0.88 0.03 75);
+
+    --destructive: oklch(0.55 0.2 27);
+    --destructive-foreground: oklch(0.97 0.012 85);
+
+    --border: oklch(0.88 0.012 85);
+    --input: oklch(0.88 0.012 85);
+    --ring: oklch(0.55 0.08 175);
+
+    --gradient-hero: linear-gradient(180deg, oklch(0.972 0.012 85 / 0) 0%, oklch(0.972 0.012 85 / 0.6) 60%, oklch(0.972 0.012 85) 100%);
+    --gradient-copper: linear-gradient(135deg, oklch(0.68 0.14 55), oklch(0.55 0.15 35));
+    --gradient-emerald: linear-gradient(135deg, oklch(0.42 0.08 175), oklch(0.28 0.06 190));
+    --shadow-soft: 0 1px 2px oklch(0.2 0.02 180 / 0.04), 0 12px 40px -12px oklch(0.2 0.02 180 / 0.14);
+    --shadow-lift: 0 2px 4px oklch(0.2 0.02 180 / 0.06), 0 24px 60px -20px oklch(0.2 0.02 180 / 0.22);
+  }
+
+  .dark {
+    --background: oklch(0.18 0.02 190);
+    --foreground: oklch(0.95 0.01 85);
+    --card: oklch(0.22 0.025 190);
+    --card-foreground: oklch(0.95 0.01 85);
+    --popover: oklch(0.22 0.025 190);
+    --popover-foreground: oklch(0.95 0.01 85);
+    --primary: oklch(0.75 0.09 175);
+    --primary-foreground: oklch(0.18 0.02 190);
+    --secondary: oklch(0.26 0.025 190);
+    --secondary-foreground: oklch(0.95 0.01 85);
+    --muted: oklch(0.26 0.025 190);
+    --muted-foreground: oklch(0.68 0.02 175);
+    --accent: oklch(0.3 0.05 60);
+    --accent-foreground: oklch(0.9 0.05 60);
+    --copper: oklch(0.7 0.14 55);
+    --copper-foreground: oklch(0.18 0.02 190);
+    --sand: oklch(0.35 0.03 75);
+    --border: oklch(1 0 0 / 12%);
+    --input: oklch(1 0 0 / 12%);
+    --ring: oklch(0.6 0.08 175);
+  }
+}
+
+@layer base {
+  * { border-color: var(--color-border); }
+  html { -webkit-font-smoothing: antialiased; }
+  body {
+    background-color: var(--color-background);
+    color: var(--color-foreground);
+    font-family: var(--font-body);
+    font-feature-settings: "ss01", "cv11";
+  }
+  html[dir="rtl"] body { font-family: var(--font-arabic), var(--font-body); }
+  h1, h2, h3, h4 { font-family: var(--font-display); letter-spacing: -0.02em; font-weight: 500; }
+  html[dir="rtl"] h1, html[dir="rtl"] h2, html[dir="rtl"] h3, html[dir="rtl"] h4 {
+    font-family: var(--font-arabic), var(--font-display);
+  }
+}
+
+@layer utilities {
+  .font-display { font-family: var(--font-display); }
+  .text-copper { color: var(--copper); }
+  .bg-copper { background: var(--copper); color: var(--copper-foreground); }
+  .bg-gradient-copper { background: var(--gradient-copper); color: var(--copper-foreground); }
+  .bg-gradient-emerald { background: var(--gradient-emerald); color: var(--primary-foreground); }
+  .shadow-soft { box-shadow: var(--shadow-soft); }
+  .shadow-lift { box-shadow: var(--shadow-lift); }
+  .hairline { border-color: color-mix(in oklab, var(--foreground) 12%, transparent); }
+  .divider-dot::before { content: "·"; margin: 0 0.5rem; color: var(--muted-foreground); }
+}
