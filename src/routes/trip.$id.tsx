@@ -84,7 +84,7 @@ function TripView() {
   const { t, i18n } = useTranslation();
   const fetchTrip = useServerFn(getTrip);
   const fetchSkeleton = useServerFn(getTripSkeleton);
-  const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("overview");
+  const [tab, setTab] = useState<(typeof TABS)[number]["key"]>("itinerary");
 
   // Swipe left/right to move between tabs. Ignored when the gesture starts inside a
   // nested horizontally-scrollable strip (e.g. the photo-mode filter chips) — see
