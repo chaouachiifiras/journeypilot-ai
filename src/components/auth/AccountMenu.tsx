@@ -16,6 +16,12 @@ import { useAnonSession } from "@/lib/anon-session";
 import { signOut } from "@/lib/auth";
 import { cn } from "@/lib/utils";
 import { AuthDialog } from "./AuthDialog";
+import { Capacitor } from "@capacitor/core";
+
+const SUBSCRIPTIONS_URL =
+  Capacitor.getPlatform() === "ios"
+    ? "https://apps.apple.com/account/subscriptions"
+    : "https://play.google.com/store/account/subscriptions";
 
 export function AccountMenu({ onImage = false }: { onImage?: boolean }) {
   const { t } = useTranslation();
@@ -56,7 +62,7 @@ export function AccountMenu({ onImage = false }: { onImage?: boolean }) {
             {t("auth.my_trips")}
           </Link>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => Browser.open({ url: "https://play.google.com/store/account/subscriptions" })}>
+        <DropdownMenuItem onClick={() => Browser.open({ url: SUBSCRIPTIONS_URL })}>
           <CreditCard />
           {t("auth.manage_subscription")}
         </DropdownMenuItem>

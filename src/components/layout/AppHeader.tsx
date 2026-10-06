@@ -6,6 +6,8 @@ import i18n, { applyLangDir } from "@/lib/i18n";
 import logo from "@/assets/logo-mark.png";
 import { cn } from "@/lib/utils";
 import { AccountMenu } from "@/components/auth/AccountMenu";
+import { toast } from "sonner";
+import { registerSecretTap } from "@/lib/debug-console";
 
 const LANGS = [
   { code: "en", label: "EN" },
@@ -74,7 +76,7 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
     <>
       <header
         className={cn(
-          "z-40 w-full transition-[background-color,border-color,box-shadow] duration-300",
+          "z-40 w-full pt-[env(safe-area-inset-top)] transition-[background-color,border-color,box-shadow] duration-300",
           overlay ? "fixed inset-x-0 top-0" : "sticky top-0",
           onImage
             ? "border-b border-transparent bg-transparent"
@@ -82,7 +84,15 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
         )}
       >
         <div className="container-page flex h-16 items-center justify-between gap-3">
-          <Link to="/" className="group flex min-w-0 items-center gap-2.5">
+          <Link
+            to="/"
+            className="group flex min-w-0 items-center gap-2.5"
+            onClick={() => {
+              // Hidden switch for the iOS error console (no-op on Android / web).
+              const on = registerSecretTap();
+              if (on !== undefined) toast(on ? "Console de débogage activée" : "Console de débogage désactivée");
+            }}
+          >
             <span
               className={cn(
                 "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:rotate-6",

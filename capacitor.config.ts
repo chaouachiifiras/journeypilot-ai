@@ -18,6 +18,12 @@ const config: CapacitorConfig = {
   android: {
     buildOutputDir: "android/app/build/outputs",
   },
+  ios: {
+    // Web content runs edge to edge; the CSS pads the notch / home indicator
+    // with env(safe-area-inset-*).
+    contentInset: "never",
+    backgroundColor: "#f6f2ea",
+  },
 };
 
 export default config;

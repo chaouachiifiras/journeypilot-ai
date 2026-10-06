@@ -497,6 +497,10 @@
   .text-balance { text-wrap: balance; }
 }
 
+@supports (-webkit-touch-callout: none) {
+  .input, input, select, textarea { font-size: 16px; }
+}
+
 @keyframes jp-shimmer { 100% { transform: translateX(100%); } }
 @keyframes jp-kenburns { from { transform: scale(1.12); } to { transform: scale(1); } }
 @keyframes jp-float { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-8px); } }

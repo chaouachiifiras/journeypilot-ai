@@ -594,7 +594,7 @@ function LoadingOverlay({ phase, city }: { phase: 0 | 1 | 2; city: string }) {
     >
       <img src={mountains} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
       <div className="absolute inset-0 bg-gradient-to-b from-[rgba(11,26,24,0.6)] to-[#0b1a18]" />
-      <div className="relative mx-auto flex min-h-full w-full max-w-md flex-col justify-center px-6 py-16">
+      <div className="relative mx-auto flex min-h-full w-full max-w-md flex-col justify-center px-6 pb-16 pt-[calc(4rem+env(safe-area-inset-top))]">
         <div className="relative mx-auto h-24 w-24">
           <span className="animate-pulse-ring absolute inset-0 rounded-full bg-[rgba(52,160,136,0.45)]" />
           <span className="animate-pulse-ring absolute inset-0 rounded-full bg-[rgba(207,157,79,0.35)] [animation-delay:1.2s]" />

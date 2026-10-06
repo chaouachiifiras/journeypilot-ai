@@ -138,7 +138,8 @@ function TripView() {
     // If the reader is already below the tab bar, start the new tab from its top.
     const content = contentRef.current;
     if (content) {
-      const stickyOffset = 64 + 66; // app header + tab bar
+      const header = document.querySelector("header")?.getBoundingClientRect().height ?? 64;
+      const stickyOffset = header + 66; // app header (incl. safe area) + tab bar
       const top = content.getBoundingClientRect().top + window.scrollY - stickyOffset;
       if (window.scrollY > top) window.scrollTo({ top, behavior: "smooth" });
     }
@@ -305,7 +306,7 @@ function TripView() {
       </section>
 
       {/* ---------------- Sticky section tabs ---------------- */}
-      <div className="sticky top-16 z-30 border-b border-border bg-background">
+      <div className="sticky top-[calc(4rem+env(safe-area-inset-top))] z-30 border-b border-border bg-background">
         <div ref={tabsRef} data-swipe-ignore className="container-page max-w-5xl overflow-x-auto scrollbar-none">
           <div className="inline-flex min-w-max gap-2 py-3">
             {TABS.map((tb) => {
@@ -993,7 +994,7 @@ function SlotDetailSheet({
           transition={{ duration: 0.35, ease: EASE }}
           className="fixed inset-0 z-50 overflow-y-auto bg-background"
         >
-          <button type="button" onClick={close} aria-label={t("common.close")} className="btn btn-glass btn-icon fixed end-4 top-4 z-10 bg-[rgba(8,20,18,0.4)]">
+          <button type="button" onClick={close} aria-label={t("common.close")} className="btn btn-glass btn-icon fixed end-4 top-[calc(1rem+env(safe-area-inset-top))] z-10 bg-[rgba(8,20,18,0.4)]">
             <X />
           </button>
 
@@ -1016,7 +1017,7 @@ function SlotDetailSheet({
               {slot.name && <h2 className="display-lg mt-3 text-white">{slot.name}</h2>}
             </div>
             {photo?.credit && (
-              <span className="absolute end-4 top-16 max-w-[50%] truncate rounded-full bg-[rgba(8,20,18,0.45)] px-2.5 py-1 text-[11px] text-[rgba(255,255,255,0.85)]">
+              <span className="absolute end-4 top-[calc(4rem+env(safe-area-inset-top))] max-w-[50%] truncate rounded-full bg-[rgba(8,20,18,0.45)] px-2.5 py-1 text-[11px] text-[rgba(255,255,255,0.85)]">
                 {photo.credit}
               </span>
             )}
@@ -1058,7 +1059,7 @@ function SlotDetailSheet({
                     setZoomed(false);
                   }}
                   aria-label={t("common.close")}
-                  className="btn btn-glass btn-icon absolute end-4 top-4"
+                  className="btn btn-glass btn-icon absolute end-4 top-[calc(1rem+env(safe-area-inset-top))]"
                 >
                   <X />
                 </button>
