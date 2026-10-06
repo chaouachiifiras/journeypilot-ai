@@ -37,7 +37,7 @@ function ChatIndex() {
   }, [ready, threads, create, navigate]);
 
   return (
-    <div className="min-h-screen">
+    <div className="min-h-screen pb-tabbar">
       <AppHeader />
       <div className="mx-auto max-w-md px-6 py-32 text-center">
         <Loader2 className="mx-auto h-6 w-6 animate-spin text-copper" />

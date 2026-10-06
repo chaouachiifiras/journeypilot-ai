@@ -254,5 +254,99 @@
     "subscribe": "订阅",
     "get_android_app": "获取安卓应用"
   },
-  "common": { "cancel": "取消", "delete": "删除", "save": "保存", "loading": "加载中…", "close": "关闭" }
+  "common": { "cancel": "取消", "delete": "删除", "save": "保存", "loading": "加载中…", "close": "关闭" },
+  "ui": {
+    "ai_badge": "AI 精心编排",
+    "home": {
+      "cta_how": "了解运作方式",
+      "preview_title": "为你编排的一天",
+      "facts": {
+        "real_places": {
+          "title": "真实地点",
+          "desc": "经 Google 地图核实"
+        },
+        "budget": {
+          "title": "每日预算",
+          "desc": "每一站都有清晰估算"
+        },
+        "photos": {
+          "title": "真实照片",
+          "desc": "绝不使用其他地点的图片"
+        },
+        "languages": {
+          "title": "6 种语言",
+          "desc": "用你的语言规划"
+        }
+      },
+      "how_eyebrow": "运作方式",
+      "how_title": "从一个想法到完整行程",
+      "steps": {
+        "step1": {
+          "title": "选择目的地",
+          "desc": "国家、城市、天数和预算——这就是开始所需的一切。"
+        },
+        "step2": {
+          "title": "分享你的风格",
+          "desc": "兴趣、节奏、同伴、饮食：每条推荐都为你调整。"
+        },
+        "step3": {
+          "title": "探索你的旅程",
+          "desc": "逐日行程，真实地点，附地图和清晰预算。"
+        }
+      },
+      "features_eyebrow": "一站式规划",
+      "features_title": "完整的旅程，而不只是清单",
+      "inspire_eyebrow": "灵感",
+      "inspire_title": "下一站去哪里？",
+      "scenes": {
+        "culture": {
+          "tag": "文化",
+          "title": "花开时节的寺院"
+        },
+        "stays": {
+          "tag": "住宿",
+          "title": "灯笼映照的庭院"
+        },
+        "nature": {
+          "tag": "自然",
+          "title": "黎明时分的山路"
+        }
+      },
+      "cta_title": "你的下一段旅程从这里开始",
+      "cta_sub": "回答几个问题，片刻之间即可获得完整的个性化行程。",
+      "footer_tagline": "为现代旅行者设计",
+      "privacy": "隐私"
+    },
+    "planner": {
+      "eyebrow": "新旅程",
+      "section_destination": "去哪里？",
+      "section_budget": "时长与预算",
+      "summary_pick": "选择目的地"
+    },
+    "trip": {
+      "stops_other": "{{count}} 站",
+      "day_tip": "今日贴士",
+      "budget_used": "已用预算的 {{pct}}%",
+      "breakdown": "费用分布",
+      "difficulty": "强度"
+    },
+    "difficulty": {
+      "easy": "轻松",
+      "moderate": "适中",
+      "challenging": "有挑战"
+    },
+    "spot_category": {
+      "iconic": "标志性",
+      "viewpoint": "观景点",
+      "scenic": "风景",
+      "local": "本地"
+    },
+    "media": {
+      "unavailable": "暂无照片",
+      "illustrative": "示意图"
+    },
+    "profile": {
+      "open": "打开行程"
+    }
+  }
 }

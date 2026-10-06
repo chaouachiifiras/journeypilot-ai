@@ -137,7 +137,7 @@ export function PlaceAutocomplete({
         <Loader2 className="pointer-events-none absolute end-3 top-1/2 h-4 w-4 -translate-y-1/2 animate-spin text-muted-foreground" />
       )}
       {open && (
-        <div className="absolute z-30 mt-1.5 max-h-64 w-full overflow-y-auto rounded-xl border border-border bg-card shadow-lift">
+        <div className="absolute z-30 mt-2 max-h-72 w-full overflow-y-auto rounded-2xl border border-border bg-popover p-1.5 shadow-lift">
           {options.length === 0 && !loading && (
             <div className="px-4 py-3 text-sm text-muted-foreground">{noResultsText}</div>
           )}
@@ -148,7 +148,7 @@ export function PlaceAutocomplete({
               onMouseDown={(e) => e.preventDefault()}
               onClick={() => selectOption(option)}
               className={cn(
-                "block w-full px-4 py-2.5 text-start text-sm transition-colors",
+                "block w-full rounded-xl px-3.5 py-3 text-start text-sm transition-colors",
                 i === highlight ? "bg-secondary" : "hover:bg-secondary",
               )}
             >

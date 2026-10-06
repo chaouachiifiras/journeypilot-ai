@@ -255,5 +255,100 @@
     "subscribe": "Abonneren",
     "get_android_app": "Download de Android-app"
   },
-  "common": { "cancel": "Annuleren", "delete": "Verwijderen", "save": "Opslaan", "loading": "Laden…", "close": "Sluiten" }
+  "common": { "cancel": "Annuleren", "delete": "Verwijderen", "save": "Opslaan", "loading": "Laden…", "close": "Sluiten" },
+  "ui": {
+    "ai_badge": "Samengesteld door AI",
+    "home": {
+      "cta_how": "Zo werkt het",
+      "preview_title": "Jouw dag, samengesteld",
+      "facts": {
+        "real_places": {
+          "title": "Echte plekken",
+          "desc": "Gecontroleerd op Google Maps"
+        },
+        "budget": {
+          "title": "Budget per dag",
+          "desc": "Heldere schatting per stop"
+        },
+        "photos": {
+          "title": "Echte foto's",
+          "desc": "Nooit beelden van andere plekken"
+        },
+        "languages": {
+          "title": "6 talen",
+          "desc": "Plan in je eigen taal"
+        }
+      },
+      "how_eyebrow": "Zo werkt het",
+      "how_title": "Van wens tot complete reisroute",
+      "steps": {
+        "step1": {
+          "title": "Kies je bestemming",
+          "desc": "Land, stad, aantal dagen en budget: meer hebben we niet nodig."
+        },
+        "step2": {
+          "title": "Deel je stijl",
+          "desc": "Interesses, tempo, gezelschap, eten: elke aanbeveling past zich aan."
+        },
+        "step3": {
+          "title": "Ontdek je reis",
+          "desc": "Een dagplanning met echte plekken, een kaart en een helder budget."
+        }
+      },
+      "features_eyebrow": "Alles op één plek",
+      "features_title": "Een complete reis, niet zomaar een lijst",
+      "inspire_eyebrow": "Inspiratie",
+      "inspire_title": "Waar ga jij hierna heen?",
+      "scenes": {
+        "culture": {
+          "tag": "Cultuur",
+          "title": "Tempels in bloei"
+        },
+        "stays": {
+          "tag": "Verblijven",
+          "title": "Binnenplaatsen bij lantaarnlicht"
+        },
+        "nature": {
+          "tag": "Natuur",
+          "title": "Bergwegen bij dageraad"
+        }
+      },
+      "cta_title": "Je volgende reis begint hier",
+      "cta_sub": "Beantwoord een paar vragen en ontvang binnen enkele ogenblikken een persoonlijk plan.",
+      "footer_tagline": "Ontworpen voor moderne reizigers",
+      "privacy": "Privacy"
+    },
+    "planner": {
+      "eyebrow": "Nieuwe reis",
+      "section_destination": "Waar ga je heen?",
+      "section_budget": "Duur & budget",
+      "summary_pick": "Kies een bestemming"
+    },
+    "trip": {
+      "stops_one": "{{count}} stop",
+      "stops_other": "{{count}} stops",
+      "day_tip": "Tip van de dag",
+      "budget_used": "{{pct}}% van je budget",
+      "breakdown": "Waar het geld heen gaat",
+      "difficulty": "Inspanning"
+    },
+    "difficulty": {
+      "easy": "Makkelijk",
+      "moderate": "Gemiddeld",
+      "challenging": "Uitdagend"
+    },
+    "spot_category": {
+      "iconic": "Iconisch",
+      "viewpoint": "Uitzichtpunt",
+      "scenic": "Landschap",
+      "local": "Lokaal"
+    },
+    "media": {
+      "unavailable": "Foto niet beschikbaar",
+      "illustrative": "Illustratieve afbeelding"
+    },
+    "profile": {
+      "open": "Reis openen"
+    }
+  }
 }

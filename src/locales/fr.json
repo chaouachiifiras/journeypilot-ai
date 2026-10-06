@@ -255,5 +255,123 @@
     "subscribe": "S'abonner",
     "get_android_app": "Télécharger l'application Android"
   },
-  "common": { "cancel": "Annuler", "delete": "Supprimer", "save": "Enregistrer", "loading": "Chargement…", "close": "Fermer" }
+  "common": { "cancel": "Annuler", "delete": "Supprimer", "save": "Enregistrer", "loading": "Chargement…", "close": "Fermer" },
+  "pose": {
+    "title": "Conseil de pose",
+    "legend": {
+      "camera": "Position de l'appareil",
+      "gaze": "Direction du regard"
+    },
+    "name": {
+      "profile_view": "De profil face à la vue",
+      "back_horizon": "De dos, regard vers l'horizon",
+      "low_angle": "Contre-plongée sur l'architecture"
+    },
+    "alt": {
+      "profile_view": "Illustration : une personne debout de profil près d'une rambarde, qui regarde le paysage. L'appareil est sur le côté, à hauteur de poitrine.",
+      "back_horizon": "Illustration : une personne vue de dos, qui regarde l'horizon au-dessus de la mer. L'appareil est derrière elle, légèrement décalé sur le côté.",
+      "low_angle": "Illustration : une personne debout devant un monument, qui lève les yeux vers lui. L'appareil est près du sol, incliné vers le haut."
+    },
+    "tips": {
+      "viewpoint": "La lumière du matin ou de fin d'après-midi est en général plus douce qu'à midi. Placez-vous de profil près du bord, le visage tourné vers la vue, et le photographe vous cadre depuis le côté, à hauteur de poitrine, pour que le panorama remplisse l'arrière-plan.",
+      "waterfront": "Un soleil bas, au lever ou au coucher, donne une lumière chaude et de longs reflets sur l'eau. Tournez le dos à l'appareil et regardez vers l'horizon, en gardant la ligne d'horizon droite et hors du milieu de l'image.",
+      "monument": "Venir tôt permet souvent d'avoir moins de monde devant le bâtiment. Le photographe s'accroupit près du sol et incline l'appareil vers le haut pour que le monument s'élève au-dessus de vous ; levez les yeux vers le sommet plutôt que vers l'objectif.",
+      "default": "La lumière douce du matin ou de fin d'après-midi est généralement la plus flatteuse. Tenez-vous légèrement de profil, regardez la scène plutôt que l'appareil et laissez de l'espace devant votre regard."
+    }
+  },
+  "ui": {
+    "ai_badge": "Composé par l'IA",
+    "home": {
+      "cta_how": "Comment ça marche",
+      "preview_title": "Votre journée, composée",
+      "facts": {
+        "real_places": {
+          "title": "Des lieux réels",
+          "desc": "Vérifiés sur Google Maps"
+        },
+        "budget": {
+          "title": "Budget jour par jour",
+          "desc": "Une estimation claire à chaque étape"
+        },
+        "photos": {
+          "title": "De vraies photos",
+          "desc": "Jamais d'images d'autres lieux"
+        },
+        "languages": {
+          "title": "6 langues",
+          "desc": "Planifiez dans votre langue"
+        }
+      },
+      "how_eyebrow": "Comment ça marche",
+      "how_title": "D'une envie à un itinéraire complet",
+      "steps": {
+        "step1": {
+          "title": "Choisissez votre destination",
+          "desc": "Pays, ville, nombre de jours et budget : c'est tout ce qu'il faut pour commencer."
+        },
+        "step2": {
+          "title": "Partagez votre style",
+          "desc": "Centres d'intérêt, rythme, compagnons, cuisine : chaque suggestion s'adapte à vous."
+        },
+        "step3": {
+          "title": "Explorez votre voyage",
+          "desc": "Un programme jour par jour avec des lieux réels, une carte et un budget clair."
+        }
+      },
+      "features_eyebrow": "Tout au même endroit",
+      "features_title": "Un voyage complet, pas une simple liste",
+      "inspire_eyebrow": "Inspiration",
+      "inspire_title": "Où partirez-vous ensuite ?",
+      "scenes": {
+        "culture": {
+          "tag": "Culture",
+          "title": "Temples en fleurs"
+        },
+        "stays": {
+          "tag": "Séjours",
+          "title": "Patios à la lueur des lanternes"
+        },
+        "nature": {
+          "tag": "Nature",
+          "title": "Routes de montagne à l'aube"
+        }
+      },
+      "cta_title": "Votre prochain voyage commence ici",
+      "cta_sub": "Répondez à quelques questions et recevez un programme complet et personnel en quelques instants.",
+      "footer_tagline": "Pensé pour les voyageurs d'aujourd'hui",
+      "privacy": "Confidentialité"
+    },
+    "planner": {
+      "eyebrow": "Nouveau voyage",
+      "section_destination": "Où partez-vous ?",
+      "section_budget": "Durée et budget",
+      "summary_pick": "Choisissez une destination"
+    },
+    "trip": {
+      "stops_one": "{{count}} étape",
+      "stops_other": "{{count}} étapes",
+      "day_tip": "Conseil du jour",
+      "budget_used": "{{pct}} % de votre budget",
+      "breakdown": "Répartition des dépenses",
+      "difficulty": "Effort"
+    },
+    "difficulty": {
+      "easy": "Facile",
+      "moderate": "Modéré",
+      "challenging": "Exigeant"
+    },
+    "spot_category": {
+      "iconic": "Incontournable",
+      "viewpoint": "Point de vue",
+      "scenic": "Paysage",
+      "local": "Local"
+    },
+    "media": {
+      "unavailable": "Photo indisponible",
+      "illustrative": "Image d'illustration"
+    },
+    "profile": {
+      "open": "Ouvrir le voyage"
+    }
+  }
 }

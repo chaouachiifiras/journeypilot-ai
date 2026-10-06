@@ -255,5 +255,100 @@
     "subscribe": "Abonnieren",
     "get_android_app": "Android-App herunterladen"
   },
-  "common": { "cancel": "Abbrechen", "delete": "Löschen", "save": "Speichern", "loading": "Wird geladen…", "close": "Schließen" }
+  "common": { "cancel": "Abbrechen", "delete": "Löschen", "save": "Speichern", "loading": "Wird geladen…", "close": "Schließen" },
+  "ui": {
+    "ai_badge": "Von KI gestaltet",
+    "home": {
+      "cta_how": "So funktioniert's",
+      "preview_title": "Dein Tag, komponiert",
+      "facts": {
+        "real_places": {
+          "title": "Echte Orte",
+          "desc": "Auf Google Maps geprüft"
+        },
+        "budget": {
+          "title": "Budget pro Tag",
+          "desc": "Klare Schätzung für jeden Halt"
+        },
+        "photos": {
+          "title": "Echte Fotos",
+          "desc": "Nie Bilder anderer Orte"
+        },
+        "languages": {
+          "title": "6 Sprachen",
+          "desc": "Plane in deiner Sprache"
+        }
+      },
+      "how_eyebrow": "So funktioniert's",
+      "how_title": "Vom Wunsch zur kompletten Reiseroute",
+      "steps": {
+        "step1": {
+          "title": "Ziel wählen",
+          "desc": "Land, Stadt, Anzahl der Tage und Budget – mehr brauchen wir nicht."
+        },
+        "step2": {
+          "title": "Deinen Stil teilen",
+          "desc": "Interessen, Tempo, Begleitung, Essen: Jede Empfehlung passt sich an."
+        },
+        "step3": {
+          "title": "Reise entdecken",
+          "desc": "Ein Tagesplan mit echten Orten, Karte und klarem Budget."
+        }
+      },
+      "features_eyebrow": "Alles an einem Ort",
+      "features_title": "Eine komplette Reise, nicht nur eine Liste",
+      "inspire_eyebrow": "Inspiration",
+      "inspire_title": "Wohin geht es als Nächstes?",
+      "scenes": {
+        "culture": {
+          "tag": "Kultur",
+          "title": "Tempel in voller Blüte"
+        },
+        "stays": {
+          "tag": "Unterkünfte",
+          "title": "Innenhöfe im Laternenlicht"
+        },
+        "nature": {
+          "tag": "Natur",
+          "title": "Bergstraßen im Morgengrauen"
+        }
+      },
+      "cta_title": "Deine nächste Reise beginnt hier",
+      "cta_sub": "Beantworte ein paar Fragen und erhalte in wenigen Augenblicken einen persönlichen Plan.",
+      "footer_tagline": "Gestaltet für moderne Reisende",
+      "privacy": "Datenschutz"
+    },
+    "planner": {
+      "eyebrow": "Neue Reise",
+      "section_destination": "Wohin geht's?",
+      "section_budget": "Dauer & Budget",
+      "summary_pick": "Ziel wählen"
+    },
+    "trip": {
+      "stops_one": "{{count}} Station",
+      "stops_other": "{{count}} Stationen",
+      "day_tip": "Tipp des Tages",
+      "budget_used": "{{pct}} % deines Budgets",
+      "breakdown": "Wohin das Geld geht",
+      "difficulty": "Anstrengung"
+    },
+    "difficulty": {
+      "easy": "Leicht",
+      "moderate": "Mittel",
+      "challenging": "Anspruchsvoll"
+    },
+    "spot_category": {
+      "iconic": "Ikonisch",
+      "viewpoint": "Aussichtspunkt",
+      "scenic": "Landschaft",
+      "local": "Lokal"
+    },
+    "media": {
+      "unavailable": "Foto nicht verfügbar",
+      "illustrative": "Symbolbild"
+    },
+    "profile": {
+      "open": "Reise öffnen"
+    }
+  }
 }

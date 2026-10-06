@@ -6,8 +6,10 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import {
   Loader2, Camera, UtensilsCrossed, ShoppingBag, Waves, Trees, Mountain,
-  ScrollText, Music, Users, Check, Sparkles,
+  ScrollText, Music, Users, Check, Sparkles, MapPin, Wallet, Heart, Minus, Plus,
+  ArrowRight, AlertCircle, Utensils, Accessibility, Backpack, Compass, Gem,
 } from "lucide-react";
+import mountains from "@/assets/scene-mountains.jpg";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { PaywallDialog } from "@/components/paywall/PaywallDialog";
@@ -29,6 +31,7 @@ const INTEREST_ICONS = {
 } as const;
 const INTERESTS = Object.keys(INTEREST_ICONS) as (keyof typeof INTEREST_ICONS)[];
 const STYLES = ["budget", "standard", "luxury"] as const;
+const STYLE_ICONS = { budget: Backpack, standard: Compass, luxury: Gem } as const;
 const CURRENCIES = ["USD", "EUR", "GBP", "MAD", "AED", "JPY"];
 const COMPANIONS = ["solo", "couple", "friends", "family"] as const;
 const WALKING = ["low", "medium", "high"] as const;
@@ -204,30 +207,37 @@ function Planner() {
 
   if (ready && isAnonymous) {
     return (
-      <div className="min-h-screen">
+      <div className="min-h-screen pb-tabbar">
         <AppHeader />
         <AuthGate />
       </div>
     );
   }
 
-  return (
-    <div className="min-h-screen">
-      <AppHeader />
-      <div className="mx-auto max-w-3xl px-6 py-16">
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ duration: 0.5 }}
-        >
-          <h1 className="font-display text-4xl md:text-5xl tracking-tight">
-            {t("planner.title")}
-          </h1>
-          <p className="mt-2 text-muted-foreground">{t("planner.subtitle")}</p>
-        </motion.div>
+  const canSubmit = !submitting && ready && countrySelected && citySelected;
 
-        <form onSubmit={onSubmit} className="mt-10 space-y-8">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+  return (
+    <div className="min-h-screen pb-tabbar">
+      <AppHeader />
+
+      {/* Editorial header */}
+      <section className="relative isolate overflow-hidden bg-ink">
+        <img src={mountains} alt="" className="absolute inset-0 -z-20 h-full w-full object-cover object-[50%_35%] opacity-70" />
+        <div className="absolute inset-0 -z-10 bg-gradient-to-b from-[rgba(8,20,18,0.35)] via-[rgba(8,20,18,0.55)] to-[#f6f2ea]" />
+        <div className="container-page max-w-3xl pb-16 pt-12 md:pb-24 md:pt-20">
+          <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}>
+            <span className="glass-dark inline-flex items-center gap-2 rounded-full px-3.5 py-1.5 text-xs font-semibold text-white">
+              <Sparkles className="h-3.5 w-3.5 text-[#e9c27f]" /> {t("ui.planner.eyebrow")}
+            </span>
+            <h1 className="display-lg mt-5 text-white">{t("planner.title")}</h1>
+            <p className="mt-3 max-w-lg text-[rgba(255,255,255,0.85)]">{t("planner.subtitle")}</p>
+          </motion.div>
+        </div>
+      </section>
+
+      <form onSubmit={onSubmit} className="container-page relative -mt-8 max-w-3xl space-y-5 md:-mt-12 md:space-y-6">
+        <Section n={1} icon={MapPin} title={t("ui.planner.section_destination")}>
+          <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
             <Field label={t("planner.country")}>
               <PlaceAutocomplete
                 inputRef={countryRef}
@@ -271,57 +281,115 @@ function Planner() {
               />
             </Field>
           </div>
+        </Section>
 
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-            <Field label={`${t("planner.days")}: ${days}`}>
-              <input type="range" min={1} max={21} value={days} onChange={(e) => setDays(Number(e.target.value))} className="accent-primary w-full" />
-            </Field>
+        <Section n={2} icon={Wallet} title={t("ui.planner.section_budget")}>
+          <Field label={t("planner.days")}>
+            <div className="panel flex items-center gap-4 p-3">
+              <button
+                type="button"
+                onClick={() => setDays((d) => Math.max(1, d - 1))}
+                disabled={days <= 1}
+                aria-label="−1"
+                className="btn btn-secondary btn-icon shrink-0"
+              >
+                <Minus />
+              </button>
+              <div className="min-w-0 flex-1 text-center">
+                <div className="font-display text-3xl leading-none tabular">{days}</div>
+                <div className="mt-1 text-xs font-semibold text-muted-foreground">{t("planner.days")}</div>
+              </div>
+              <button
+                type="button"
+                onClick={() => setDays((d) => Math.min(21, d + 1))}
+                disabled={days >= 21}
+                aria-label="+1"
+                className="btn btn-secondary btn-icon shrink-0"
+              >
+                <Plus />
+              </button>
+            </div>
+            <input
+              type="range"
+              min={1}
+              max={21}
+              value={days}
+              onChange={(e) => setDays(Number(e.target.value))}
+              className="range mt-4"
+              aria-label={t("planner.days")}
+            />
+          </Field>
+
+          <div className="mt-5 grid grid-cols-[1fr_auto] gap-3">
             <Field label={t("planner.budget")}>
-              <input ref={budgetRef} type="number" min={100} value={budget} onChange={(e) => setBudget(Number(e.target.value))} onKeyDown={(e) => handleFieldEnter(e)} className="input" />
+              <div className="relative">
+                <Wallet className="field-icon" />
+                <input
+                  ref={budgetRef}
+                  type="number"
+                  inputMode="numeric"
+                  min={100}
+                  value={budget}
+                  onChange={(e) => setBudget(Number(e.target.value))}
+                  onKeyDown={(e) => handleFieldEnter(e)}
+                  className="input input-with-icon tabular font-semibold"
+                />
+              </div>
             </Field>
             <Field label={t("planner.currency")}>
-              <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="input">
+              <select value={currency} onChange={(e) => setCurrency(e.target.value)} className="input w-28 font-semibold">
                 {CURRENCIES.map((c) => <option key={c} value={c}>{c}</option>)}
               </select>
             </Field>
           </div>
 
-          <Field label={t("planner.style")}>
-            <div className="grid grid-cols-3 gap-2">
-              {STYLES.map((s) => (
-                <button type="button" key={s} onClick={() => setStyle(s)}
-                  className={cn("rounded-xl border px-4 py-3 text-sm font-medium transition-all",
-                    style === s ? "border-primary bg-primary text-primary-foreground shadow-soft" : "border-border bg-card hover:bg-secondary")}>
-                  {t(`planner.styles.${s}`)}
+          <div className="mt-5">
+            <Field label={t("planner.style")}>
+              <div className="grid grid-cols-3 gap-2.5">
+                {STYLES.map((s) => {
+                  const Icon = STYLE_ICONS[s];
+                  const active = style === s;
+                  return (
+                    <button
+                      type="button"
+                      key={s}
+                      onClick={() => setStyle(s)}
+                      className={cn(
+                        "flex flex-col items-center gap-2 rounded-2xl border px-2 py-4 text-sm font-semibold transition-all active:scale-[0.98]",
+                        active
+                          ? "border-primary bg-primary-soft text-primary shadow-[0_0_0_1px_var(--primary)]"
+                          : "border-border bg-card text-muted-foreground hover:border-border-strong hover:text-foreground",
+                      )}
+                    >
+                      <span className={cn("flex h-10 w-10 items-center justify-center rounded-xl", active ? "bg-gradient-brand" : "bg-secondary")}>
+                        <Icon className="h-5 w-5" />
+                      </span>
+                      {t(`planner.styles.${s}`)}
+                    </button>
+                  );
+                })}
+              </div>
+            </Field>
+          </div>
+        </Section>
+
+        <Section n={3} icon={Heart} title={t("planner.interests")} hint={t("planner.interests_hint")}>
+          <div className="flex flex-wrap gap-2">
+            {INTERESTS.map((k) => {
+              const Icon = INTEREST_ICONS[k];
+              const active = interests.includes(k);
+              return (
+                <button type="button" key={k} onClick={() => toggleInterest(k)} data-active={active} className="chip h-11 px-4 text-sm">
+                  {active ? <Check /> : <Icon />}
+                  {t(`interests.${k}`)}
                 </button>
-              ))}
-            </div>
-          </Field>
+              );
+            })}
+          </div>
+        </Section>
 
-          <Field label={t("planner.interests")} hint={t("planner.interests_hint")}>
-            <div className="flex flex-wrap gap-2">
-              {INTERESTS.map((k) => {
-                const Icon = INTEREST_ICONS[k];
-                const active = interests.includes(k);
-                return (
-                  <button type="button" key={k} onClick={() => toggleInterest(k)}
-                    className={cn("inline-flex items-center gap-1.5 rounded-full border px-3.5 py-2 text-sm transition-all",
-                      active ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card hover:bg-secondary")}>
-                    <Icon className="h-3.5 w-3.5" />
-                    {t(`interests.${k}`)}
-                  </button>
-                );
-              })}
-            </div>
-          </Field>
-
-          {/* Personalization */}
-          <div className="rounded-2xl border border-border bg-card/40 p-6 space-y-6">
-            <div className="flex items-center gap-2">
-              <Sparkles className="h-4 w-4 text-copper" />
-              <h2 className="font-display text-xl">{t("planner.personal.title")}</h2>
-            </div>
-
+        <Section n={4} icon={Sparkles} title={t("planner.personal.title")} ai>
+          <div className="space-y-6">
             <Field label={t("planner.personal.first_time")}>
               <YesNo value={firstTime} onChange={setFirstTime} />
             </Field>
@@ -330,7 +398,7 @@ function Planner() {
               <SegGrid options={COMPANIONS} value={companions} onChange={setCompanions} tPrefix="planner.companions_options" />
             </Field>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
               <Field label={t("planner.personal.walking")}>
                 <SegGrid options={WALKING} value={walking} onChange={setWalking} tPrefix="planner.walking_options" />
               </Field>
@@ -364,33 +432,59 @@ function Planner() {
                       setChildrenCountError(null);
                     }
                   }}
-                  className={cn("input max-w-32", childrenCountError && "input-invalid")}
+                  className={cn("input max-w-32 tabular", childrenCountError && "input-invalid")}
                 />
                 {childrenCountError && (
-                  <span className="mt-1.5 block text-xs text-destructive">{childrenCountError}</span>
+                  <span className="mt-1.5 flex items-center gap-1.5 text-xs font-medium text-destructive">
+                    <AlertCircle className="h-3.5 w-3.5" /> {childrenCountError}
+                  </span>
                 )}
               </Field>
             )}
 
             <Field label={t("planner.personal.food")} hint={t("planner.personal.food_hint")}>
-              <input ref={foodRef} value={foodPref} onChange={(e) => setFoodPref(e.target.value)} onKeyDown={(e) => handleFieldEnter(e, accessRef)} placeholder={t("planner.personal.food_ph")} className="input" />
+              <div className="relative">
+                <Utensils className="field-icon" />
+                <input ref={foodRef} value={foodPref} onChange={(e) => setFoodPref(e.target.value)} onKeyDown={(e) => handleFieldEnter(e, accessRef)} placeholder={t("planner.personal.food_ph")} className="input input-with-icon" />
+              </div>
             </Field>
 
             <Field label={t("planner.personal.accessibility")} hint={t("planner.personal.accessibility_hint")}>
-              <input ref={accessRef} value={accessibility} onChange={(e) => setAccessibility(e.target.value)} onKeyDown={(e) => handleFieldEnter(e)} placeholder={t("planner.personal.accessibility_ph")} className="input" />
+              <div className="relative">
+                <Accessibility className="field-icon" />
+                <input ref={accessRef} value={accessibility} onChange={(e) => setAccessibility(e.target.value)} onKeyDown={(e) => handleFieldEnter(e)} placeholder={t("planner.personal.accessibility_ph")} className="input input-with-icon" />
+              </div>
             </Field>
           </div>
+        </Section>
 
-          <div className="pt-4">
-            <button type="submit" disabled={submitting || !ready || !countrySelected || !citySelected}
-              className="group inline-flex items-center gap-2 rounded-full bg-gradient-copper px-8 py-4 text-base font-medium shadow-lift transition-all hover:-translate-y-0.5 disabled:opacity-60 disabled:cursor-not-allowed">
-              {submitting ? (<><Loader2 className="h-4 w-4 animate-spin" /> {t("planner.generating")}</>) : t("planner.generate")}
-            </button>
+        {/* Summary + generate */}
+        <div className="card ai-surface p-5 md:p-6">
+          <div className="flex flex-wrap items-center gap-x-3 gap-y-2 text-sm">
+            <span className="ai-chip"><Sparkles /> {t("ui.ai_badge")}</span>
+            <span className={cn("font-semibold", !citySelected && "text-muted-foreground")}>
+              {citySelected ? city : t("ui.planner.summary_pick")}
+            </span>
+            <span className="text-muted-foreground">· {t("trip.days_count", { count: days })} · {budget} {currency}</span>
           </div>
-        </form>
-      </div>
+          <button type="submit" disabled={!canSubmit} className="btn btn-primary btn-lg btn-block group mt-5">
+            {submitting ? (
+              <><Loader2 className="animate-spin" /> {t("planner.generating")}</>
+            ) : (
+              <>
+                <Sparkles />
+                {t("planner.generate")}
+                <ArrowRight className="transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
+              </>
+            )}
+          </button>
+          {!countrySelected || !citySelected ? (
+            <p className="mt-3 text-center text-xs text-muted-foreground">{t("planner.errors.select_destination")}</p>
+          ) : null}
+        </div>
+      </form>
 
-      <AnimatePresence>{submitting && <LoadingOverlay phase={phase} />}</AnimatePresence>
+      <AnimatePresence>{submitting && <LoadingOverlay phase={phase} city={city} />}</AnimatePresence>
 
       <PaywallDialog
         open={paywallOpen}
@@ -400,14 +494,39 @@ function Planner() {
           if (pendingPayloadRef.current) submitTrip(pendingPayloadRef.current);
         }}
       />
-
-      <style>{`
-        .input { width: 100%; border-radius: 0.75rem; border: 1px solid var(--color-border); background: var(--color-card); padding: 0.75rem 1rem; font-size: 0.9375rem; transition: border-color .15s, box-shadow .15s; }
-        .input:focus { outline: none; border-color: var(--color-primary); box-shadow: 0 0 0 3px color-mix(in oklab, var(--color-primary) 15%, transparent); }
-        .input:disabled { opacity: 0.6; cursor: not-allowed; }
-        .input-invalid { border-color: var(--color-destructive); }
-      `}</style>
     </div>
+  );
+}
+
+function Section({
+  n, icon: Icon, title, hint, ai, children,
+}: {
+  n: number;
+  icon: typeof MapPin;
+  title: string;
+  hint?: string;
+  ai?: boolean;
+  children: React.ReactNode;
+}) {
+  return (
+    <motion.section
+      initial={{ opacity: 0, y: 16 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5, delay: n * 0.06, ease: [0.22, 1, 0.36, 1] }}
+      className="card p-5 md:p-7"
+    >
+      <div className="mb-5 flex items-start gap-3">
+        <span className={cn("flex h-10 w-10 shrink-0 items-center justify-center rounded-xl", ai ? "bg-gradient-ai" : "bg-primary-soft text-primary")}>
+          <Icon className="h-5 w-5" />
+        </span>
+        <div className="min-w-0">
+          <div className="text-[11px] font-bold uppercase tracking-[0.14em] text-subtle">{String(n).padStart(2, "0")}</div>
+          <h2 className="text-xl leading-tight">{title}</h2>
+          {hint && <p className="mt-1 text-sm text-muted-foreground">{hint}</p>}
+        </div>
+      </div>
+      {children}
+    </motion.section>
   );
 }
 
@@ -420,9 +539,9 @@ function Field({ label, children, hint }: { label: string; hint?: string; childr
   // avoids that implicit forwarding for every Field usage.
   return (
     <div className="block">
-      <span className="mb-2 block text-sm font-medium text-foreground">{label}</span>
+      <span className="field-label">{label}</span>
       {children}
-      {hint && <span className="mt-1.5 block text-xs text-muted-foreground">{hint}</span>}
+      {hint && <span className="field-hint">{hint}</span>}
     </div>
   );
 }
@@ -430,11 +549,9 @@ function Field({ label, children, hint }: { label: string; hint?: string; childr
 function YesNo({ value, onChange }: { value: boolean | null; onChange: (v: boolean) => void }) {
   const { t } = useTranslation();
   return (
-    <div className="inline-flex gap-2">
+    <div className="seg w-full max-w-xs grid-cols-2">
       {[{ v: true, l: t("planner.yes") }, { v: false, l: t("planner.no") }].map((o) => (
-        <button type="button" key={String(o.v)} onClick={() => onChange(o.v)}
-          className={cn("rounded-full border px-5 py-2 text-sm transition-all",
-            value === o.v ? "border-primary bg-primary text-primary-foreground" : "border-border bg-card hover:bg-secondary")}>
+        <button type="button" key={String(o.v)} onClick={() => onChange(o.v)} data-active={value === o.v}>
           {o.l}
         </button>
       ))}
@@ -445,11 +562,9 @@ function YesNo({ value, onChange }: { value: boolean | null; onChange: (v: boole
 function SegGrid<T extends string>({ options, value, onChange, tPrefix }: { options: readonly T[]; value: T; onChange: (v: T) => void; tPrefix: string }) {
   const { t } = useTranslation();
   return (
-    <div className={cn("grid gap-2", options.length === 4 ? "grid-cols-2 md:grid-cols-4" : "grid-cols-3")}>
+    <div className={cn("seg", options.length === 4 ? "grid-cols-2 sm:grid-cols-4" : "grid-cols-3")}>
       {options.map((o) => (
-        <button type="button" key={o} onClick={() => onChange(o)}
-          className={cn("rounded-xl border px-3 py-2.5 text-sm font-medium capitalize transition-all",
-            value === o ? "border-primary bg-primary text-primary-foreground shadow-soft" : "border-border bg-card hover:bg-secondary")}>
+        <button type="button" key={o} onClick={() => onChange(o)} data-active={value === o}>
           {t(`${tPrefix}.${o}`)}
         </button>
       ))}
@@ -457,7 +572,7 @@ function SegGrid<T extends string>({ options, value, onChange, tPrefix }: { opti
   );
 }
 
-function LoadingOverlay({ phase }: { phase: 0 | 1 | 2 }) {
+function LoadingOverlay({ phase, city }: { phase: 0 | 1 | 2; city: string }) {
   const { t } = useTranslation();
   const [step, setStep] = useState(0);
   // Real progress: phase 0 = skeleton request in flight, 1 = skeleton received (detail pass),
@@ -470,40 +585,55 @@ function LoadingOverlay({ phase }: { phase: 0 | 1 | 2 }) {
   useEffect(() => {
     setStep((s) => Math.max(s, phase === 1 ? 3 : phase === 2 ? LOADING_STEPS.length : s));
   }, [phase]);
+  const pct = Math.round((Math.min(step, LOADING_STEPS.length) / LOADING_STEPS.length) * 100);
 
   return (
     <motion.div
       initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
-      className="fixed inset-0 z-50 grid place-items-center bg-background/85 backdrop-blur-xl"
+      className="surface-ink fixed inset-0 z-50 overflow-y-auto"
     >
-      <div className="relative w-full max-w-lg px-8 text-center">
-        <motion.div
-          animate={{ rotate: 360 }}
-          transition={{ duration: 10, repeat: Infinity, ease: "linear" }}
-          className="mx-auto mb-8 h-20 w-20 rounded-full border-2 border-copper border-t-transparent"
-        />
-        <h2 className="font-display text-3xl md:text-4xl tracking-tight">{t("planner.loading_title")}</h2>
-        <p className="mt-2 text-sm text-muted-foreground">{t("planner.loading_subtitle")}</p>
-        <ul className="mt-10 space-y-3 text-left">
+      <img src={mountains} alt="" className="absolute inset-0 h-full w-full object-cover opacity-25" />
+      <div className="absolute inset-0 bg-gradient-to-b from-[rgba(11,26,24,0.6)] to-[#0b1a18]" />
+      <div className="relative mx-auto flex min-h-full w-full max-w-md flex-col justify-center px-6 py-16">
+        <div className="relative mx-auto h-24 w-24">
+          <span className="animate-pulse-ring absolute inset-0 rounded-full bg-[rgba(52,160,136,0.45)]" />
+          <span className="animate-pulse-ring absolute inset-0 rounded-full bg-[rgba(207,157,79,0.35)] [animation-delay:1.2s]" />
+          <span className="bg-gradient-ai relative flex h-full w-full items-center justify-center rounded-full shadow-glow">
+            <Sparkles className="h-9 w-9" />
+          </span>
+        </div>
+
+        <h2 className="display-lg mt-8 text-center text-white">{t("planner.loading_title")}</h2>
+        <p className="mt-2 text-center text-sm text-[rgba(255,255,255,0.7)]">
+          {city ? `${city} · ` : ""}{t("planner.loading_subtitle")}
+        </p>
+
+        <div className="mt-8 h-1.5 overflow-hidden rounded-full bg-[rgba(255,255,255,0.12)]">
+          <motion.div className="bg-gradient-ai h-full rounded-full" animate={{ width: `${Math.max(pct, 6)}%` }} transition={{ duration: 0.8, ease: [0.22, 1, 0.36, 1] }} />
+        </div>
+
+        <ul className="mt-8 space-y-2">
           {LOADING_STEPS.map((label, i) => {
             const done = i < step;
             const active = i === step;
             return (
               <motion.li
                 key={label}
-                initial={{ opacity: 0, x: -8 }}
-                animate={{ opacity: done || active ? 1 : 0.35, x: 0 }}
-                transition={{ delay: i * 0.08 }}
-                className="flex items-center gap-3 text-sm"
+                initial={{ opacity: 0, y: 6 }}
+                animate={{ opacity: done || active ? 1 : 0.4, y: 0 }}
+                transition={{ delay: i * 0.06 }}
+                className={cn("flex items-center gap-3 rounded-2xl px-3.5 py-3 text-sm transition-colors", active && "glass-dark")}
               >
                 <span className={cn(
-                  "flex h-6 w-6 shrink-0 items-center justify-center rounded-full border transition-all",
-                  done ? "border-copper bg-copper text-primary-foreground"
-                    : active ? "border-copper text-copper" : "border-border text-muted-foreground",
+                  "flex h-7 w-7 shrink-0 items-center justify-center rounded-full border transition-all",
+                  done ? "border-transparent bg-gradient-ai"
+                    : active ? "border-[rgba(255,255,255,0.4)] text-white" : "border-[rgba(255,255,255,0.18)] text-[rgba(255,255,255,0.5)]",
                 )}>
                   {done ? <Check className="h-3.5 w-3.5" /> : active ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <span className="h-1.5 w-1.5 rounded-full bg-current" />}
                 </span>
-                <span className={cn(done && "text-foreground", active && "text-foreground font-medium")}>{t(`planner.loading_steps.${label}`)}</span>
+                <span className={cn("text-[rgba(255,255,255,0.7)]", (done || active) && "text-white", active && "font-semibold")}>
+                  {t(`planner.loading_steps.${label}`)}
+                </span>
               </motion.li>
             );
           })}

@@ -12,6 +12,7 @@ import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Checkbox } from "@/components/ui/checkbox";
 import { signInWithPassword, signUpWithPassword, signInWithGoogle } from "@/lib/auth";
+import logo from "@/assets/logo-mark.png";
 
 const signInSchema = z.object({
   email: z.string().email(),
@@ -94,16 +95,21 @@ export function AuthDialog({ open, onOpenChange }: { open: boolean; onOpenChange
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
-      <DialogContent className="sm:max-w-sm">
+      <DialogContent className="max-h-[92vh] overflow-y-auto sm:max-w-md">
         {confirmSent ? (
           <div className="py-4 text-center">
-            <MailCheck className="mx-auto h-10 w-10 text-primary" />
+            <span className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-primary-soft text-primary">
+              <MailCheck className="h-7 w-7" />
+            </span>
             <h3 className="mt-4 font-display text-xl">{t("auth.check_email_title")}</h3>
             <p className="mt-2 text-sm text-muted-foreground">{t("auth.check_email_body")}</p>
           </div>
         ) : (
           <>
             <DialogHeader>
+              <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-card shadow-soft ring-1 ring-border sm:mx-0">
+                <img src={logo} alt="" className="h-7 w-7" />
+              </span>
               <DialogTitle>{t("auth.title")}</DialogTitle>
               <DialogDescription>{t("auth.subtitle")}</DialogDescription>
             </DialogHeader>
@@ -113,7 +119,7 @@ export function AuthDialog({ open, onOpenChange }: { open: boolean; onOpenChange
               {t("auth.continue_with_google")}
             </Button>
 
-            <div className="flex items-center gap-3 text-xs text-muted-foreground">
+            <div className="flex items-center gap-3 text-xs font-semibold uppercase tracking-wider text-subtle">
               <div className="h-px flex-1 bg-border" />
               {t("auth.or")}
               <div className="h-px flex-1 bg-border" />

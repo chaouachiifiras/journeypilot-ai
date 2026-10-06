@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { useTranslation } from "react-i18next";
 import { motion } from "motion/react";
 import { ImageOff, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
@@ -24,6 +25,7 @@ export function VenuePhoto({
   name: string;
   className?: string;
 }) {
+  const { t } = useTranslation();
   const [loaded, setLoaded] = useState(false);
   const [failed, setFailed] = useState(false);
   const usable = !!photo?.url && !failed;
@@ -36,13 +38,13 @@ export function VenuePhoto({
     .join("");
 
   return (
-    <div className={cn("relative aspect-[16/9] overflow-hidden bg-secondary/60", className)}>
+    <div className={cn("relative aspect-[16/9] overflow-hidden bg-secondary", className)}>
       {usable ? (
         <>
-          {!loaded && <div className="absolute inset-0 animate-pulse bg-gradient-to-br from-secondary via-muted to-secondary" />}
+          {!loaded && <div className="skeleton absolute inset-0 rounded-none" />}
           <motion.img
             src={photo!.url}
-            alt={isReal ? name : `Illustrative image representing the style of ${name}`}
+            alt={isReal ? name : `${t("ui.media.illustrative")} — ${name}`}
             loading="lazy"
             decoding="async"
             onLoad={() => setLoaded(true)}
@@ -53,28 +55,25 @@ export function VenuePhoto({
             className="absolute inset-0 h-full w-full object-cover"
           />
           {loaded && !isReal && (
-            <span
-              title="Illustrative image — actual venue photo unavailable"
-              className="absolute bottom-1.5 left-1.5 inline-flex items-center gap-1 rounded-full bg-black/55 px-2 py-0.5 text-[10px] font-medium text-white/95 backdrop-blur-sm"
-            >
-              <Sparkles className="h-3 w-3" /> Illustrative image
+            <span className="badge badge-dark absolute bottom-2 start-2">
+              <Sparkles /> {t("ui.media.illustrative")}
             </span>
           )}
           {loaded && isReal && photo!.credit && (
-            <span className="absolute bottom-1.5 right-1.5 rounded-full bg-black/45 px-2 py-0.5 text-[10px] font-medium text-white/90 backdrop-blur-sm">
+            <span className="absolute bottom-2 end-2 max-w-[60%] truncate rounded-full bg-[rgba(8,20,18,0.5)] px-2 py-0.5 text-[10px] font-medium text-[rgba(255,255,255,0.9)] backdrop-blur-sm">
               {photo!.credit}
             </span>
           )}
         </>
       ) : (
-        <div className="absolute inset-0 flex flex-col items-center justify-center gap-1.5 bg-gradient-to-br from-secondary via-muted to-secondary">
-          <span className="font-display text-3xl text-muted-foreground/70">{initials}</span>
-          <span className="flex items-center gap-1 text-[10px] uppercase tracking-widest text-muted-foreground/70">
-            <ImageOff className="h-3 w-3" /> Photo unavailable
+        <div className="absolute inset-0 flex flex-col items-center justify-center gap-2 bg-gradient-to-br from-secondary to-muted">
+          <span className="font-display text-4xl text-subtle">{initials}</span>
+          <span className="flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest text-subtle">
+            <ImageOff className="h-3 w-3" /> {t("ui.media.unavailable")}
           </span>
         </div>
       )}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/25 to-transparent opacity-70" />
+      <div className="pointer-events-none absolute inset-x-0 bottom-0 h-20 bg-gradient-to-t from-[rgba(8,20,18,0.35)] to-transparent" />
     </div>
   );
 }

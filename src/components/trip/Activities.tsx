@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import {
   Loader2, Info, Heart, Share2, CalendarPlus, MapPin, Star, Clock,
-  Navigation, Check, X, ExternalLink, Globe,
+  Navigation, Check, X, ExternalLink, Globe, Sparkles, ChevronDown, SearchX, Sun,
 } from "lucide-react";
 import { SpotPhotoImage } from "@/components/media/SpotPhotoImage";
 import { type ActivityBadge, type ActivityCategory } from "@/lib/places/activity-ranking";
@@ -67,8 +67,8 @@ export function Activities({ tripId, currency }: { tripId: string; currency?: st
     <div className="space-y-5">
       {/* Category filters — only categories that genuinely exist here */}
       {categories.length > 1 && (
-        <div className="-mx-6 px-6 overflow-x-auto scrollbar-none">
-          <div className="inline-flex gap-1.5 min-w-max pb-1">
+        <div data-swipe-ignore className="-mx-5 overflow-x-auto px-5 scrollbar-none md:-mx-8 md:px-8">
+          <div className="inline-flex min-w-max gap-2 pb-1">
             <Chip active={filter === "all"} onClick={() => setFilter("all")}>
               {t("trip.all_count", { count: items.length })}
             </Chip>
@@ -82,15 +82,31 @@ export function Activities({ tripId, currency }: { tripId: string; currency?: st
       )}
 
       {isLoading && (
-        <div className="flex items-center justify-center gap-2 py-16 text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          <span className="text-sm">{t("trip.discovering")}</span>
+        <div>
+          <p className="flex items-center gap-2 text-sm font-medium text-ai">
+            <Sparkles className="h-4 w-4 animate-pulse" />
+            {t("trip.discovering")}
+          </p>
+          <div className="mt-4 grid gap-4 md:grid-cols-2 md:gap-5">
+            {[0, 1].map((i) => (
+              <div key={i} className="card overflow-hidden">
+                <div className="skeleton aspect-[4/3] rounded-none" />
+                <div className="space-y-3 p-5">
+                  <div className="skeleton h-5 w-2/3" />
+                  <div className="skeleton h-12 w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {!isLoading && visible.length === 0 && (
-        <div className="rounded-2xl border border-border bg-card p-8 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="card mx-auto max-w-md px-6 py-12 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-primary">
+            <SearchX className="h-6 w-6" />
+          </div>
+          <p className="mt-4 text-sm text-muted-foreground">
             {data?.providerError ? t("trip.errors.provider_unavailable") : t("trip.errors.no_experiences")}
           </p>
         </div>
@@ -116,17 +132,17 @@ export function Activities({ tripId, currency }: { tripId: string; currency?: st
           <button
             onClick={() => setLimit(nextStep!)}
             disabled={isFetching}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2 text-xs font-medium shadow-soft transition hover:bg-secondary disabled:opacity-60"
+            className="btn btn-secondary"
           >
-            {isFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+            {isFetching ? <Loader2 className="animate-spin" /> : <ChevronDown />}
             {t("trip.view_more_experiences", { count: nextStep })}
           </button>
         </div>
       )}
 
       {data && (
-        <p className="flex items-center gap-1.5 pt-1 text-[11px] text-muted-foreground">
-          <Info className="h-3 w-3" />
+        <p className="flex items-start gap-1.5 pt-1 text-[11px] leading-relaxed text-subtle">
+          <Info className="mt-0.5 h-3 w-3 shrink-0" />
           {t("trip.attribution_activities", {
             candidateCount: data.candidateCount, total: data.total, realPhotoCount: data.realPhotoCount,
           })}{" "}
@@ -141,12 +157,8 @@ function Chip({ active, onClick, children }: { active?: boolean; onClick: () => 
   return (
     <button
       onClick={onClick}
-      className={cn(
-        "whitespace-nowrap rounded-full border px-3 py-1 text-xs font-medium transition",
-        active
-          ? "border-transparent bg-gradient-emerald text-foreground shadow-soft"
-          : "border-border bg-card text-muted-foreground hover:text-foreground",
-      )}
+      data-active={!!active}
+      className="chip"
     >
       {children}
     </button>
@@ -240,23 +252,23 @@ function ActivityCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: Math.min(index, 6) * 0.03 }}
-      className="group flex flex-col overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-all hover:shadow-lift"
+      className="card card-hover group flex flex-col overflow-hidden"
     >
       {/* Image is the visual anchor of the card */}
       <div className="relative">
         <SpotPhotoImage
           photo={a.photo}
           name={a.name}
-          className="rounded-none rounded-t-2xl transition-transform duration-700 group-hover:scale-[1.02]"
+          className="transition-transform duration-700 group-hover:scale-[1.02]"
         />
         <div className="pointer-events-none absolute inset-x-0 bottom-0 p-4">
-          <span className="inline-flex items-center rounded-full bg-black/55 px-2.5 py-1 text-[10px] font-medium uppercase tracking-widest text-white/90 backdrop-blur-sm">
+          <span className="badge badge-overlay uppercase tracking-wider">
             {t(`category.${a.category}`)}
           </span>
         </div>
         {typeof a.rating === "number" && (
-          <div className="absolute right-3 top-3 flex items-center gap-1 rounded-full bg-background/90 px-2.5 py-1 text-xs font-medium shadow-soft backdrop-blur">
-            <Star className="h-3.5 w-3.5 fill-copper text-copper" />
+          <div className="badge badge-overlay absolute end-3 top-3 h-8 px-3 text-xs">
+            <Star className="fill-[#c39443] text-[#c39443]" />
             {a.rating.toFixed(1)}
             {a.reviews ? <span className="text-muted-foreground">({a.reviews.toLocaleString()})</span> : null}
           </div>
@@ -264,44 +276,46 @@ function ActivityCard({
         <button
           onClick={onSave}
           aria-label={saved ? t("trip.remove_saved") : t("trip.save_experience")}
-          className="absolute left-3 top-3 rounded-full bg-background/85 p-2 shadow-soft backdrop-blur transition hover:bg-background"
+          className="absolute start-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-[rgba(255,253,249,0.92)] shadow-soft backdrop-blur transition-transform active:scale-90"
         >
-          <Heart className={cn("h-4 w-4", saved ? "fill-copper text-copper" : "text-muted-foreground")} />
+          <Heart className={cn("h-[1.1rem] w-[1.1rem]", saved ? "fill-[#c0602e] text-copper" : "text-muted-foreground")} />
         </button>
       </div>
 
       <div className="flex flex-1 flex-col p-5">
-        <h4 className="font-display text-xl leading-tight">{a.name}</h4>
+        <h3 className="title-md">{a.name}</h3>
         {(a.summary || a.typeLabel) && (
           <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{a.summary ?? a.typeLabel}</p>
         )}
 
         {a.why.length > 0 && (
-          <p className="mt-3 rounded-lg bg-secondary/60 px-3 py-2 text-[12px] leading-relaxed text-secondary-foreground">
-            <span className="font-medium text-copper">{t("trip.why_picked")}: </span>
-            {a.why.join(" · ")}
-          </p>
+          <div className="ai-surface mt-4 rounded-2xl p-3.5 shadow-none">
+            <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ai">
+              <Sparkles className="h-3.5 w-3.5" /> {t("trip.why_picked")}
+            </p>
+            <p className="mt-1.5 text-[13px] leading-snug">{a.why.join(" · ")}</p>
+          </div>
         )}
 
         {/* Metadata — only real, published data */}
-        <div className="mt-3 flex flex-wrap gap-x-4 gap-y-1.5 text-[11px] text-muted-foreground">
+        <div className="mt-4 flex flex-wrap gap-1.5">
           {duration && (
-            <span className="inline-flex items-center gap-1">
-              <Clock className="h-3 w-3" /> {t("trip.typically", { duration })}
+            <span className="badge">
+              <Clock /> {t("trip.typically", { duration })}
             </span>
           )}
           {a.bestTime && (
-            <span className="inline-flex items-center gap-1">
-              ✦ {t("trip.best_x", { time: a.bestTime.toLowerCase() })}
+            <span className="badge badge-copper">
+              <Sun /> {t("trip.best_x", { time: a.bestTime.toLowerCase() })}
             </span>
           )}
           {a.distanceKm != null && (
-            <span className="inline-flex items-center gap-1">
-              <Navigation className="h-3 w-3" /> {t("trip.km_from_itinerary", { km: a.distanceKm })}
+            <span className="badge">
+              <Navigation /> {t("trip.km_from_itinerary", { km: a.distanceKm })}
             </span>
           )}
           {typeof a.priceLevel === "number" && (
-            <span>{a.priceLevel === 0 ? t("trip.free_entry") : "$".repeat(a.priceLevel)}</span>
+            <span className="badge badge-success">{a.priceLevel === 0 ? t("trip.free_entry") : "$".repeat(a.priceLevel)}</span>
           )}
         </div>
 
@@ -314,7 +328,7 @@ function ActivityCard({
         )}
 
         {/* Actions */}
-        <div className="mt-4 flex flex-wrap items-center gap-2 pt-1">
+        <div className="mt-auto flex flex-wrap items-center gap-2 pt-5">
           <a
             href={maps.url}
             target="_blank"
@@ -326,52 +340,44 @@ function ActivityCard({
                 provider: "google", placeId: a.placeId, address: a.address, lat: a.lat, lng: a.lng,
               });
             }}
-            className="inline-flex items-center gap-1.5 rounded-full bg-gradient-emerald px-3 py-1.5 text-xs font-medium text-primary-foreground"
+            className="btn btn-primary btn-sm"
           >
-            <MapPin className="h-3.5 w-3.5" /> {t("trip.maps")} <ExternalLink className="h-3 w-3" />
+            <MapPin /> {t("trip.maps")} <ExternalLink />
           </a>
           <button
             onClick={(e) => {
               e.preventDefault();
               openDirections(a.lat, a.lng);
             }}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-primary transition hover:bg-secondary"
+            className="btn btn-secondary btn-sm"
           >
-            <Navigation className="h-3.5 w-3.5" /> {t("trip.directions")}
+            <Navigation /> {t("trip.directions")}
           </button>
           <button
             onClick={() => (added ? undefined : suggestion.mutate())}
             disabled={added || suggestion.isPending}
-            className={cn(
-              "inline-flex items-center gap-1.5 rounded-full border px-3 py-1.5 text-xs font-medium transition",
-              added
-                ? "border-transparent bg-secondary text-secondary-foreground"
-                : "border-border hover:bg-secondary disabled:opacity-60",
-            )}
+            className={cn("btn btn-sm", added ? "btn-ghost bg-primary-soft" : "btn-secondary")}
           >
             {suggestion.isPending ? (
-              <Loader2 className="h-3.5 w-3.5 animate-spin" />
+              <Loader2 className="animate-spin" />
             ) : added ? (
-              <Check className="h-3.5 w-3.5" />
+              <Check />
             ) : (
-              <CalendarPlus className="h-3.5 w-3.5" />
+              <CalendarPlus />
             )}
             {added ? t("trip.in_itinerary") : t("trip.add_to_itinerary")}
           </button>
-          <button
-            onClick={share}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium transition hover:bg-secondary"
-          >
-            <Share2 className="h-3.5 w-3.5" /> {shared ? t("trip.copied") : t("trip.share")}
+          <button onClick={share} className="btn btn-ghost btn-sm" aria-label={t("trip.share")}>
+            {shared ? <Check /> : <Share2 />} {shared ? t("trip.copied") : t("trip.share")}
           </button>
           {a.website && (
             <a
               href={a.website}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium text-muted-foreground transition hover:text-foreground"
+              className="btn btn-ghost btn-sm"
             >
-              <Globe className="h-3.5 w-3.5" /> {t("trip.website")}
+              <Globe /> {t("trip.website")}
             </a>
           )}
         </div>
@@ -381,7 +387,7 @@ function ActivityCard({
           <motion.div
             initial={{ opacity: 0, height: 0 }}
             animate={{ opacity: 1, height: "auto" }}
-            className="mt-4 rounded-xl border border-border bg-background/60 p-4"
+            className="ai-surface mt-4 rounded-2xl p-4 shadow-none"
           >
             <div className="flex items-start justify-between gap-3">
               <p className="text-xs leading-relaxed text-muted-foreground">
@@ -398,7 +404,7 @@ function ActivityCard({
               <select
                 value={planner.day}
                 onChange={(e) => setPlanner({ ...planner, day: Number(e.target.value) })}
-                className="rounded-full border border-border bg-card px-3 py-1.5 text-xs"
+                className="input h-10 w-auto rounded-full py-0 text-sm"
               >
                 {Array.from({ length: Math.max(planner.days, 1) }, (_, i) => i + 1).map((d) => (
                   <option key={d} value={d}>
@@ -409,7 +415,7 @@ function ActivityCard({
               <select
                 value={planner.timeSlot}
                 onChange={(e) => setPlanner({ ...planner, timeSlot: e.target.value })}
-                className="rounded-full border border-border bg-card px-3 py-1.5 text-xs capitalize"
+                className="input h-10 w-auto rounded-full py-0 text-sm capitalize"
               >
                 {SLOT_OPTIONS.map((s) => (
                   <option key={s} value={s}>
@@ -420,9 +426,9 @@ function ActivityCard({
               <button
                 onClick={() => confirmAdd.mutate()}
                 disabled={confirmAdd.isPending}
-                className="inline-flex items-center gap-1.5 rounded-full bg-gradient-copper px-4 py-1.5 text-xs font-medium text-primary-foreground disabled:opacity-60"
+                className="btn btn-primary btn-sm"
               >
-                {confirmAdd.isPending ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : <Check className="h-3.5 w-3.5" />}
+                {confirmAdd.isPending ? <Loader2 className="animate-spin" /> : <Check />}
                 {t("trip.confirm")}
               </button>
             </div>
@@ -430,9 +436,11 @@ function ActivityCard({
         )}
 
         {a.openingHours?.length ? (
-          <details className="mt-3 text-[11px] text-muted-foreground">
-            <summary className="cursor-pointer select-none hover:text-foreground">{t("trip.opening_hours")}</summary>
-            <ul className="mt-1.5 space-y-0.5">
+          <details className="panel mt-4 px-3.5 py-2.5 text-xs text-muted-foreground">
+            <summary className="flex cursor-pointer select-none items-center gap-1.5 font-semibold text-foreground">
+              <Clock className="h-3.5 w-3.5" /> {t("trip.opening_hours")}
+            </summary>
+            <ul className="mt-2 space-y-1">
               {a.openingHours.map((h) => (
                 <li key={h}>{h}</li>
               ))}
@@ -448,12 +456,12 @@ function Badge({ badge }: { badge: ActivityBadge }) {
   const { t } = useTranslation();
   const accent =
     badge === "iconic" || badge === "top_rated"
-      ? "bg-copper/15 text-copper"
+      ? "badge-copper"
       : badge === "premium"
-        ? "bg-gradient-emerald text-foreground"
-        : "bg-secondary text-secondary-foreground";
+        ? "badge-primary"
+        : "";
   return (
-    <span className={cn("inline-flex rounded-full px-2 py-0.5 text-[11px] font-medium", accent)}>
+    <span className={cn("badge", accent)}>
       {t(`activityBadge.${badge}`)}
     </span>
   );

@@ -5,7 +5,7 @@ import { motion } from "motion/react";
 import { useTranslation } from "react-i18next";
 import {
   Star, MapPin, Heart, ExternalLink, Loader2, RefreshCw, Navigation,
-  Globe, Phone, Clock, Bed, UtensilsCrossed, Info, Map as MapIcon,
+  Globe, Phone, Clock, Bed, UtensilsCrossed, Info, Map as MapIcon, Sparkles, ChevronDown, SearchX,
 } from "lucide-react";
 import { VenuePhoto } from "@/components/media/VenuePhoto";
 import { KIND_FILTERS, type Recommendation, type RecommendationBadge } from "@/lib/places/ranking";
@@ -64,7 +64,8 @@ export function Recommendations({ tripId, kind }: { tripId: string; kind: PlaceK
   return (
     <div className="space-y-5">
       {/* Controls */}
-      <div className="flex flex-wrap items-center gap-2">
+      <div className="flex items-center gap-2">
+        <div data-swipe-ignore className="-ms-5 flex min-w-0 flex-1 gap-2 overflow-x-auto ps-5 scrollbar-none md:ms-0 md:flex-wrap md:ps-0">
         <Chip active={filter === "all"} onClick={() => setFilter("all")}>
           {t("trip.all_count", { count: recs.length })}
         </Chip>
@@ -73,33 +74,49 @@ export function Recommendations({ tripId, kind }: { tripId: string; kind: PlaceK
             {t(`recBadge.${b}`)}
           </Chip>
         ))}
-        <div className="ml-auto flex items-center gap-2">
-          <button
-            onClick={() => refetch()}
-            className="rounded-full border border-border p-1.5 text-muted-foreground hover:text-foreground transition"
-            aria-label={t("trip.refresh_recommendations")}
-          >
-            <RefreshCw className={cn("h-3.5 w-3.5", isFetching && "animate-spin")} />
-          </button>
         </div>
+        <button
+          onClick={() => refetch()}
+          className="btn btn-secondary btn-icon btn-sm shrink-0"
+          aria-label={t("trip.refresh_recommendations")}
+        >
+          <RefreshCw className={cn(isFetching && "animate-spin")} />
+        </button>
       </div>
 
       {isLoading && (
-        <div className="flex items-center gap-2 py-16 justify-center text-muted-foreground">
-          <Loader2 className="h-4 w-4 animate-spin" />
-          <span className="text-sm">{kind === "hotel" ? t("trip.finding_stays") : t("trip.finding_tables")}</span>
+        <div>
+          <p className="flex items-center gap-2 text-sm font-medium text-ai">
+            <Sparkles className="h-4 w-4 animate-pulse" />
+            {kind === "hotel" ? t("trip.finding_stays") : t("trip.finding_tables")}
+          </p>
+          <div className="mt-4 grid gap-4 md:grid-cols-2 md:gap-5">
+            {[0, 1].map((i) => (
+              <div key={i} className="card overflow-hidden">
+                <div className="skeleton aspect-[16/9] rounded-none" />
+                <div className="space-y-3 p-5">
+                  <div className="skeleton h-3 w-1/4" />
+                  <div className="skeleton h-5 w-2/3" />
+                  <div className="skeleton h-16 w-full" />
+                </div>
+              </div>
+            ))}
+          </div>
         </div>
       )}
 
       {!isLoading && visible.length === 0 && (
-        <div className="rounded-2xl border border-border bg-card p-8 text-center">
-          <p className="text-sm text-muted-foreground">
+        <div className="card mx-auto max-w-md px-6 py-12 text-center">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl bg-secondary text-primary">
+            <SearchX className="h-6 w-6" />
+          </div>
+          <p className="mt-4 text-sm text-muted-foreground">
             {data?.providerError ? t("trip.errors.places_unavailable") : t("trip.errors.no_venues")}
           </p>
         </div>
       )}
 
-      <div className="grid gap-4 md:grid-cols-2">
+      <div className="grid gap-4 md:grid-cols-2 md:gap-5">
         {visible.map((rec, i) => (
           <RecCard
             key={rec.place.source.id}
@@ -117,21 +134,21 @@ export function Recommendations({ tripId, kind }: { tripId: string; kind: PlaceK
       </div>
 
       {canViewMore && (
-        <div className="flex justify-center pt-1">
+        <div className="flex justify-center pt-2">
           <button
             onClick={() => setLimit(nextStep!)}
             disabled={isFetching}
-            className="inline-flex items-center gap-2 rounded-full border border-border bg-card px-5 py-2 text-xs font-medium shadow-soft transition hover:bg-secondary disabled:opacity-60"
+            className="btn btn-secondary"
           >
-            {isFetching ? <Loader2 className="h-3.5 w-3.5 animate-spin" /> : null}
+            {isFetching ? <Loader2 className="animate-spin" /> : <ChevronDown />}
             {kind === "hotel" ? t("trip.view_more_stays") : t("trip.view_more_restaurants")}
           </button>
         </div>
       )}
 
       {data && (
-        <p className="flex items-center gap-1.5 pt-2 text-[11px] text-muted-foreground">
-          <Info className="h-3 w-3" />
+        <p className="flex items-start gap-1.5 pt-2 text-[11px] leading-relaxed text-subtle">
+          <Info className="mt-0.5 h-3 w-3 shrink-0" />
           {t("trip.attribution_venues", { totalCandidates: data.totalCandidates, realPhotoCount: data.realPhotoCount })}{" "}
           {data.attribution}
         </p>
@@ -146,12 +163,8 @@ function Chip({
   return (
     <button
       onClick={onClick}
-      className={cn(
-        "rounded-full border px-3 py-1 text-xs font-medium transition",
-        active
-          ? "border-transparent bg-gradient-emerald text-foreground shadow-soft"
-          : "border-border bg-card text-muted-foreground hover:text-foreground",
-      )}
+      data-active={!!active}
+      className="chip"
     >
       {children}
     </button>
@@ -190,16 +203,13 @@ function RecCard({
       whileInView={{ opacity: 1, y: 0 }}
       viewport={{ once: true }}
       transition={{ delay: Math.min(index * 0.03, 0.3) }}
-      className="group overflow-hidden rounded-2xl border border-border bg-card shadow-soft transition-all hover:shadow-lift"
+      className="card card-hover group flex flex-col overflow-hidden"
     >
       <div className="relative">
-        <VenuePhoto photo={p.photo} name={p.name} className="rounded-t-2xl" />
-        <div className="absolute left-3 top-3 flex flex-wrap gap-1.5">
+        <VenuePhoto photo={p.photo} name={p.name} />
+        <div className="absolute start-3 top-3 flex max-w-[75%] flex-wrap gap-1.5">
           {rec.badges.slice(0, 2).map((b) => (
-            <span
-              key={b}
-              className="rounded-full bg-background/90 px-2.5 py-1 text-[10px] font-semibold uppercase tracking-wider text-foreground shadow-soft backdrop-blur"
-            >
+            <span key={b} className="badge badge-overlay uppercase tracking-wider">
               {t(`recBadge.${b}`)}
             </span>
           ))}
@@ -207,14 +217,14 @@ function RecCard({
         <button
           onClick={onSave}
           aria-label={saved ? t("trip.remove_saved") : t("trip.save_place")}
-          className="absolute right-3 top-3 rounded-full bg-background/90 p-2 shadow-soft backdrop-blur transition hover:scale-105"
+          className="absolute end-3 top-3 flex h-10 w-10 items-center justify-center rounded-full bg-[rgba(255,253,249,0.92)] shadow-soft backdrop-blur transition-transform active:scale-90"
         >
-          <Heart className={cn("h-4 w-4", saved ? "fill-copper text-copper" : "text-muted-foreground")} />
+          <Heart className={cn("h-[1.1rem] w-[1.1rem]", saved ? "fill-[#c0602e] text-copper" : "text-muted-foreground")} />
         </button>
       </div>
 
-      <div className="p-5">
-        <div className="flex items-center gap-2 text-xs font-medium uppercase tracking-widest text-copper">
+      <div className="flex flex-1 flex-col p-5">
+        <div className="eyebrow flex items-center gap-2">
           {kind === "hotel" ? <Bed className="h-4 w-4" /> : <UtensilsCrossed className="h-4 w-4" />}
           <span className="truncate">
             {kind === "hotel"
@@ -222,20 +232,20 @@ function RecCard({
               : p.cuisines?.slice(0, 2).join(" · ") || t("trip.venue_types.restaurant")}
           </span>
         </div>
-        <h4 className="mt-1 font-display text-xl leading-tight">{p.name}</h4>
+        <h3 className="title-md mt-1.5">{p.name}</h3>
 
-        <div className="mt-2 flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-muted-foreground">
+        <div className="mt-2.5 flex flex-wrap items-center gap-x-3 gap-y-1.5 text-xs text-muted-foreground">
           {(p.rating != null || p.stars != null) && (
-            <span className="inline-flex items-center gap-1 text-foreground">
-              <Star className="h-3.5 w-3.5 fill-copper text-copper" />
+            <span className="inline-flex items-center gap-1 font-bold text-foreground">
+              <Star className="h-3.5 w-3.5 fill-[#c39443] text-[#c39443]" />
               {(p.rating ?? p.stars)!.toFixed(1)}
               {p.stars != null && p.rating == null && <span className="text-muted-foreground">{t("trip.stars")}</span>}
             </span>
           )}
           {price && <span className="font-medium text-foreground">{price}</span>}
           {(p.area || p.address) && (
-            <span className="inline-flex items-center gap-1 truncate">
-              <MapPin className="h-3.5 w-3.5" />
+            <span className="inline-flex min-w-0 items-center gap-1">
+              <MapPin className="h-3.5 w-3.5 shrink-0" />
               {p.area || p.address}
             </span>
           )}
@@ -243,18 +253,23 @@ function RecCard({
         </div>
 
         {rec.reasons.length > 0 && (
-          <div className="mt-3 rounded-xl bg-secondary px-3 py-2">
-            <p className="text-[10px] font-semibold uppercase tracking-widest text-copper">{t("trip.why_recommend")}</p>
-            <ul className="mt-1 space-y-0.5 text-xs text-secondary-foreground">
+          <div className="ai-surface mt-4 rounded-2xl p-3.5 shadow-none">
+            <p className="flex items-center gap-1.5 text-[11px] font-bold uppercase tracking-wider text-ai">
+              <Sparkles className="h-3.5 w-3.5" /> {t("trip.why_recommend")}
+            </p>
+            <ul className="mt-2 space-y-1.5 text-[13px] leading-snug">
               {rec.reasons.map((r) => (
-                <li key={r}>· {r}</li>
+                <li key={r} className="flex gap-2">
+                  <span className="mt-[7px] h-1 w-1 shrink-0 rounded-full bg-ai" />
+                  <span>{r}</span>
+                </li>
               ))}
             </ul>
           </div>
         )}
 
         {expanded && (
-          <div className="mt-3 space-y-1.5 text-xs text-muted-foreground">
+          <div className="panel mt-3 space-y-2 p-3.5 text-xs text-muted-foreground">
             {p.address && <p className="flex items-center gap-1.5"><MapPin className="h-3.5 w-3.5" />{p.address}</p>}
             {p.openingHours && <p className="flex items-center gap-1.5"><Clock className="h-3.5 w-3.5" />{p.openingHours}</p>}
             {p.phone && <p className="flex items-center gap-1.5"><Phone className="h-3.5 w-3.5" />{p.phone}</p>}
@@ -266,16 +281,10 @@ function RecCard({
             {p.amenities.length > 0 && (
               <div className="flex flex-wrap gap-1.5 pt-1">
                 {p.amenities.map((a) => (
-                  <span key={a} className="rounded-full bg-secondary px-2 py-0.5 text-[10px] text-secondary-foreground">{a}</span>
+                  <span key={a} className="badge bg-card">{a}</span>
                 ))}
               </div>
             )}
-            <button
-              onClick={() => openVenueOnGoogleMaps(maps)}
-              className="inline-flex items-center gap-1.5 rounded-full bg-gradient-emerald px-3 py-1.5 text-xs font-semibold text-foreground shadow-soft"
-            >
-              <MapIcon className="h-3.5 w-3.5" />{t("trip.view_on_maps")}
-            </button>
             {p.source.url && (
               <a href={p.source.url} target="_blank" rel="noopener noreferrer" className="inline-flex items-center gap-1 pt-1 hover:text-foreground">
                 <ExternalLink className="h-3 w-3" />{t("trip.source")}: {p.source.attribution ?? p.source.provider}
@@ -284,25 +293,20 @@ function RecCard({
           </div>
         )}
 
-        <div className="mt-4 flex flex-wrap gap-2">
-          <button
-            onClick={onToggleDetails}
-            className="rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-secondary transition"
-          >
-            {expanded ? t("trip.hide_details") : t("trip.view_details")}
-          </button>
-          <button
-            onClick={() => openDirections(p.lat, p.lng)}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-secondary transition"
-          >
-            <Navigation className="h-3.5 w-3.5" />{t("trip.directions")}
-          </button>
+        <div className="mt-auto flex flex-wrap gap-2 pt-5">
           <button
             onClick={() => openVenueOnGoogleMaps(maps)}
             title={mapsExact ? t("trip.maps_exact_tooltip") : t("trip.maps_closest_tooltip")}
-            className="inline-flex items-center gap-1.5 rounded-full border border-border px-3 py-1.5 text-xs font-medium hover:bg-secondary transition"
+            className="btn btn-primary btn-sm"
           >
-            <MapIcon className="h-3.5 w-3.5" />{t("trip.view_on_maps")}
+            <MapIcon />{t("trip.view_on_maps")}
+          </button>
+          <button onClick={() => openDirections(p.lat, p.lng)} className="btn btn-secondary btn-sm">
+            <Navigation />{t("trip.directions")}
+          </button>
+          <button onClick={onToggleDetails} className="btn btn-ghost btn-sm">
+            {expanded ? t("trip.hide_details") : t("trip.view_details")}
+            <ChevronDown className={cn("transition-transform", expanded && "rotate-180")} />
           </button>
         </div>
       </div>

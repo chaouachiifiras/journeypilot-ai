@@ -11,7 +11,7 @@
     "lint": "eslint .",
     "format": "prettier --write .",
     "build:capacitor-index": "node scripts/build-capacitor-index.mjs",
-    "build:mobile": "vite build --config vite.config.mobile.ts && node scripts/build-capacitor-index.mjs && npx cap sync android",
+    "build:mobile": "vite build --config vite.config.mobile.ts && node scripts/build-capacitor-index.mjs && cap sync android",
     "sync:android": "npx cap sync android"
   },
   "dependencies": {

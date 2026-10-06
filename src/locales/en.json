@@ -255,5 +255,123 @@
     "subscribe": "Subscribe",
     "get_android_app": "Get the Android app"
   },
-  "common": { "cancel": "Cancel", "delete": "Delete", "save": "Save", "loading": "Loading…", "close": "Close" }
+  "common": { "cancel": "Cancel", "delete": "Delete", "save": "Save", "loading": "Loading…", "close": "Close" },
+  "pose": {
+    "title": "Pose tip",
+    "legend": {
+      "camera": "Camera position",
+      "gaze": "Gaze direction"
+    },
+    "name": {
+      "profile_view": "Side profile facing the view",
+      "back_horizon": "From behind, looking at the horizon",
+      "low_angle": "Low angle on the architecture"
+    },
+    "alt": {
+      "profile_view": "Illustration: a person standing in profile at a railing, looking out at the landscape. The camera is at their side, at chest height.",
+      "back_horizon": "Illustration: a person seen from behind, looking toward the horizon over the sea. The camera is behind them, slightly to one side.",
+      "low_angle": "Illustration: a person standing in front of a monument and looking up at it. The camera is close to the ground, tilted upward."
+    },
+    "tips": {
+      "viewpoint": "Morning or late-afternoon light is usually softer than at midday. Stand in profile near the edge and turn your face toward the view, while the photographer shoots from your side at chest height so the panorama fills the background.",
+      "waterfront": "A low sun around sunrise or sunset gives warm light and long reflections on the water. Turn your back to the camera and look toward the horizon, keeping the horizon level and away from the middle of the frame.",
+      "monument": "Coming early usually means fewer people in front of the building. The photographer crouches close to the ground and tilts the camera up so the monument rises above you; look up toward the top rather than at the lens.",
+      "default": "Soft morning or late-afternoon light is usually the most flattering. Stand slightly in profile, look into the scene rather than at the camera, and leave some space in front of your gaze."
+    }
+  },
+  "ui": {
+    "ai_badge": "AI-crafted",
+    "home": {
+      "cta_how": "See how it works",
+      "preview_title": "Your day, composed",
+      "facts": {
+        "real_places": {
+          "title": "Real places",
+          "desc": "Venues checked on Google Maps"
+        },
+        "budget": {
+          "title": "Budget, day by day",
+          "desc": "Clear estimates for every stop"
+        },
+        "photos": {
+          "title": "Real photos",
+          "desc": "Never stock images of other places"
+        },
+        "languages": {
+          "title": "6 languages",
+          "desc": "Plan in the language you think in"
+        }
+      },
+      "how_eyebrow": "How it works",
+      "how_title": "From a wish to a complete itinerary",
+      "steps": {
+        "step1": {
+          "title": "Choose your destination",
+          "desc": "Country, city, number of days and budget: that's all we need to start."
+        },
+        "step2": {
+          "title": "Share your style",
+          "desc": "Interests, pace, companions, food: every recommendation adapts to you."
+        },
+        "step3": {
+          "title": "Explore your trip",
+          "desc": "A day-by-day plan with real places, a map and a clear budget, ready to go."
+        }
+      },
+      "features_eyebrow": "Everything in one place",
+      "features_title": "A complete journey, not just a list",
+      "inspire_eyebrow": "Inspiration",
+      "inspire_title": "Where will you go next?",
+      "scenes": {
+        "culture": {
+          "tag": "Culture",
+          "title": "Temples in blossom"
+        },
+        "stays": {
+          "tag": "Stays",
+          "title": "Lantern-lit courtyards"
+        },
+        "nature": {
+          "tag": "Nature",
+          "title": "Mountain roads at dawn"
+        }
+      },
+      "cta_title": "Your next journey starts here",
+      "cta_sub": "Answer a few questions and receive a complete, personal plan in moments.",
+      "footer_tagline": "Designed for modern travelers",
+      "privacy": "Privacy"
+    },
+    "planner": {
+      "eyebrow": "New journey",
+      "section_destination": "Where to?",
+      "section_budget": "Duration & budget",
+      "summary_pick": "Pick a destination"
+    },
+    "trip": {
+      "stops_one": "{{count}} stop",
+      "stops_other": "{{count}} stops",
+      "day_tip": "Tip of the day",
+      "budget_used": "{{pct}}% of your budget",
+      "breakdown": "Where the money goes",
+      "difficulty": "Effort"
+    },
+    "difficulty": {
+      "easy": "Easy",
+      "moderate": "Moderate",
+      "challenging": "Challenging"
+    },
+    "spot_category": {
+      "iconic": "Iconic",
+      "viewpoint": "Viewpoint",
+      "scenic": "Scenic",
+      "local": "Local"
+    },
+    "media": {
+      "unavailable": "Photo unavailable",
+      "illustrative": "Illustrative image"
+    },
+    "profile": {
+      "open": "Open trip"
+    }
+  }
 }

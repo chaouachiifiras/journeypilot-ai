@@ -1,7 +1,7 @@
 import { useState } from "react";
 import { useTranslation } from "react-i18next";
 import { Link } from "@tanstack/react-router";
-import { User } from "lucide-react";
+import { CreditCard, LogOut, Luggage, User } from "lucide-react";
 import { Browser } from "@capacitor/browser";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import {
@@ -14,9 +14,10 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useAnonSession } from "@/lib/anon-session";
 import { signOut } from "@/lib/auth";
+import { cn } from "@/lib/utils";
 import { AuthDialog } from "./AuthDialog";
 
-export function AccountMenu() {
+export function AccountMenu({ onImage = false }: { onImage?: boolean }) {
   const { t } = useTranslation();
   const { isAnonymous, email } = useAnonSession();
   const [dialogOpen, setDialogOpen] = useState(false);
@@ -26,10 +27,11 @@ export function AccountMenu() {
       <>
         <button
           onClick={() => setDialogOpen(true)}
-          className="inline-flex items-center gap-1.5 rounded-full border border-border bg-card px-3 py-1.5 text-xs font-medium hover:bg-secondary transition-colors"
+          aria-label={t("auth.log_in")}
+          className={cn("btn btn-sm h-10 max-sm:w-10 max-sm:px-0", onImage ? "btn-light" : "btn-primary")}
         >
-          <User className="h-3.5 w-3.5" />
-          {t("auth.log_in")}
+          <User />
+          <span className="max-sm:hidden">{t("auth.log_in")}</span>
         </button>
         <AuthDialog open={dialogOpen} onOpenChange={setDialogOpen} />
       </>
@@ -40,21 +42,29 @@ export function AccountMenu() {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="outline-none">
-        <Avatar className="h-8 w-8 border border-border">
-          <AvatarFallback className="text-xs font-medium">{initial}</AvatarFallback>
+      <DropdownMenuTrigger className="rounded-full outline-none focus-visible:ring-2 focus-visible:ring-ring" aria-label={email ?? t("nav.profile")}>
+        <Avatar className={cn("h-10 w-10", onImage ? "ring-2 ring-[rgba(255,255,255,0.7)]" : "ring-1 ring-border")}>
+          <AvatarFallback className="bg-gradient-brand text-sm font-bold">{initial}</AvatarFallback>
         </Avatar>
       </DropdownMenuTrigger>
-      <DropdownMenuContent align="end">
-        <DropdownMenuLabel className="truncate font-normal text-muted-foreground">{email}</DropdownMenuLabel>
+      <DropdownMenuContent align="end" className="w-60">
+        <DropdownMenuLabel className="truncate px-3 py-2 text-xs font-medium text-muted-foreground">{email}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         <DropdownMenuItem asChild>
-          <Link to="/profile">{t("auth.my_trips")}</Link>
+          <Link to="/profile">
+            <Luggage />
+            {t("auth.my_trips")}
+          </Link>
         </DropdownMenuItem>
         <DropdownMenuItem onClick={() => Browser.open({ url: "https://play.google.com/store/account/subscriptions" })}>
+          <CreditCard />
           {t("auth.manage_subscription")}
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => signOut()}>{t("auth.log_out")}</DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem onClick={() => signOut()} className="text-destructive focus:text-destructive">
+          <LogOut />
+          {t("auth.log_out")}
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );
