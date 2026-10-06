@@ -28,10 +28,10 @@ export function AccountMenu({ onImage = false }: { onImage?: boolean }) {
         <button
           onClick={() => setDialogOpen(true)}
           aria-label={t("auth.log_in")}
-          className={cn("btn btn-sm h-10 max-sm:w-10 max-sm:px-0", onImage ? "btn-light" : "btn-primary")}
+          className={cn("btn btn-sm h-10 w-10 px-0 sm:w-auto sm:px-[0.95rem]", onImage ? "btn-light" : "btn-primary")}
         >
           <User />
-          <span className="max-sm:hidden">{t("auth.log_in")}</span>
+          <span className="hidden sm:inline">{t("auth.log_in")}</span>
         </button>
         <AuthDialog open={dialogOpen} onOpenChange={setDialogOpen} />
       </>

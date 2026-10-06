@@ -357,6 +357,9 @@
     backdrop-filter: blur(16px);
   }
   .scrim { background: var(--scrim); }
+  .glow-teal { background: radial-gradient(closest-side, rgba(52, 160, 136, 0.42), rgba(52, 160, 136, 0)); }
+  .glow-gold { background: radial-gradient(closest-side, rgba(207, 157, 79, 0.36), rgba(207, 157, 79, 0)); }
+  .glow-copper { background: radial-gradient(closest-side, rgba(192, 96, 46, 0.18), rgba(192, 96, 46, 0)); }
   .scrim-card { background: var(--scrim-card); }
 
   /* AI signature: a fine teal→gold gradient border and a soft glow. */

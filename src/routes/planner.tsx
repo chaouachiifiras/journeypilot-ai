@@ -465,7 +465,7 @@ function Planner() {
             <span className={cn("font-semibold", !citySelected && "text-muted-foreground")}>
               {citySelected ? city : t("ui.planner.summary_pick")}
             </span>
-            <span className="text-muted-foreground">· {t("trip.days_count", { count: days })} · {budget} {currency}</span>
+            <span className="w-full text-muted-foreground">{t("trip.days_count", { count: days })} · {budget} {currency}</span>
           </div>
           <button type="submit" disabled={!canSubmit} className="btn btn-primary btn-lg btn-block group mt-5">
             {submitting ? (

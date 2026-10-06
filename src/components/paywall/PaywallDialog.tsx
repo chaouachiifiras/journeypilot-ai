@@ -61,7 +61,7 @@ export function PaywallDialog({
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="overflow-hidden sm:max-w-sm">
-        <div className="pointer-events-none absolute -top-20 start-1/2 h-48 w-48 -translate-x-1/2 rounded-full bg-[rgba(207,157,79,0.3)] blur-[60px]" />
+        <div className="glow-gold pointer-events-none absolute -top-28 start-1/2 h-64 w-64 -translate-x-1/2" />
         <DialogHeader className="relative">
           <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-copper shadow-lift">
             <Crown className="h-7 w-7" />

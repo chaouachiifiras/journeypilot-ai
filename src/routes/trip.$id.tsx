@@ -124,12 +124,24 @@ function TripView() {
   // map, since Leaflet stops propagation on its own pan/drag touch handling.
   const touchStartRef = useRef<{ x: number; y: number } | null>(null);
   const tabsRef = useRef<HTMLDivElement>(null);
+  const contentRef = useRef<HTMLDivElement>(null);
   const isRtl = i18n.dir() === "rtl";
 
   const selectTab = (key: (typeof TABS)[number]["key"]) => {
     setTab(key);
-    const el = tabsRef.current?.querySelector<HTMLElement>(`[data-tab="${key}"]`);
-    el?.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "center" });
+    const strip = tabsRef.current;
+    const pill = strip?.querySelector<HTMLElement>(`[data-tab="${key}"]`);
+    if (strip && pill) {
+      const target = pill.offsetLeft - (strip.clientWidth - pill.offsetWidth) / 2;
+      strip.scrollTo({ left: target, behavior: "smooth" });
+    }
+    // If the reader is already below the tab bar, start the new tab from its top.
+    const content = contentRef.current;
+    if (content) {
+      const stickyOffset = 64 + 66; // app header + tab bar
+      const top = content.getBoundingClientRect().top + window.scrollY - stickyOffset;
+      if (window.scrollY > top) window.scrollTo({ top, behavior: "smooth" });
+    }
   };
 
   const goToRelativeTab = (delta: 1 | -1) => {
@@ -293,7 +305,7 @@ function TripView() {
       </section>
 
       {/* ---------------- Sticky section tabs ---------------- */}
-      <div className="sticky top-16 z-30 border-b border-border bg-[rgba(246,242,234,0.94)] backdrop-blur-xl">
+      <div className="sticky top-16 z-30 border-b border-border bg-background">
         <div ref={tabsRef} data-swipe-ignore className="container-page max-w-5xl overflow-x-auto scrollbar-none">
           <div className="inline-flex min-w-max gap-2 py-3">
             {TABS.map((tb) => {
@@ -326,7 +338,7 @@ function TripView() {
         </div>
       </div>
 
-      <div className="container-page max-w-5xl py-7 md:py-10">
+      <div ref={contentRef} className="container-page max-w-5xl py-7 md:py-10">
         <motion.div
           key={tab}
           initial={{ opacity: 0, y: 10 }}
@@ -704,7 +716,7 @@ function GemCard({ g, city, index }: { g: HiddenGem; city: string; index: number
       transition={{ duration: 0.5, delay: Math.min(index, 4) * 0.05, ease: EASE }}
       className="card card-hover relative flex flex-col overflow-hidden p-6"
     >
-      <div className="pointer-events-none absolute -end-10 -top-10 h-36 w-36 rounded-full bg-copper-soft blur-2xl" />
+      <div className="glow-copper pointer-events-none absolute -end-16 -top-16 h-56 w-56" />
       <div className="relative flex items-start justify-between gap-3">
         <span className="badge badge-copper uppercase tracking-wider">
           <Gem /> {t("trip.hidden_gem_badge")}
@@ -1132,7 +1144,7 @@ function BudgetBreakdown({ b, full, tripBudget, tripDays }: { b: Plan["budget_br
     <div className="space-y-5">
       {/* Total vs. trip budget */}
       <div className="surface-ink relative overflow-hidden rounded-[1.75rem] p-6 md:p-8">
-        <div className="pointer-events-none absolute -end-16 -top-16 h-56 w-56 rounded-full bg-[rgba(52,160,136,0.3)] blur-[70px]" />
+        <div className="glow-teal pointer-events-none absolute -end-28 -top-28 h-80 w-80" />
         <div className="relative flex flex-wrap items-end justify-between gap-6">
           <div>
             <div className="text-xs font-bold uppercase tracking-widest text-[rgba(246,242,234,0.6)]">{t("trip.estimated_total")}</div>

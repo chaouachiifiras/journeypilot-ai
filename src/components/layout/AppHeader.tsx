@@ -78,7 +78,7 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
           overlay ? "fixed inset-x-0 top-0" : "sticky top-0",
           onImage
             ? "border-b border-transparent bg-transparent"
-            : "border-b border-border bg-[rgba(246,242,234,0.97)] shadow-xs backdrop-blur-xl",
+            : "border-b border-border bg-background shadow-xs",
         )}
       >
         <div className="container-page flex h-16 items-center justify-between gap-3">
@@ -178,7 +178,7 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
       {/* Mobile tab bar — the primary navigation on phones. */}
       <nav
         aria-label={t("brand")}
-        className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-[rgba(255,253,249,0.94)] backdrop-blur-xl md:hidden"
+        className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
         <div className="mx-auto grid h-[var(--tabbar-h)] max-w-md grid-cols-3 items-center px-4">

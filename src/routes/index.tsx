@@ -63,7 +63,7 @@ function Welcome() {
         <div className="scrim absolute inset-0 -z-10" />
         <div className="absolute inset-y-0 start-0 -z-10 hidden w-2/3 bg-gradient-to-r from-[rgba(8,20,18,0.7)] to-transparent md:block rtl:bg-gradient-to-l" />
 
-        <div className="container-page grid w-full items-center gap-10 pb-[calc(var(--tabbar-h)+4.5rem)] pt-24 md:grid-cols-[1.15fr_0.85fr] md:pb-24 md:pt-28">
+        <div className="container-page grid w-full items-center gap-10 pb-[calc(var(--tabbar-h)+2.5rem)] pt-20 md:grid-cols-[1.15fr_0.85fr] md:pb-24 md:pt-28">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
@@ -75,7 +75,7 @@ function Welcome() {
               {t("welcome.eyebrow")}
             </span>
             <h1 className="display-xl mt-6 text-balance text-white">{t("welcome.title")}</h1>
-            <p className="mt-5 max-w-xl text-[1.05rem] leading-relaxed text-[rgba(255,255,255,0.82)] md:text-lg">
+            <p className="mt-4 max-w-xl text-base leading-relaxed text-[rgba(255,255,255,0.82)] md:text-lg">
               {t("welcome.subtitle")}
             </p>
             <div className="mt-9 flex flex-col gap-3 sm:flex-row">
@@ -84,7 +84,7 @@ function Welcome() {
                 {t("welcome.cta_plan")}
                 <ArrowRight className="transition-transform group-hover:translate-x-1 rtl:rotate-180 rtl:group-hover:-translate-x-1" />
               </Link>
-              <a href="#how" className="btn btn-glass btn-lg">
+              <a href="#how" className="btn btn-glass btn-lg hidden sm:inline-flex">
                 {t("ui.home.cta_how")}
                 <ArrowDown />
               </a>
@@ -252,8 +252,8 @@ function Welcome() {
           {...reveal}
           className="surface-ink relative overflow-hidden rounded-[2rem] px-6 py-14 text-center md:px-16 md:py-20"
         >
-          <div className="pointer-events-none absolute -top-24 start-1/2 h-72 w-72 -translate-x-1/2 rounded-full bg-[rgba(52,160,136,0.35)] blur-[90px]" />
-          <div className="pointer-events-none absolute -bottom-24 end-0 h-64 w-64 rounded-full bg-[rgba(207,157,79,0.28)] blur-[90px]" />
+          <div className="glow-teal pointer-events-none absolute -top-40 start-1/2 h-[28rem] w-[28rem] -translate-x-1/2" />
+          <div className="glow-gold pointer-events-none absolute -bottom-40 -end-20 h-[26rem] w-[26rem]" />
           <span className="relative inline-flex items-center gap-1.5 rounded-full border border-[rgba(255,255,255,0.2)] px-3 py-1 text-xs font-semibold text-[#e9c27f]">
             <Sparkles className="h-3.5 w-3.5" /> {t("ui.ai_badge")}
           </span>
