@@ -250,7 +250,7 @@
   },
   "paywall": {
     "title": "Auf Premium upgraden",
-    "subtitle": "Sie haben Ihre kostenlose Reise bereits genutzt. Abonnieren Sie für {{price}}, um weiter zu planen.",
+    "subtitle": "Sie haben Ihre kostenlose Reise bereits genutzt. Abonnieren Sie für {{price}} pro Monat, um weiter zu planen.",
     "subtitle_web": "Sie haben Ihre kostenlose Reise bereits genutzt. Abonnieren Sie über die JourneyPilot Android-App, um weiter zu planen.",
     "subscribe": "Abonnieren",
     "get_android_app": "Android-App herunterladen"
