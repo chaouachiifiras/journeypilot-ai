@@ -305,7 +305,7 @@ function TripView() {
       </section>
 
       {/* ---------------- Sticky section tabs ---------------- */}
-      <div className="sticky top-16 z-30 border-b border-border bg-background">
+      <div className="sticky top-[calc(4rem+var(--inset-top))] z-30 border-b border-border bg-background">
         <div ref={tabsRef} data-swipe-ignore className="container-page max-w-5xl overflow-x-auto scrollbar-none">
           <div className="inline-flex min-w-max gap-2 py-3">
             {TABS.map((tb) => {

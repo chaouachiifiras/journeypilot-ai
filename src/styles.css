@@ -138,6 +138,11 @@
 
   --ease-out: cubic-bezier(0.22, 1, 0.36, 1);
   --tabbar-h: 68px;
+
+  /* System bar insets for Android 15+ edge-to-edge. Capacitor's SystemBars plugin sets
+     --safe-area-inset-*; env() covers browsers/WebViews that report insets natively. */
+  --inset-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --inset-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
 }
 
 .dark {
@@ -470,7 +475,7 @@
   /* ---------- Layout helpers ---------- */
   .container-page { width: 100%; max-width: 72rem; margin-inline: auto; padding-inline: 1.25rem; }
   @media (min-width: 768px) { .container-page { padding-inline: 2rem; } }
-  .pb-tabbar { padding-bottom: calc(var(--tabbar-h) + env(safe-area-inset-bottom, 0px) + 1.5rem); }
+  .pb-tabbar { padding-bottom: calc(var(--tabbar-h) + var(--inset-bottom) + 1.5rem); }
   @media (min-width: 768px) { .pb-tabbar { padding-bottom: 0; } }
 }
 
