@@ -10,6 +10,58 @@
 # and the Swift packages on the build machine.
 
 workflows:
+  # Unsigned IPA for testing on a personal iPhone without a paid Apple Developer
+  # account: sign + install it from Windows with Sideloadly and a free Apple ID
+  # (the app then expires after 7 days; in-app purchases do not work).
+  ios-unsigned:
+    name: iOS → IPA non signée (test Sideloadly)
+    instance_type: mac_mini_m2
+    max_build_duration: 45
+
+    environment:
+      groups:
+        - journeypilot_ios
+      vars:
+        XCODE_PROJECT: ios/App/App.xcodeproj
+        XCODE_SCHEME: App
+      node: 22
+      xcode: latest
+
+    scripts:
+      - name: Install Bun
+        script: |
+          curl -fsSL https://bun.sh/install | bash
+          echo "PATH=$HOME/.bun/bin:$PATH" >> "$CM_ENV"
+
+      - name: Install dependencies
+        script: bun install --frozen-lockfile
+
+      - name: Build the mobile web bundle
+        script: bun run build:mobile
+
+      - name: Sync the iOS platform
+        script: ./node_modules/.bin/cap sync ios
+
+      - name: Build the unsigned app
+        script: |
+          xcodebuild archive \
+            -project "$XCODE_PROJECT" \
+            -scheme "$XCODE_SCHEME" \
+            -configuration Release \
+            -sdk iphoneos \
+            -destination "generic/platform=iOS" \
+            -archivePath build/App.xcarchive \
+            CODE_SIGNING_ALLOWED=NO CODE_SIGNING_REQUIRED=NO CODE_SIGN_IDENTITY=""
+
+      - name: Package the IPA
+        script: |
+          mkdir -p build/ipa/Payload
+          cp -R build/App.xcarchive/Products/Applications/App.app build/ipa/Payload/
+          cd build/ipa && zip -qry JourneyPilot-AI-unsigned.ipa Payload
+
+    artifacts:
+      - build/ipa/*.ipa
+
   ios-testflight:
     name: iOS → TestFlight
     instance_type: mac_mini_m2
