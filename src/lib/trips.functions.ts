@@ -7,9 +7,9 @@ import { hasActivePremiumEntitlement } from "./revenuecat.server";
 
 /** Every account gets exactly 1 free trip, ever; after that an active subscription is required. */
 const FREE_TRIP_LIMIT = 1;
-// Temporarily off while RevenueCat isn't configured yet (no REVENUECAT_SECRET_API_KEY),
-// so other features can be tested without hitting the paywall. Flip back to true once set up.
-const PAYWALL_ENABLED = false;
+// Requires REVENUECAT_SECRET_API_KEY in Lovable secrets — without it, entitlement checks throw
+// and every user past their free trip is blocked. Set the secret before deploying this.
+const PAYWALL_ENABLED = true;
 
 const TripInput = z.object({
   country: z.string().min(1),

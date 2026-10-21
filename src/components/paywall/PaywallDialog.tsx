@@ -47,7 +47,8 @@ export function PaywallDialog({
       const pkg = current?.availablePackages[0];
       if (!pkg) throw new Error("No subscription package available.");
       const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
-      if (customerInfo.entitlements.active["premium"]) {
+      // Must match the entitlement identifier in RevenueCat (and PREMIUM_ENTITLEMENT_ID server-side).
+      if (customerInfo.entitlements.active["journeypilot_ai_premium"]) {
         onSubscribed();
       }
     } catch (err: unknown) {
@@ -69,7 +70,7 @@ export function PaywallDialog({
           <DialogTitle className="pt-2 text-center">{t("paywall.title")}</DialogTitle>
           <DialogDescription className="text-center">
             {isNative
-              ? t("paywall.subtitle", { price: priceLabel ?? "5,00 €/month" })
+              ? t("paywall.subtitle", { price: priceLabel ?? "4,99 €" })
               : t("paywall.subtitle_web")}
           </DialogDescription>
         </DialogHeader>

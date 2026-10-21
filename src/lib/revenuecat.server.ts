@@ -1,5 +1,5 @@
 const REVENUECAT_API_BASE = "https://api.revenuecat.com/v1";
-const PREMIUM_ENTITLEMENT_ID = "premium";
+const PREMIUM_ENTITLEMENT_ID = "journeypilot_ai_premium";
 
 /** Live check against RevenueCat — no local caching, so cancellations/expirations take effect immediately. */
 export async function hasActivePremiumEntitlement(appUserId: string): Promise<boolean> {

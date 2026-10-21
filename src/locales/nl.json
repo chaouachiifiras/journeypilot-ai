@@ -250,7 +250,7 @@
   },
   "paywall": {
     "title": "Upgraden naar Premium",
-    "subtitle": "U heeft uw gratis reis gebruikt. Abonneer u voor {{price}} om te blijven plannen.",
+    "subtitle": "U heeft uw gratis reis gebruikt. Abonneer u voor {{price}} per maand om te blijven plannen.",
     "subtitle_web": "U heeft uw gratis reis gebruikt. Abonneer u via de JourneyPilot Android-app om te blijven plannen.",
     "subscribe": "Abonneren",
     "get_android_app": "Download de Android-app"

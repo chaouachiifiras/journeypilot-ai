@@ -250,7 +250,7 @@
   },
   "paywall": {
     "title": "Passer à Premium",
-    "subtitle": "Vous avez utilisé votre voyage gratuit. Abonnez-vous pour {{price}} pour continuer à planifier.",
+    "subtitle": "Vous avez utilisé votre voyage gratuit. Abonnez-vous pour {{price}} par mois pour continuer à planifier.",
     "subtitle_web": "Vous avez utilisé votre voyage gratuit. Abonnez-vous depuis l'application Android JourneyPilot pour continuer à planifier.",
     "subscribe": "S'abonner",
     "get_android_app": "Télécharger l'application Android"

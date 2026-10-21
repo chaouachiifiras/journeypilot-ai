@@ -250,7 +250,7 @@
   },
   "paywall": {
     "title": "Upgrade to Premium",
-    "subtitle": "You've used your free trip. Subscribe for {{price}} to keep planning.",
+    "subtitle": "You've used your free trip. Subscribe for {{price}}/month to keep planning.",
     "subtitle_web": "You've used your free trip. Subscribe from the JourneyPilot Android app to keep planning.",
     "subscribe": "Subscribe",
     "get_android_app": "Get the Android app"

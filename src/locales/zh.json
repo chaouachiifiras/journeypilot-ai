@@ -249,7 +249,7 @@
   },
   "paywall": {
     "title": "升级到高级版",
-    "subtitle": "您的免费行程已用完。订阅 {{price}} 即可继续规划。",
+    "subtitle": "您的免费行程已用完。订阅（每月 {{price}}）即可继续规划。",
     "subtitle_web": "您的免费行程已用完。请从 JourneyPilot 安卓应用订阅以继续规划。",
     "subscribe": "订阅",
     "get_android_app": "获取安卓应用"

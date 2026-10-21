@@ -43,7 +43,7 @@ L'app iOS est générée par Capacitor (`ios/`, Swift Package Manager, pas de Co
 ## 3. Côté services
 
 - **Supabase → Authentication → URL configuration** : l'URL `https://personal-trip-creator.lovable.app/auth-callback` est déjà autorisée pour Android ; rien à ajouter pour iOS (même rebond vers `com.journeypilot.ai://auth-callback`).
-- **RevenueCat** : ajouter une app **App Store** (bundle `com.journeypilot.ai`, clé In-App Purchase / clé API App Store Connect), créer le produit d'abonnement dans App Store Connect et l'attacher à l'entitlement `premium` et à l'offre courante.
+- **RevenueCat** : ajouter une app **App Store** (bundle `com.journeypilot.ai`, clé In-App Purchase / clé API App Store Connect), créer le produit d'abonnement dans App Store Connect (mensuel, même prix que sur Android : 4,99 € TTC) et l'attacher à l'entitlement `journeypilot_ai_premium` et au package Monthly de l'offre `default`.
 
 ## 4. Icône et écran de démarrage
 
