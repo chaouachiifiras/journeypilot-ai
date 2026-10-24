@@ -238,6 +238,7 @@
     "password": "Wachtwoord",
     "confirm_password": "Wachtwoord bevestigen",
     "continue_with_google": "Doorgaan met Google",
+    "continue_with_apple": "Doorgaan met Apple",
     "or": "of",
     "check_email_title": "Controleer uw e-mail",
     "check_email_body": "We hebben u een bevestigingslink gestuurd. Open deze om uw account af te ronden.",
@@ -253,7 +254,12 @@
     "subtitle": "U heeft uw gratis reis gebruikt. Abonneer u voor {{price}} per maand om te blijven plannen.",
     "subtitle_web": "U heeft uw gratis reis gebruikt. Abonneer u via de JourneyPilot Android-app om te blijven plannen.",
     "subscribe": "Abonneren",
-    "get_android_app": "Download de Android-app"
+    "get_android_app": "Download de Android-app",
+    "restore": "Aankopen herstellen",
+    "restore_none": "Geen actief abonnement gevonden voor dit account.",
+    "auto_renew": "Maandabonnement, wordt automatisch verlengd. Op elk moment opzegbaar in je accountinstellingen.",
+    "terms": "Gebruiksvoorwaarden",
+    "privacy": "Privacy"
   },
   "common": { "cancel": "Annuleren", "delete": "Verwijderen", "save": "Opslaan", "loading": "Laden…", "close": "Sluiten" },
   "ui": {

@@ -237,6 +237,7 @@
     "password": "密码",
     "confirm_password": "确认密码",
     "continue_with_google": "使用 Google 继续",
+    "continue_with_apple": "通过 Apple 继续",
     "or": "或",
     "check_email_title": "请查收邮件",
     "check_email_body": "我们已向您发送确认链接，请点击链接以完成账户创建。",
@@ -252,7 +253,12 @@
     "subtitle": "您的免费行程已用完。订阅（每月 {{price}}）即可继续规划。",
     "subtitle_web": "您的免费行程已用完。请从 JourneyPilot 安卓应用订阅以继续规划。",
     "subscribe": "订阅",
-    "get_android_app": "获取安卓应用"
+    "get_android_app": "获取安卓应用",
+    "restore": "恢复购买",
+    "restore_none": "此账户未找到有效订阅。",
+    "auto_renew": "按月订阅，自动续订。可随时在账户设置中取消。",
+    "terms": "使用条款",
+    "privacy": "隐私政策"
   },
   "common": { "cancel": "取消", "delete": "删除", "save": "保存", "loading": "加载中…", "close": "关闭" },
   "ui": {

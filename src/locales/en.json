@@ -238,6 +238,7 @@
     "password": "Password",
     "confirm_password": "Confirm password",
     "continue_with_google": "Continue with Google",
+    "continue_with_apple": "Continue with Apple",
     "or": "or",
     "check_email_title": "Check your email",
     "check_email_body": "We've sent you a confirmation link. Open it to finish creating your account.",
@@ -253,7 +254,12 @@
     "subtitle": "You've used your free trip. Subscribe for {{price}}/month to keep planning.",
     "subtitle_web": "You've used your free trip. Subscribe from the JourneyPilot Android app to keep planning.",
     "subscribe": "Subscribe",
-    "get_android_app": "Get the Android app"
+    "get_android_app": "Get the Android app",
+    "restore": "Restore purchases",
+    "restore_none": "No active subscription found for this account.",
+    "auto_renew": "Monthly subscription, renews automatically. Cancel anytime in your account settings.",
+    "terms": "Terms of Use",
+    "privacy": "Privacy Policy"
   },
   "common": { "cancel": "Cancel", "delete": "Delete", "save": "Save", "loading": "Loading…", "close": "Close" },
   "pose": {

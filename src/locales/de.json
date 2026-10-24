@@ -238,6 +238,7 @@
     "password": "Passwort",
     "confirm_password": "Passwort bestätigen",
     "continue_with_google": "Mit Google fortfahren",
+    "continue_with_apple": "Mit Apple fortfahren",
     "or": "oder",
     "check_email_title": "Überprüfen Sie Ihre E-Mails",
     "check_email_body": "Wir haben Ihnen einen Bestätigungslink gesendet. Öffnen Sie ihn, um Ihr Konto fertig einzurichten.",
@@ -253,7 +254,12 @@
     "subtitle": "Sie haben Ihre kostenlose Reise bereits genutzt. Abonnieren Sie für {{price}} pro Monat, um weiter zu planen.",
     "subtitle_web": "Sie haben Ihre kostenlose Reise bereits genutzt. Abonnieren Sie über die JourneyPilot Android-App, um weiter zu planen.",
     "subscribe": "Abonnieren",
-    "get_android_app": "Android-App herunterladen"
+    "get_android_app": "Android-App herunterladen",
+    "restore": "Käufe wiederherstellen",
+    "restore_none": "Für dieses Konto wurde kein aktives Abo gefunden.",
+    "auto_renew": "Monatsabo, verlängert sich automatisch. Jederzeit in den Kontoeinstellungen kündbar.",
+    "terms": "Nutzungsbedingungen",
+    "privacy": "Datenschutz"
   },
   "common": { "cancel": "Abbrechen", "delete": "Löschen", "save": "Speichern", "loading": "Wird geladen…", "close": "Schließen" },
   "ui": {

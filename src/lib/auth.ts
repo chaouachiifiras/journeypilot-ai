@@ -32,8 +32,24 @@ export async function signInWithPassword(email: string, password: string, rememb
   window.location.assign("/profile");
 }
 
+type OAuthProvider = "google" | "apple";
+const PROVIDER_LABEL: Record<OAuthProvider, string> = { google: "Google", apple: "Apple" };
+
 /** Starts the Google OAuth flow, upgrading the anonymous session in place when possible. */
-export async function signInWithGoogle() {
+export function signInWithGoogle() {
+  return signInWithOAuthProvider("google");
+}
+
+/**
+ * Starts the Sign in with Apple flow (same browser round trip as Google). Required on iOS
+ * by App Store guideline 4.8 because the app offers Google sign-in; needs the Apple
+ * provider enabled in Supabase (Services ID + key from the Apple Developer account).
+ */
+export function signInWithApple() {
+  return signInWithOAuthProvider("apple");
+}
+
+async function signInWithOAuthProvider(provider: OAuthProvider) {
   setAuthRemember(true);
   const native = Capacitor.isNativePlatform();
   const { data: sessionData } = await supabase.auth.getSession();
@@ -42,8 +58,8 @@ export async function signInWithGoogle() {
   const options = { redirectTo, skipBrowserRedirect: native };
 
   let result = anon
-    ? await supabase.auth.linkIdentity({ provider: "google", options })
-    : await supabase.auth.signInWithOAuth({ provider: "google", options });
+    ? await supabase.auth.linkIdentity({ provider, options })
+    : await supabase.auth.signInWithOAuth({ provider, options });
 
   // linkIdentity() upgrades the guest session in place, keeping its trips —
   // but it requires "Allow manual linking" enabled on the Supabase project,
@@ -57,8 +73,8 @@ export async function signInWithGoogle() {
       /manual linking/i.test(result.error?.message ?? ""));
 
   if (shouldFallBack) {
-    toast.warning("Signing you into your Google account — guest trips won't transfer.");
-    result = await supabase.auth.signInWithOAuth({ provider: "google", options });
+    toast.warning(`Signing you into your ${PROVIDER_LABEL[provider]} account — guest trips won't transfer.`);
+    result = await supabase.auth.signInWithOAuth({ provider, options });
   }
 
   if (result.error) throw result.error;
