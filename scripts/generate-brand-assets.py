@@ -19,7 +19,6 @@ from PIL import Image, ImageDraw
 ROOT = Path(__file__).resolve().parents[1]
 RES = ROOT / "android/app/src/main/res"
 
-GREEN_DARK = (10, 55, 47)
 GREEN = (15, 74, 62)
 GOLD = (195, 148, 67)
 COPPER = (192, 96, 46)
@@ -79,17 +78,35 @@ ON_DARK = {"route": GOLD, "star": CREAM, "dot": CREAM}
 ON_LIGHT = {"route": GOLD, "star": GREEN, "dot": CREAM}
 
 
-def render(size, shape="square", art_scale=1.0, background=GREEN_DARK, palette=ON_DARK, transparent=False):
+# Background: diagonal gradient, lighter green top-left to deep green bottom-right.
+GRADIENT = ((52, 160, 136), (15, 90, 74))
+
+
+def gradient(size, colors=None):
+    """Square image with a top-left -> bottom-right linear gradient."""
+    (r1, g1, b1), (r2, g2, b2) = colors or GRADIENT
+    small = Image.new("RGB", (256, 256))
+    px = small.load()
+    for y in range(256):
+        for x in range(256):
+            t = (x + y) / 510
+            px[x, y] = (round(r1 + (r2 - r1) * t), round(g1 + (g2 - g1) * t), round(b1 + (b2 - b1) * t))
+    return small.resize((size, size), Image.BICUBIC).convert("RGBA")
+
+
+def render(size, shape="square", art_scale=1.0, palette=ON_DARK, transparent=False):
     big = size * SS
     img = Image.new("RGBA", (big, big), (0, 0, 0, 0))
     if not transparent:
-        d = ImageDraw.Draw(img)
+        mask = Image.new("L", (big, big), 0)
+        d = ImageDraw.Draw(mask)
         if shape == "square":
-            d.rectangle((0, 0, big, big), fill=background)
+            d.rectangle((0, 0, big, big), fill=255)
         elif shape == "rounded":
-            d.rounded_rectangle((0, 0, big - 1, big - 1), radius=round(big * 30 / 130), fill=background)
+            d.rounded_rectangle((0, 0, big - 1, big - 1), radius=round(big * 30 / 130), fill=255)
         elif shape == "circle":
-            d.ellipse((0, 0, big - 1, big - 1), fill=background)
+            d.ellipse((0, 0, big - 1, big - 1), fill=255)
+        img.paste(gradient(big), (0, 0), mask)
     art = big * art_scale
     draw_artwork(img, ((big - art) / 2, (big - art) / 2, art), palette)
     return img.resize((size, size), Image.LANCZOS)
@@ -118,11 +135,25 @@ def main():
         folder = RES / f"mipmap-{density}"
         save(render(legacy, shape="rounded"), folder / "ic_launcher.png")
         save(render(legacy, shape="circle", art_scale=0.9), folder / "ic_launcher_round.png")
-        save(render(legacy * 108 // 48, transparent=True, art_scale=68 / 108), folder / "ic_launcher_foreground.png")
+        layer = legacy * 108 // 48
+        save(render(layer, transparent=True, art_scale=68 / 108), folder / "ic_launcher_foreground.png")
+        save(gradient(layer), folder / "ic_launcher_background.png", rgb=True)
+    # Adaptive icons use the gradient bitmap as background layer.
+    for name in ("ic_launcher.xml", "ic_launcher_round.xml"):
+        xml = RES / "mipmap-anydpi-v26" / name
+        xml.write_text(
+            '<?xml version="1.0" encoding="utf-8"?>\n'
+            '<adaptive-icon xmlns:android="http://schemas.android.com/apk/res/android">\n'
+            '    <background android:drawable="@mipmap/ic_launcher_background"/>\n'
+            '    <foreground android:drawable="@mipmap/ic_launcher_foreground"/>\n'
+            "</adaptive-icon>\n",
+            encoding="utf-8",
+        )
+        print("wrote", xml.relative_to(ROOT))
     bg_xml = RES / "values/ic_launcher_background.xml"
     bg_xml.write_text(
         '<?xml version="1.0" encoding="utf-8"?>\n<resources>\n'
-        '    <color name="ic_launcher_background">#0A372F</color>\n</resources>\n',
+        '    <color name="ic_launcher_background">#1E7A64</color>\n</resources>\n',
         encoding="utf-8",
     )
     print("wrote", bg_xml.relative_to(ROOT))
