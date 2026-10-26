@@ -99,3 +99,12 @@ export async function signOut() {
   await supabase.auth.signOut();
   window.location.assign("/");
 }
+
+// Permanently deletes the signed-in user and all their data (required by App Store guideline 5.1.1(v)).
+export async function deleteAccount() {
+  const { error } = await supabase.rpc("delete_my_account");
+  if (error) throw error;
+  // The server session no longer exists; only clear the local one.
+  await supabase.auth.signOut({ scope: "local" });
+  window.location.assign("/");
+}
