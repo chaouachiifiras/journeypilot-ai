@@ -263,7 +263,7 @@ function Planner() {
                 selected={citySelected}
                 disabled={!countrySelected}
                 disabledHint={t("planner.autocomplete.city_locked")}
-                placeholder={countryCode ? cityExamplesFor(countryCode) ?? t("planner.city_ph_any") : t("planner.city_ph")}
+                placeholder={countryCode ? cityExamplesFor(countryCode, i18n.language) ?? t("planner.city_ph_any") : t("planner.city_ph")}
                 autoComplete="address-level2"
                 minChars={1}
                 debounceMs={350}
