@@ -219,6 +219,7 @@
     "placeholder": "Où partons-nous ?",
     "send": "Envoyer",
     "thinking": "Réflexion…",
+    "preparing": "Préparation de l'assistant…",
     "no_threads": "Aucune conversation"
   },
   "profile": {

@@ -7,14 +7,16 @@ import { useAnonSession } from "@/lib/anon-session";
 import { createThread, listThreads } from "@/lib/chat.functions";
 import { useQuery } from "@tanstack/react-query";
 import { Loader2 } from "lucide-react";
+import { useTranslation } from "react-i18next";
 
-export const Route = createFileRoute("/chat")({
+export const Route = createFileRoute("/chat/")({
   component: ChatIndex,
 });
 
 function ChatIndex() {
   const { ready, isAnonymous } = useAnonSession();
   const navigate = useNavigate();
+  const { t } = useTranslation();
   const list = useServerFn(listThreads);
   const create = useServerFn(createThread);
 
@@ -51,7 +53,7 @@ function ChatIndex() {
       <AppHeader />
       <div className="mx-auto max-w-md px-6 py-32 text-center">
         <Loader2 className="mx-auto h-6 w-6 animate-spin text-copper" />
-        <p className="mt-3 text-sm text-muted-foreground">Preparing your assistant…</p>
+        <p className="mt-3 text-sm text-muted-foreground">{t("chat.preparing")}</p>
       </div>
     </div>
   );
