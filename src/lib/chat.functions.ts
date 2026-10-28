@@ -109,17 +109,16 @@ export const sendMessage = createServerFn({ method: "POST" })
       .eq("thread_id", data.threadId)
       .order("created_at", { ascending: true });
 
-    const messages = [
-      { role: "system" as const, content: SYSTEM_PROMPT },
-      ...(history ?? []).map((r) => ({
-        role: r.role as "user" | "assistant",
-        content: (r.message as { content: string }).content,
-      })),
-    ];
+    const messages = (history ?? []).map((r) => ({
+      role: r.role as "user" | "assistant",
+      content: (r.message as { content: string }).content,
+    }));
 
     const gateway = getGateway();
+    // AI SDK 7 rejects system-role entries inside `messages`; the system prompt goes in `instructions`.
     const { text } = await generateText({
       model: gateway("google/gemini-3-flash-preview"),
+      instructions: SYSTEM_PROMPT,
       messages,
     });
 
