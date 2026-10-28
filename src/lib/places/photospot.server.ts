@@ -1,3 +1,4 @@
+import { cachedPlacesSearch } from "./google-cache.server";
 import { googleCredentials, resolveGooglePhotoUrl } from "./providers/google.server";
 
 /**
@@ -19,7 +20,6 @@ import { googleCredentials, resolveGooglePhotoUrl } from "./providers/google.ser
  * chosen by the existing planner logic, the photo is resolved afterwards.
  */
 
-const GATEWAY = "https://connector-gateway.lovable.dev/google_maps";
 
 export type SpotPhoto = {
   url: string;
@@ -233,22 +233,7 @@ async function searchSpot(
       circle: { center: { latitude: spot.lat, longitude: spot.lng }, radius: 1500 },
     };
   }
-  try {
-    const res = await fetch(`${GATEWAY}/places/v1/places:searchText`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${creds.lovableKey}`,
-        "X-Connection-Api-Key": creds.connectionKey,
-        "Content-Type": "application/json",
-        "X-Goog-FieldMask": SPOT_MASK,
-      },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) return [];
-    return ((await res.json()) as { places?: GSpotPlace[] }).places ?? [];
-  } catch {
-    return [];
-  }
+  return (await cachedPlacesSearch<GSpotPlace>("places:searchText", body, SPOT_MASK, creds)) ?? [];
 }
 
 async function googleCandidates(

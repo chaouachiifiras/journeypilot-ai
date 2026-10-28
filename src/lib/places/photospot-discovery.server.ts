@@ -1,3 +1,4 @@
+import { cachedPlacesSearch } from "./google-cache.server";
 import { googleCredentials } from "./providers/google.server";
 
 /**
@@ -15,7 +16,6 @@ import { googleCredentials } from "./providers/google.server";
  * independent "famous / iconic / must-see" style queries).
  */
 
-const GATEWAY = "https://connector-gateway.lovable.dev/google_maps";
 
 const MASK = [
   "places.id",
@@ -85,13 +85,9 @@ type GPlace = {
  */
 const ARCHETYPES: Array<{ q: (d: string) => string; category: SpotCategory; weight: number }> = [
   { q: (d) => `iconic landmarks in ${d}`, category: "iconic", weight: 1 },
-  { q: (d) => `most famous monuments in ${d}`, category: "iconic", weight: 1 },
-  { q: (d) => `must see tourist attractions in ${d}`, category: "iconic", weight: 0.95 },
   { q: (d) => `famous architecture in ${d}`, category: "iconic", weight: 0.9 },
   { q: (d) => `best viewpoints in ${d}`, category: "viewpoint", weight: 0.95 },
-  { q: (d) => `panoramic observation deck in ${d}`, category: "viewpoint", weight: 0.9 },
   { q: (d) => `rooftop view of ${d} skyline`, category: "viewpoint", weight: 0.85 },
-  { q: (d) => `sunset viewpoint in ${d}`, category: "viewpoint", weight: 0.85 },
   { q: (d) => `famous bridge in ${d}`, category: "scenic", weight: 0.8 },
   { q: (d) => `waterfront promenade in ${d}`, category: "scenic", weight: 0.75 },
   { q: (d) => `best beach near ${d}`, category: "scenic", weight: 0.7 },
@@ -101,10 +97,8 @@ const ARCHETYPES: Array<{ q: (d: string) => string; category: SpotCategory; weig
   { q: (d) => `hidden gem photo spot in ${d}`, category: "local", weight: 0.7 },
   { q: (d) => `famous street in ${d}`, category: "local", weight: 0.7 },
   { q: (d) => `photogenic old town in ${d}`, category: "local", weight: 0.7 },
-  { q: (d) => `scenic neighborhood in ${d}`, category: "local", weight: 0.65 },
   { q: (d) => `best photo spots in ${d}`, category: "iconic", weight: 0.9 },
   { q: (d) => `famous temple cathedral or mosque in ${d}`, category: "iconic", weight: 0.85 },
-  { q: (d) => `landmark tower in ${d}`, category: "iconic", weight: 0.9 },
 ];
 
 /** Place types that photograph well, with their photographic weight. */
@@ -183,22 +177,7 @@ async function textSearch(
 ): Promise<GPlace[]> {
   const body: Record<string, unknown> = { textQuery, pageSize: 20 };
   if (center) body["locationBias"] = { circle: { center: { latitude: center.lat, longitude: center.lng }, radius } };
-  try {
-    const res = await fetch(`${GATEWAY}/places/v1/places:searchText`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${creds.lovableKey}`,
-        "X-Connection-Api-Key": creds.connectionKey,
-        "Content-Type": "application/json",
-        "X-Goog-FieldMask": MASK,
-      },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) return [];
-    return ((await res.json()) as { places?: GPlace[] }).places ?? [];
-  } catch {
-    return [];
-  }
+  return (await cachedPlacesSearch<GPlace>("places:searchText", body, MASK, creds)) ?? [];
 }
 
 /**
@@ -211,43 +190,28 @@ async function popularitySweep(
   creds: { lovableKey: string; connectionKey: string },
   center: { lat: number; lng: number },
 ): Promise<GPlace[]> {
+  // Centre plus two opposite diagonals (3 requests instead of 9).
   const offsets = [
     [0, 0],
-    [0.045, 0],
-    [-0.045, 0],
-    [0, 0.055],
-    [0, -0.055],
     [0.04, 0.05],
-    [0.04, -0.05],
-    [-0.04, 0.05],
     [-0.04, -0.05],
   ];
   const rounds = await Promise.all(
-    offsets.map(async ([dLat, dLng]) => {
-      try {
-        const res = await fetch(`${GATEWAY}/places/v1/places:searchNearby`, {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${creds.lovableKey}`,
-            "X-Connection-Api-Key": creds.connectionKey,
-            "Content-Type": "application/json",
-            "X-Goog-FieldMask": MASK,
+    offsets.map(async ([dLat, dLng]) =>
+      (await cachedPlacesSearch<GPlace>(
+        "places:searchNearby",
+        {
+          includedTypes: ["tourist_attraction", "historical_landmark", "observation_deck"],
+          maxResultCount: 20,
+          rankPreference: "POPULARITY",
+          locationRestriction: {
+            circle: { center: { latitude: center.lat + dLat!, longitude: center.lng + dLng! }, radius: 5000 },
           },
-          body: JSON.stringify({
-            includedTypes: ["tourist_attraction", "historical_landmark", "observation_deck"],
-            maxResultCount: 20,
-            rankPreference: "POPULARITY",
-            locationRestriction: {
-              circle: { center: { latitude: center.lat + dLat!, longitude: center.lng + dLng! }, radius: 5000 },
-            },
-          }),
-        });
-        if (!res.ok) return [];
-        return ((await res.json()) as { places?: GPlace[] }).places ?? [];
-      } catch {
-        return [];
-      }
-    }),
+        },
+        MASK,
+        creds,
+      )) ?? [],
+    ),
   );
   return rounds.flat();
 }
