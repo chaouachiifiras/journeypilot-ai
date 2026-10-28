@@ -224,6 +224,27 @@ export type Database = {
           },
         ]
       }
+      google_places_cache: {
+        Row: {
+          cache_key: string
+          endpoint: string
+          fetched_at: string
+          response: Json
+        }
+        Insert: {
+          cache_key: string
+          endpoint: string
+          fetched_at?: string
+          response: Json
+        }
+        Update: {
+          cache_key?: string
+          endpoint?: string
+          fetched_at?: string
+          response?: Json
+        }
+        Relationships: []
+      }
       itinerary_drafts: {
         Row: {
           created_at: string

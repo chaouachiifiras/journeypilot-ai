@@ -1,4 +1,5 @@
 import type { Place, PlaceQuery, PlacesProvider, PriceLevel } from "../types";
+import { cachedPlacesSearch } from "../google-cache.server";
 
 /**
  * Google Places (New) provider — routed through the Lovable connector gateway.
@@ -138,22 +139,14 @@ const QUERIES: Record<"restaurant" | "hotel", string[]> = {
 };
 
 async function searchText(query: string, creds: { lovableKey: string; connectionKey: string }) {
-  const res = await fetch(`${GATEWAY}/places/v1/places:searchText`, {
-    method: "POST",
-    headers: {
-      Authorization: `Bearer ${creds.lovableKey}`,
-      "X-Connection-Api-Key": creds.connectionKey,
-      "Content-Type": "application/json",
-      "X-Goog-FieldMask": FIELD_MASK,
-    },
-    body: JSON.stringify({ textQuery: query, pageSize: 20 }),
-  });
-  if (!res.ok) {
-    const body = await res.text();
-    throw new Error(`Google Places request failed [${res.status}]: ${body}`);
-  }
-  const json = (await res.json()) as { places?: GPlace[] };
-  return json.places ?? [];
+  const places = await cachedPlacesSearch<GPlace>(
+    "places:searchText",
+    { textQuery: query, pageSize: 20 },
+    FIELD_MASK,
+    creds,
+  );
+  if (!places) throw new Error("Google Places request failed");
+  return places;
 }
 
 /**

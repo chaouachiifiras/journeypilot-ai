@@ -1,3 +1,4 @@
+import { cachedPlacesSearch } from "./google-cache.server";
 import { googleCredentials } from "./providers/google.server";
 import type { ActivityCategory, RawActivity } from "./activity-ranking";
 
@@ -15,7 +16,6 @@ import type { ActivityCategory, RawActivity } from "./activity-ranking";
  * Ranking, personalization and imagery happen in separate modules.
  */
 
-const GATEWAY = "https://connector-gateway.lovable.dev/google_maps";
 
 const MASK = [
   "places.id",
@@ -78,40 +78,32 @@ const PRICE: Record<string, number> = {
  * Experience archetypes. Each is a real intent a traveller has in ANY
  * destination. Irrelevant ones simply return nothing (there is no ski resort
  * in Dubai and no desert safari in Tokyo), so categories are never forced.
+ * Kept to 23 distinct intents: near-duplicate queries returned the same places
+ * and only multiplied Google calls; Google types still add the finer categories.
  */
 const ARCHETYPES: Array<{ q: (d: string) => string; category: ActivityCategory; weight: number }> = [
   { q: (d) => `top things to do in ${d}`, category: "landmark", weight: 1 },
-  { q: (d) => `iconic landmarks and attractions in ${d}`, category: "landmark", weight: 1 },
   { q: (d) => `best museums in ${d}`, category: "museum", weight: 0.9 },
   { q: (d) => `historical sites in ${d}`, category: "historical", weight: 0.9 },
   { q: (d) => `cultural experiences in ${d}`, category: "cultural", weight: 0.85 },
-  { q: (d) => `art galleries in ${d}`, category: "art", weight: 0.75 },
   { q: (d) => `nature and outdoor activities in ${d}`, category: "nature", weight: 0.85 },
+  { q: (d) => `hiking trails near ${d}`, category: "hiking", weight: 0.75 },
   { q: (d) => `best beaches in ${d}`, category: "beach", weight: 0.8 },
   { q: (d) => `boat tour or cruise in ${d}`, category: "boat", weight: 0.85 },
-  { q: (d) => `yacht or sailing experience in ${d}`, category: "boat", weight: 0.75 },
   { q: (d) => `water sports and water activities in ${d}`, category: "water", weight: 0.8 },
   { q: (d) => `adventure activities in ${d}`, category: "adventure", weight: 0.85 },
-  { q: (d) => `go karting in ${d}`, category: "sports", weight: 0.7 },
   { q: (d) => `theme park or amusement park in ${d}`, category: "themepark", weight: 0.85 },
-  { q: (d) => `aquarium or zoo in ${d}`, category: "family", weight: 0.8 },
-  { q: (d) => `hiking trails near ${d}`, category: "hiking", weight: 0.75 },
-  { q: (d) => `cycling and bike tours in ${d}`, category: "cycling", weight: 0.7 },
   { q: (d) => `best viewpoints and observation decks in ${d}`, category: "viewpoint", weight: 0.9 },
   { q: (d) => `best sunset experience in ${d}`, category: "sunset", weight: 0.8 },
   { q: (d) => `things to do at night in ${d}`, category: "night", weight: 0.75 },
   { q: (d) => `food tour or cooking class in ${d}`, category: "food", weight: 0.8 },
   { q: (d) => `famous markets in ${d}`, category: "market", weight: 0.8 },
-  { q: (d) => `best shopping destinations in ${d}`, category: "shopping", weight: 0.7 },
   { q: (d) => `shows concerts and live entertainment in ${d}`, category: "entertainment", weight: 0.75 },
   { q: (d) => `family activities with kids in ${d}`, category: "family", weight: 0.8 },
-  { q: (d) => `romantic experiences for couples in ${d}`, category: "romantic", weight: 0.75 },
   { q: (d) => `luxury experiences in ${d}`, category: "luxury", weight: 0.75 },
+  { q: (d) => `romantic experiences for couples in ${d}`, category: "romantic", weight: 0.75 },
   { q: (d) => `authentic local experiences in ${d}`, category: "local", weight: 0.8 },
   { q: (d) => `unusual and unique things to do in ${d}`, category: "unique", weight: 0.8 },
-  { q: (d) => `guided tours and excursions in ${d}`, category: "cultural", weight: 0.7 },
-  { q: (d) => `spa hammam or wellness experience in ${d}`, category: "luxury", weight: 0.6 },
-  { q: (d) => `desert safari or nature excursion from ${d}`, category: "adventure", weight: 0.7 },
 ];
 
 /** Google types that describe a real, doable experience, with their category. */
@@ -198,22 +190,7 @@ async function textSearch(
 ): Promise<GPlace[]> {
   const body: Record<string, unknown> = { textQuery, pageSize: 20 };
   if (center) body["locationBias"] = { circle: { center: { latitude: center.lat, longitude: center.lng }, radius } };
-  try {
-    const res = await fetch(`${GATEWAY}/places/v1/places:searchText`, {
-      method: "POST",
-      headers: {
-        Authorization: `Bearer ${creds.lovableKey}`,
-        "X-Connection-Api-Key": creds.connectionKey,
-        "Content-Type": "application/json",
-        "X-Goog-FieldMask": MASK,
-      },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok) return [];
-    return ((await res.json()) as { places?: GPlace[] }).places ?? [];
-  } catch {
-    return [];
-  }
+  return (await cachedPlacesSearch<GPlace>("places:searchText", body, MASK, creds)) ?? [];
 }
 
 /** Most popular real attractions around the destination — catches icons that
@@ -222,40 +199,30 @@ async function popularitySweep(
   creds: { lovableKey: string; connectionKey: string },
   center: { lat: number; lng: number },
 ): Promise<GPlace[]> {
-  const offsets: Array<[number, number]> = [
-    [0, 0], [0.05, 0], [-0.05, 0], [0, 0.06], [0, -0.06], [0.045, 0.055], [-0.045, -0.055],
-  ];
+  // Centre plus two opposite diagonals: enough to catch the icons text queries miss,
+  // at 6 requests instead of 14.
+  const offsets: Array<[number, number]> = [[0, 0], [0.045, 0.055], [-0.045, -0.055]];
   const typeSets = [
     ["tourist_attraction", "historical_landmark", "observation_deck"],
     ["amusement_park", "aquarium", "zoo", "museum"],
   ];
   const rounds = await Promise.all(
     offsets.flatMap(([dLat, dLng]) =>
-      typeSets.map(async (includedTypes) => {
-        try {
-          const res = await fetch(`${GATEWAY}/places/v1/places:searchNearby`, {
-            method: "POST",
-            headers: {
-              Authorization: `Bearer ${creds.lovableKey}`,
-              "X-Connection-Api-Key": creds.connectionKey,
-              "Content-Type": "application/json",
-              "X-Goog-FieldMask": MASK,
+      typeSets.map(async (includedTypes) =>
+        (await cachedPlacesSearch<GPlace>(
+          "places:searchNearby",
+          {
+            includedTypes,
+            maxResultCount: 20,
+            rankPreference: "POPULARITY",
+            locationRestriction: {
+              circle: { center: { latitude: center.lat + dLat, longitude: center.lng + dLng }, radius: 6000 },
             },
-            body: JSON.stringify({
-              includedTypes,
-              maxResultCount: 20,
-              rankPreference: "POPULARITY",
-              locationRestriction: {
-                circle: { center: { latitude: center.lat + dLat, longitude: center.lng + dLng }, radius: 6000 },
-              },
-            }),
-          });
-          if (!res.ok) return [];
-          return ((await res.json()) as { places?: GPlace[] }).places ?? [];
-        } catch {
-          return [];
-        }
-      }),
+          },
+          MASK,
+          creds,
+        )) ?? [],
+      ),
     ),
   );
   return rounds.flat();
