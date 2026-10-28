@@ -9,7 +9,12 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
  * pipeline — no extra API key, and every photo already carries a credit.
  * `place_photos` stores every result, including "no good photo found"
  * (url: null), so the same landmark is never re-resolved across trips.
+ *
+ * Google photo URLs are signed and stop working after roughly a month (403),
+ * so a Google row older than GOOGLE_PHOTO_TTL_MS is treated as missing and
+ * resolved again; Wikimedia URLs and "no photo" rows are permanent.
  */
+const GOOGLE_PHOTO_TTL_MS = 25 * 24 * 60 * 60 * 1000;
 
 const Input = z.object({
   city: z.string().min(1),
@@ -52,7 +57,13 @@ type PlacePhotoRow = {
   source: string | null;
   credit: string | null;
   credit_url: string | null;
+  resolved_at?: string | null;
 };
+
+function isStale(row: PlacePhotoRow) {
+  if (row.source !== "google" || !row.resolved_at) return false;
+  return Date.now() - new Date(row.resolved_at).getTime() > GOOGLE_PHOTO_TTL_MS;
+}
 
 export const getPlacePhotos = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -63,11 +74,11 @@ export const getPlacePhotos = createServerFn({ method: "POST" })
 
     const { data: rows } = await supabase
       .from("place_photos")
-      .select("place_key, url, source, credit, credit_url")
+      .select("place_key, url, source, credit, credit_url, resolved_at")
       .in("place_key", keys);
 
     const cache = new Map<string, PlacePhotoRow>(
-      ((rows as PlacePhotoRow[] | null) ?? []).map((r) => [r.place_key, r]),
+      ((rows as PlacePhotoRow[] | null) ?? []).filter((r) => !isStale(r)).map((r) => [r.place_key, r]),
     );
     const missing = data.places.filter((p) => !cache.has(placeKey(p.name, data.city)));
 
@@ -96,6 +107,7 @@ export const getPlacePhotos = createServerFn({ method: "POST" })
           credit_url: r.photo?.creditUrl ?? null,
           width: r.photo?.width ?? null,
           height: r.photo?.height ?? null,
+          resolved_at: new Date().toISOString(),
         })),
         { onConflict: "place_key" },
       );

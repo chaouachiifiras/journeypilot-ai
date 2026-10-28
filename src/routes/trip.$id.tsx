@@ -23,6 +23,7 @@ import { getPhotoSpots } from "@/lib/photospots.functions";
 import { getPlacePhotos, type PlacePhotoLite } from "@/lib/place-photos.functions";
 import { useAnonSession } from "@/lib/anon-session";
 import { cn } from "@/lib/utils";
+import { markImageBroken, useBrokenImages } from "@/lib/broken-images";
 import { openDirections, openMapSearch, googleSearchUrl, googleDirectionsUrl } from "@/lib/maps";
 
 export const Route = createFileRoute("/trip/$id")({
@@ -138,7 +139,8 @@ function TripView() {
     // If the reader is already below the tab bar, start the new tab from its top.
     const content = contentRef.current;
     if (content) {
-      const stickyOffset = 64 + 66; // app header + tab bar
+      const header = document.querySelector("header")?.getBoundingClientRect().height ?? 64;
+      const stickyOffset = header + 66; // app header (incl. safe area) + tab bar
       const top = content.getBoundingClientRect().top + window.scrollY - stickyOffset;
       if (window.scrollY > top) window.scrollTo({ top, behavior: "smooth" });
     }
@@ -206,7 +208,8 @@ function TripView() {
     staleTime: 30 * 60 * 1000,
     queryFn: () => fetchPhotos({ data: { city: tripData!.city!, country: tripData!.country!, places } }),
   });
-  const cover = places.map((p) => photos?.[p.name]).find((p) => p?.url) ?? null;
+  const isBroken = useBrokenImages();
+  const cover = places.map((p) => photos?.[p.name]).find((p) => p?.url && !isBroken(p.url)) ?? null;
 
   if (ready && isAnonymous) {
     return (
@@ -266,7 +269,12 @@ function TripView() {
       {/* ---------------- Cinematic destination header ---------------- */}
       <section className="relative isolate overflow-hidden bg-ink text-white">
         {cover?.url ? (
-          <img src={cover.url} alt="" className="animate-kenburns absolute inset-0 -z-20 h-full w-full object-cover" />
+          <img
+            src={cover.url}
+            alt=""
+            onError={() => markImageBroken(cover.url)}
+            className="animate-kenburns absolute inset-0 -z-20 h-full w-full object-cover"
+          />
         ) : (
           <div className="absolute inset-0 -z-20 bg-gradient-brand">
             <TopoPattern />
@@ -866,7 +874,7 @@ function TimelineSlotCard({
   label,
   slot,
   currency,
-  photo,
+  photo: photoProp,
 }: {
   label: (typeof ITINERARY_SLOTS)[number];
   slot: Slot;
@@ -876,6 +884,9 @@ function TimelineSlotCard({
   const { t } = useTranslation();
   const Icon = SLOT_ICON[label];
   const [detailOpen, setDetailOpen] = useState(false);
+  // An expired/broken photo URL falls back to the icon placeholder (and hides its credit).
+  const isBroken = useBrokenImages();
+  const photo = photoProp?.url && !isBroken(photoProp.url) ? photoProp : null;
 
   return (
     <div className="relative">
@@ -894,6 +905,7 @@ function TimelineSlotCard({
             <img
               src={photo.url}
               alt={slot.name || t(`trip.slots.${label}`)}
+              onError={() => markImageBroken(photo.url)}
               loading="lazy"
               decoding="async"
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-[1.03]"
@@ -993,7 +1005,7 @@ function SlotDetailSheet({
           transition={{ duration: 0.35, ease: EASE }}
           className="fixed inset-0 z-50 overflow-y-auto bg-background"
         >
-          <button type="button" onClick={close} aria-label={t("common.close")} className="btn btn-glass btn-icon fixed end-4 top-4 z-10 bg-[rgba(8,20,18,0.4)]">
+          <button type="button" onClick={close} aria-label={t("common.close")} className="btn btn-glass btn-icon fixed end-4 top-[calc(1rem+env(safe-area-inset-top))] z-10 bg-[rgba(8,20,18,0.4)]">
             <X />
           </button>
 
@@ -1003,7 +1015,12 @@ function SlotDetailSheet({
             className="relative block h-80 w-full overflow-hidden bg-secondary text-start sm:h-[28rem]"
           >
             {photo?.url ? (
-              <img src={photo.url} alt={slot.name || t(`trip.slots.${label}`)} className="absolute inset-0 h-full w-full object-cover" />
+              <img
+                src={photo.url}
+                alt={slot.name || t(`trip.slots.${label}`)}
+                onError={() => markImageBroken(photo.url)}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-brand">
                 <TopoPattern />
@@ -1016,7 +1033,7 @@ function SlotDetailSheet({
               {slot.name && <h2 className="display-lg mt-3 text-white">{slot.name}</h2>}
             </div>
             {photo?.credit && (
-              <span className="absolute end-4 top-16 max-w-[50%] truncate rounded-full bg-[rgba(8,20,18,0.45)] px-2.5 py-1 text-[11px] text-[rgba(255,255,255,0.85)]">
+              <span className="absolute end-4 top-[calc(4rem+env(safe-area-inset-top))] max-w-[50%] truncate rounded-full bg-[rgba(8,20,18,0.45)] px-2.5 py-1 text-[11px] text-[rgba(255,255,255,0.85)]">
                 {photo.credit}
               </span>
             )}
@@ -1058,7 +1075,7 @@ function SlotDetailSheet({
                     setZoomed(false);
                   }}
                   aria-label={t("common.close")}
-                  className="btn btn-glass btn-icon absolute end-4 top-4"
+                  className="btn btn-glass btn-icon absolute end-4 top-[calc(1rem+env(safe-area-inset-top))]"
                 >
                   <X />
                 </button>

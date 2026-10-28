@@ -24,6 +24,7 @@
     "country_ph": "Japan, Marokko, Italië…",
     "city": "Stad",
     "city_ph": "Kyoto, Marrakech, Rome…",
+    "city_ph_any": "Typ een stad…",
     "days": "Dagen",
     "budget": "Budget",
     "currency": "Valuta",
@@ -218,6 +219,7 @@
     "placeholder": "Waar gaan we naartoe?",
     "send": "Verstuur",
     "thinking": "Aan het denken…",
+    "preparing": "Assistent wordt voorbereid…",
     "no_threads": "Nog geen gesprekken"
   },
   "profile": {
@@ -232,12 +234,17 @@
     "subtitle": "Meld u aan om uw reizen op te slaan en verder te gaan op elk apparaat.",
     "log_in": "Inloggen",
     "log_out": "Uitloggen",
+    "delete_account": "Account verwijderen",
+    "delete_account_title": "Je account verwijderen?",
+    "delete_account_desc": "Je account, reizen, opgeslagen plekken en gesprekken worden definitief verwijderd. Dit kan niet ongedaan worden gemaakt. Heb je een abonnement, zeg het dan ook op in de instellingen van je store.",
+    "delete_account_confirm": "Definitief verwijderen",
     "sign_in": "Inloggen",
     "sign_up": "Registreren",
     "email": "E-mail",
     "password": "Wachtwoord",
     "confirm_password": "Wachtwoord bevestigen",
     "continue_with_google": "Doorgaan met Google",
+    "continue_with_apple": "Doorgaan met Apple",
     "or": "of",
     "check_email_title": "Controleer uw e-mail",
     "check_email_body": "We hebben u een bevestigingslink gestuurd. Open deze om uw account af te ronden.",
@@ -253,7 +260,12 @@
     "subtitle": "U heeft uw gratis reis gebruikt. Abonneer u voor {{price}} per maand om te blijven plannen.",
     "subtitle_web": "U heeft uw gratis reis gebruikt. Abonneer u via de JourneyPilot Android-app om te blijven plannen.",
     "subscribe": "Abonneren",
-    "get_android_app": "Download de Android-app"
+    "get_android_app": "Download de Android-app",
+    "restore": "Aankopen herstellen",
+    "restore_none": "Geen actief abonnement gevonden voor dit account.",
+    "auto_renew": "Maandabonnement, wordt automatisch verlengd. Op elk moment opzegbaar in je accountinstellingen.",
+    "terms": "Gebruiksvoorwaarden",
+    "privacy": "Privacy"
   },
   "common": { "cancel": "Annuleren", "delete": "Verwijderen", "save": "Opslaan", "loading": "Laden…", "close": "Sluiten" },
   "ui": {

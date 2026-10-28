@@ -138,9 +138,18 @@ export async function runText(
   try {
     const result = await withRetries(attemptsAllowed, async () => {
       attempts += 1;
+      // AI SDK 7 rejects system-role entries inside `messages`; extract them into `instructions`.
+      const instructions = (options.messages ?? [])
+        .filter((m) => m.role === "system")
+        .map((m) => m.content)
+        .join("
+
+");
+      const messages = (options.messages ?? []).filter((m) => m.role !== "system");
       return generateText({
         model,
-        messages: options.messages,
+        instructions: instructions || undefined,
+        messages,
         temperature: options.temperature,
         maxOutputTokens: options.maxOutputTokens,
         maxRetries: 0, // retries are handled here so every attempt is auditable
@@ -182,10 +191,19 @@ export async function runObject<T>(
   try {
     const result = await withRetries(attemptsAllowed, async () => {
       attempts += 1;
+      // AI SDK 7 rejects system-role entries inside `messages`; extract them into `instructions`.
+      const instructions = (options.messages ?? [])
+        .filter((m) => m.role === "system")
+        .map((m) => m.content)
+        .join("
+
+");
+      const messages = (options.messages ?? []).filter((m) => m.role !== "system");
       return generateObject({
         model,
         schema: options.schema,
-        messages: options.messages,
+        instructions: instructions || undefined,
+        messages,
         temperature: options.temperature,
         maxRetries: 0,
       } as Parameters<typeof generateObject>[0]);

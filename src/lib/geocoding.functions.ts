@@ -2,6 +2,13 @@ import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { searchSettlements } from "./places/provider.server";
+import { autocompleteCities } from "./places/providers/google.server";
+
+// Photon (searchSettlements) only matches Latin-script names and only answers in
+// en/de/fr, so Arabic/Chinese typing — or an Arabic/Chinese UI that should get
+// localized names back — goes through Google's autocomplete first.
+const NON_LATIN = /[^\u0000-ɏḀ-ỿ\s'’.-]/;
+const PHOTON_LANGS = new Set(["en", "de", "fr", "nl"]);
 
 /** Real cities/towns matching a partial name inside a given country — backs the planner's city autocomplete. */
 export const searchCities = createServerFn({ method: "POST" })
@@ -15,4 +22,10 @@ export const searchCities = createServerFn({ method: "POST" })
       })
       .parse(raw),
   )
-  .handler(async ({ data }) => searchSettlements(data.query, data.countryCode, data.language));
+  .handler(async ({ data }) => {
+    if (NON_LATIN.test(data.query) || !PHOTON_LANGS.has(data.language)) {
+      const google = await autocompleteCities(data.query, data.countryCode, data.language);
+      if (google.length) return google;
+    }
+    return searchSettlements(data.query, data.countryCode, data.language);
+  });

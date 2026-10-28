@@ -20,6 +20,11 @@ import i18n, { applyLangDir } from "@/lib/i18n";
 import { completeNativeOAuth } from "@/lib/auth";
 import { useAnonSession } from "@/lib/anon-session";
 import { ensureRevenueCatIdentity } from "@/lib/revenuecat-identity";
+import { installDebugCapture } from "@/lib/debug-console";
+import { DebugConsole } from "@/components/dev/DebugConsole";
+
+// iOS / test builds only (no-op elsewhere): start recording JS errors as early as possible.
+if (typeof window !== "undefined") installDebugCapture();
 // Travel Copilot entry point hidden for free launch; re-enable by mounting <FloatingCopilot /> (premium gate later).
 // import { FloatingCopilot } from "@/components/copilot/FloatingCopilot";
 
@@ -150,6 +155,7 @@ function RootComponent() {
     <QueryClientProvider client={queryClient}>
       <Outlet />
       {/* <FloatingCopilot /> — intentionally hidden; preserved for future Premium reactivation */}
+      <DebugConsole />
       <Toaster position="top-center" richColors toastOptions={{ style: { borderRadius: 16, fontFamily: "var(--font-body)" } }} />
     </QueryClientProvider>
   );

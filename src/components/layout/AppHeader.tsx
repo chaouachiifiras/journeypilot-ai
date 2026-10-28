@@ -1,11 +1,13 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Check, Compass, Globe, Luggage, Plus } from "lucide-react";
+import { Check, Compass, Globe, Luggage, MessageCircle, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import i18n, { applyLangDir } from "@/lib/i18n";
 import logo from "@/assets/logo-mark.png";
 import { cn } from "@/lib/utils";
 import { AccountMenu } from "@/components/auth/AccountMenu";
+import { toast } from "sonner";
+import { registerSecretTap } from "@/lib/debug-console";
 
 const LANGS = [
   { code: "en", label: "EN" },
@@ -62,8 +64,7 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
   const links = [
     { to: "/", label: t("nav.home"), icon: Compass },
     { to: "/planner", label: t("nav.plan"), icon: Plus },
-    // Assistant chat nav link hidden for free launch; route /chat still exists (future Premium).
-    // { to: "/chat", label: t("nav.chat") },
+    { to: "/chat", label: t("nav.chat"), icon: MessageCircle },
     { to: "/profile", label: t("auth.my_trips"), icon: Luggage },
   ] as const;
 
@@ -83,7 +84,15 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
         style={{ paddingTop: "var(--inset-top)" }}
       >
         <div className="container-page flex h-16 items-center justify-between gap-3">
-          <Link to="/" className="group flex min-w-0 items-center gap-2.5">
+          <Link
+            to="/"
+            className="group flex min-w-0 items-center gap-2.5"
+            onClick={() => {
+              // Hidden switch for the iOS error console (no-op on Android / web).
+              const on = registerSecretTap();
+              if (on !== undefined) toast(on ? "Console de débogage activée" : "Console de débogage désactivée");
+            }}
+          >
             <span
               className={cn(
                 "flex h-9 w-9 shrink-0 items-center justify-center rounded-xl transition-transform duration-300 group-hover:rotate-6",
@@ -182,7 +191,7 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card md:hidden"
         style={{ paddingBottom: "var(--inset-bottom)" }}
       >
-        <div className="mx-auto grid h-[var(--tabbar-h)] max-w-md grid-cols-3 items-center px-4">
+        <div className="mx-auto grid h-[var(--tabbar-h)] max-w-md grid-cols-4 items-center px-4">
           {links.map((l) => {
             const active = isActive(l.to);
             if (l.to === "/planner") {

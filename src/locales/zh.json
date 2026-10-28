@@ -24,6 +24,7 @@
     "country_ph": "日本、摩洛哥、意大利…",
     "city": "城市",
     "city_ph": "京都、马拉喀什、罗马…",
+    "city_ph_any": "输入城市…",
     "days": "天数",
     "budget": "预算",
     "currency": "货币",
@@ -217,6 +218,7 @@
     "placeholder": "接下来想去哪里？",
     "send": "发送",
     "thinking": "思考中…",
+    "preparing": "正在准备助手…",
     "no_threads": "暂无对话记录"
   },
   "profile": {
@@ -231,12 +233,17 @@
     "subtitle": "登录以保存您的行程，并在任意设备上继续查看。",
     "log_in": "登录",
     "log_out": "退出登录",
+    "delete_account": "删除账户",
+    "delete_account_title": "删除您的账户？",
+    "delete_account_desc": "您的账户、行程、收藏的地点和对话将被永久删除，且无法恢复。如果您有订阅，请同时在应用商店设置中取消。",
+    "delete_account_confirm": "永久删除",
     "sign_in": "登录",
     "sign_up": "注册",
     "email": "邮箱",
     "password": "密码",
     "confirm_password": "确认密码",
     "continue_with_google": "使用 Google 继续",
+    "continue_with_apple": "通过 Apple 继续",
     "or": "或",
     "check_email_title": "请查收邮件",
     "check_email_body": "我们已向您发送确认链接，请点击链接以完成账户创建。",
@@ -252,7 +259,12 @@
     "subtitle": "您的免费行程已用完。订阅（每月 {{price}}）即可继续规划。",
     "subtitle_web": "您的免费行程已用完。请从 JourneyPilot 安卓应用订阅以继续规划。",
     "subscribe": "订阅",
-    "get_android_app": "获取安卓应用"
+    "get_android_app": "获取安卓应用",
+    "restore": "恢复购买",
+    "restore_none": "此账户未找到有效订阅。",
+    "auto_renew": "按月订阅，自动续订。可随时在账户设置中取消。",
+    "terms": "使用条款",
+    "privacy": "隐私政策"
   },
   "common": { "cancel": "取消", "delete": "删除", "save": "保存", "loading": "加载中…", "close": "关闭" },
   "ui": {

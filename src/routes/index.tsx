@@ -63,7 +63,7 @@ function Welcome() {
         <div className="scrim absolute inset-0 -z-10" />
         <div className="absolute inset-y-0 start-0 -z-10 hidden w-2/3 bg-gradient-to-r from-[rgba(8,20,18,0.7)] to-transparent md:block rtl:bg-gradient-to-l" />
 
-        <div className="container-page grid w-full items-center gap-10 pb-[calc(var(--tabbar-h)+2.5rem)] pt-20 md:grid-cols-[1.15fr_0.85fr] md:pb-24 md:pt-28">
+        <div className="container-page grid w-full items-center gap-10 pb-[calc(var(--tabbar-h)+2.5rem)] pt-[calc(5rem+env(safe-area-inset-top))] md:grid-cols-[1.15fr_0.85fr] md:pb-24 md:pt-28">
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}

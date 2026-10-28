@@ -24,6 +24,7 @@
     "country_ph": "Japan, Marokko, Italien…",
     "city": "Stadt",
     "city_ph": "Kyoto, Marrakesch, Rom…",
+    "city_ph_any": "Stadt eingeben…",
     "days": "Tage",
     "budget": "Budget",
     "currency": "Währung",
@@ -218,6 +219,7 @@
     "placeholder": "Wohin geht die Reise als Nächstes?",
     "send": "Senden",
     "thinking": "Denkt nach…",
+    "preparing": "Assistent wird vorbereitet…",
     "no_threads": "Noch keine Unterhaltungen"
   },
   "profile": {
@@ -232,12 +234,17 @@
     "subtitle": "Melden Sie sich an, um Ihre Reisen zu speichern und auf jedem Gerät fortzusetzen.",
     "log_in": "Anmelden",
     "log_out": "Abmelden",
+    "delete_account": "Konto löschen",
+    "delete_account_title": "Konto löschen?",
+    "delete_account_desc": "Dein Konto, deine Reisen, gespeicherten Orte und Unterhaltungen werden dauerhaft gelöscht. Dies kann nicht rückgängig gemacht werden. Falls du ein Abo hast, kündige es auch in den Einstellungen deines Stores.",
+    "delete_account_confirm": "Endgültig löschen",
     "sign_in": "Anmelden",
     "sign_up": "Registrieren",
     "email": "E-Mail",
     "password": "Passwort",
     "confirm_password": "Passwort bestätigen",
     "continue_with_google": "Mit Google fortfahren",
+    "continue_with_apple": "Mit Apple fortfahren",
     "or": "oder",
     "check_email_title": "Überprüfen Sie Ihre E-Mails",
     "check_email_body": "Wir haben Ihnen einen Bestätigungslink gesendet. Öffnen Sie ihn, um Ihr Konto fertig einzurichten.",
@@ -253,7 +260,12 @@
     "subtitle": "Sie haben Ihre kostenlose Reise bereits genutzt. Abonnieren Sie für {{price}} pro Monat, um weiter zu planen.",
     "subtitle_web": "Sie haben Ihre kostenlose Reise bereits genutzt. Abonnieren Sie über die JourneyPilot Android-App, um weiter zu planen.",
     "subscribe": "Abonnieren",
-    "get_android_app": "Android-App herunterladen"
+    "get_android_app": "Android-App herunterladen",
+    "restore": "Käufe wiederherstellen",
+    "restore_none": "Für dieses Konto wurde kein aktives Abo gefunden.",
+    "auto_renew": "Monatsabo, verlängert sich automatisch. Jederzeit in den Kontoeinstellungen kündbar.",
+    "terms": "Nutzungsbedingungen",
+    "privacy": "Datenschutz"
   },
   "common": { "cancel": "Abbrechen", "delete": "Löschen", "save": "Speichern", "loading": "Wird geladen…", "close": "Schließen" },
   "ui": {

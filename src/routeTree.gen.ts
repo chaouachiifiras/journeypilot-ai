@@ -12,9 +12,9 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as ProfileRouteImport } from './routes/profile'
 import { Route as PrivacyRouteImport } from './routes/privacy'
 import { Route as PlannerRouteImport } from './routes/planner'
-import { Route as ChatRouteImport } from './routes/chat'
 import { Route as AuthCallbackRouteImport } from './routes/auth-callback'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ChatIndexRouteImport } from './routes/chat.index'
 import { Route as TripIdRouteImport } from './routes/trip.$id'
 import { Route as ChatThreadIdRouteImport } from './routes/chat.$threadId'
 
@@ -33,11 +33,6 @@ const PlannerRoute = PlannerRouteImport.update({
   path: '/planner',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChatRoute = ChatRouteImport.update({
-  id: '/chat',
-  path: '/chat',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AuthCallbackRoute = AuthCallbackRouteImport.update({
   id: '/auth-callback',
   path: '/auth-callback',
@@ -48,89 +43,95 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ChatIndexRoute = ChatIndexRouteImport.update({
+  id: '/chat/',
+  path: '/chat/',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const TripIdRoute = TripIdRouteImport.update({
   id: '/trip/$id',
   path: '/trip/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ChatThreadIdRoute = ChatThreadIdRouteImport.update({
-  id: '/$threadId',
-  path: '/$threadId',
-  getParentRoute: () => ChatRoute,
+  id: '/chat/$threadId',
+  path: '/chat/$threadId',
+  getParentRoute: () => rootRouteImport,
 } as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/auth-callback': typeof AuthCallbackRoute
-  '/chat': typeof ChatRouteWithChildren
   '/planner': typeof PlannerRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
   '/trip/$id': typeof TripIdRoute
+  '/chat/': typeof ChatIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/auth-callback': typeof AuthCallbackRoute
-  '/chat': typeof ChatRouteWithChildren
   '/planner': typeof PlannerRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
   '/trip/$id': typeof TripIdRoute
+  '/chat': typeof ChatIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/auth-callback': typeof AuthCallbackRoute
-  '/chat': typeof ChatRouteWithChildren
   '/planner': typeof PlannerRoute
   '/privacy': typeof PrivacyRoute
   '/profile': typeof ProfileRoute
   '/chat/$threadId': typeof ChatThreadIdRoute
   '/trip/$id': typeof TripIdRoute
+  '/chat/': typeof ChatIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
     | '/auth-callback'
-    | '/chat'
     | '/planner'
     | '/privacy'
     | '/profile'
     | '/chat/$threadId'
     | '/trip/$id'
+    | '/chat/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/auth-callback'
-    | '/chat'
     | '/planner'
     | '/privacy'
     | '/profile'
     | '/chat/$threadId'
     | '/trip/$id'
+    | '/chat'
   id:
     | '__root__'
     | '/'
     | '/auth-callback'
-    | '/chat'
     | '/planner'
     | '/privacy'
     | '/profile'
     | '/chat/$threadId'
     | '/trip/$id'
+    | '/chat/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AuthCallbackRoute: typeof AuthCallbackRoute
-  ChatRoute: typeof ChatRouteWithChildren
   PlannerRoute: typeof PlannerRoute
   PrivacyRoute: typeof PrivacyRoute
   ProfileRoute: typeof ProfileRoute
+  ChatThreadIdRoute: typeof ChatThreadIdRoute
   TripIdRoute: typeof TripIdRoute
+  ChatIndexRoute: typeof ChatIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -156,13 +157,6 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof PlannerRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/chat': {
-      id: '/chat'
-      path: '/chat'
-      fullPath: '/chat'
-      preLoaderRoute: typeof ChatRouteImport
-      parentRoute: typeof rootRouteImport
-    }
     '/auth-callback': {
       id: '/auth-callback'
       path: '/auth-callback'
@@ -177,6 +171,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/chat/': {
+      id: '/chat/'
+      path: '/chat'
+      fullPath: '/chat/'
+      preLoaderRoute: typeof ChatIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/trip/$id': {
       id: '/trip/$id'
       path: '/trip/$id'
@@ -186,32 +187,23 @@ declare module '@tanstack/react-router' {
     }
     '/chat/$threadId': {
       id: '/chat/$threadId'
-      path: '/$threadId'
+      path: '/chat/$threadId'
       fullPath: '/chat/$threadId'
       preLoaderRoute: typeof ChatThreadIdRouteImport
-      parentRoute: typeof ChatRoute
+      parentRoute: typeof rootRouteImport
     }
   }
 }
 
-interface ChatRouteChildren {
-  ChatThreadIdRoute: typeof ChatThreadIdRoute
-}
-
-const ChatRouteChildren: ChatRouteChildren = {
-  ChatThreadIdRoute: ChatThreadIdRoute,
-}
-
-const ChatRouteWithChildren = ChatRoute._addFileChildren(ChatRouteChildren)
-
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AuthCallbackRoute: AuthCallbackRoute,
-  ChatRoute: ChatRouteWithChildren,
   PlannerRoute: PlannerRoute,
   PrivacyRoute: PrivacyRoute,
   ProfileRoute: ProfileRoute,
+  ChatThreadIdRoute: ChatThreadIdRoute,
   TripIdRoute: TripIdRoute,
+  ChatIndexRoute: ChatIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

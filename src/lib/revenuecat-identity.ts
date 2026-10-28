@@ -9,9 +9,13 @@ let configured = false;
  */
 export async function ensureRevenueCatIdentity(appUserId: string) {
   if (!Capacitor.isNativePlatform()) return;
-  const apiKey = import.meta.env.VITE_REVENUECAT_ANDROID_SDK_KEY;
+  // RevenueCat issues one public SDK key per store.
+  const isIos = Capacitor.getPlatform() === "ios";
+  const apiKey = isIos
+    ? import.meta.env.VITE_REVENUECAT_IOS_SDK_KEY
+    : import.meta.env.VITE_REVENUECAT_ANDROID_SDK_KEY;
   if (!apiKey) {
-    console.error("[RevenueCat] Missing VITE_REVENUECAT_ANDROID_SDK_KEY");
+    console.error(`[RevenueCat] Missing ${isIos ? "VITE_REVENUECAT_IOS_SDK_KEY" : "VITE_REVENUECAT_ANDROID_SDK_KEY"}`);
     return;
   }
   const { Purchases } = await import("@revenuecat/purchases-capacitor");

@@ -1,8 +1,11 @@
 import { useEffect, useRef, useState } from "react";
 import { Loader2 } from "lucide-react";
+import { Capacitor } from "@capacitor/core";
 import { cn } from "@/lib/utils";
 
 export type AutocompleteOption = { id: string; label: string; sublabel?: string };
+
+const IS_IOS = Capacitor.getPlatform() === "ios";
 
 interface PlaceAutocompleteProps {
   value: string;
@@ -111,7 +114,7 @@ export function PlaceAutocomplete({
   const showInvalidHint = !disabled && !selected && value.trim().length > 0 && !open && Boolean(invalidHint);
 
   return (
-    <div ref={containerRef} className="relative">
+    <div ref={containerRef} className="relative scroll-mt-[calc(6rem+env(safe-area-inset-top))]">
       <input
         ref={inputRef}
         type="text"
@@ -129,6 +132,9 @@ export function PlaceAutocomplete({
         onChange={(e) => onChangeText(e.target.value)}
         onFocus={() => {
           if (options.length && value.trim().length >= minChars) setOpen(true);
+          if (IS_IOS) {
+            setTimeout(() => containerRef.current?.scrollIntoView({ block: "start", behavior: "smooth" }), 350);
+          }
         }}
         onKeyDown={handleKeyDown}
         className={cn("input", showInvalidHint && "input-invalid")}

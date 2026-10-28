@@ -21,10 +21,12 @@ const errorMiddleware = createMiddleware().server(async ({ next }) => {
 export const startInstance = createStart(() => ({
   serverFns: {
     fetch: (url, init) => {
+      // Packaged app: Android serves the bundle from https://localhost,
+      // iOS from capacitor://localhost (WKWebView cannot use https:// there).
       const isCapacitor =
         typeof window !== "undefined" &&
-        window.location.protocol === "https:" &&
-        window.location.hostname === "localhost";
+        window.location.hostname === "localhost" &&
+        (window.location.protocol === "https:" || window.location.protocol === "capacitor:");
       let target = url;
       if (isCapacitor) {
         const origin = "https://personal-trip-creator.lovable.app";

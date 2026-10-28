@@ -7,6 +7,14 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } f
 import { Button } from "@/components/ui/button";
 
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.journeypilot.ai";
+// App Store guideline 3.1.2 asks subscription screens to link the Terms of Use (EULA) and
+// the privacy policy; Apple's standard EULA applies since the app has no custom one.
+const TERMS_URL =
+  Capacitor.getPlatform() === "ios"
+    ? "https://www.apple.com/legal/internet-services/itunes/dev/stdeula/"
+    : "https://play.google.com/about/play-terms/";
+// Must match the entitlement identifier in RevenueCat (and PREMIUM_ENTITLEMENT_ID server-side).
+const ENTITLEMENT_ID = "journeypilot_ai_premium";
 
 export function PaywallDialog({
   open,
@@ -20,6 +28,7 @@ export function PaywallDialog({
   const { t } = useTranslation();
   const isNative = Capacitor.isNativePlatform();
   const [loading, setLoading] = useState(false);
+  const [restoring, setRestoring] = useState(false);
   const [priceLabel, setPriceLabel] = useState<string | null>(null);
 
   useEffect(() => {
@@ -47,8 +56,7 @@ export function PaywallDialog({
       const pkg = current?.availablePackages[0];
       if (!pkg) throw new Error("No subscription package available.");
       const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
-      // Must match the entitlement identifier in RevenueCat (and PREMIUM_ENTITLEMENT_ID server-side).
-      if (customerInfo.entitlements.active["journeypilot_ai_premium"]) {
+      if (customerInfo.entitlements.active[ENTITLEMENT_ID]) {
         onSubscribed();
       }
     } catch (err: unknown) {
@@ -56,6 +64,24 @@ export function PaywallDialog({
       if (!userCancelled) toast.error(err instanceof Error ? err.message : String(err));
     } finally {
       setLoading(false);
+    }
+  };
+
+  // Required by App Store guideline 3.1.1 (restore mechanism); also useful after a reinstall on Android.
+  const onRestore = async () => {
+    setRestoring(true);
+    try {
+      const { Purchases } = await import("@revenuecat/purchases-capacitor");
+      const { customerInfo } = await Purchases.restorePurchases();
+      if (customerInfo.entitlements.active[ENTITLEMENT_ID]) {
+        onSubscribed();
+      } else {
+        toast(t("paywall.restore_none"));
+      }
+    } catch (err) {
+      toast.error(err instanceof Error ? err.message : String(err));
+    } finally {
+      setRestoring(false);
     }
   };
 
@@ -76,10 +102,26 @@ export function PaywallDialog({
         </DialogHeader>
 
         {isNative ? (
-          <Button variant="accent" size="lg" className="w-full" disabled={loading} onClick={onSubscribe}>
-            {loading && <Loader2 className="h-4 w-4 animate-spin" />}
-            {t("paywall.subscribe")}
-          </Button>
+          <>
+            <Button variant="accent" size="lg" className="w-full" disabled={loading || restoring} onClick={onSubscribe}>
+              {loading && <Loader2 className="h-4 w-4 animate-spin" />}
+              {t("paywall.subscribe")}
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">{t("paywall.auto_renew")}</p>
+            <Button variant="ghost" size="sm" className="w-full" disabled={loading || restoring} onClick={onRestore}>
+              {restoring && <Loader2 className="h-4 w-4 animate-spin" />}
+              {t("paywall.restore")}
+            </Button>
+            <p className="text-center text-xs text-muted-foreground">
+              <a href={TERMS_URL} target="_blank" rel="noreferrer" className="underline underline-offset-2">
+                {t("paywall.terms")}
+              </a>
+              {" · "}
+              <a href="/privacy" className="underline underline-offset-2">
+                {t("paywall.privacy")}
+              </a>
+            </p>
+          </>
         ) : (
           <Button asChild variant="accent" size="lg" className="w-full">
             <a href={PLAY_STORE_URL} target="_blank" rel="noreferrer">

@@ -24,6 +24,7 @@
     "country_ph": "Japan, Morocco, Italy…",
     "city": "City",
     "city_ph": "Kyoto, Marrakech, Rome…",
+    "city_ph_any": "Type a city…",
     "days": "Days",
     "budget": "Budget",
     "currency": "Currency",
@@ -218,6 +219,7 @@
     "placeholder": "Where should we go next?",
     "send": "Send",
     "thinking": "Thinking…",
+    "preparing": "Preparing your assistant…",
     "no_threads": "No conversations yet"
   },
   "profile": {
@@ -232,12 +234,17 @@
     "subtitle": "Sign in to save your trips and pick up where you left off, on any device.",
     "log_in": "Log in",
     "log_out": "Log out",
+    "delete_account": "Delete account",
+    "delete_account_title": "Delete your account?",
+    "delete_account_desc": "Your account, trips, saved places and conversations will be permanently deleted. This cannot be undone. If you have a subscription, also cancel it in your store settings.",
+    "delete_account_confirm": "Delete permanently",
     "sign_in": "Sign in",
     "sign_up": "Sign up",
     "email": "Email",
     "password": "Password",
     "confirm_password": "Confirm password",
     "continue_with_google": "Continue with Google",
+    "continue_with_apple": "Continue with Apple",
     "or": "or",
     "check_email_title": "Check your email",
     "check_email_body": "We've sent you a confirmation link. Open it to finish creating your account.",
@@ -253,7 +260,12 @@
     "subtitle": "You've used your free trip. Subscribe for {{price}}/month to keep planning.",
     "subtitle_web": "You've used your free trip. Subscribe from the JourneyPilot Android app to keep planning.",
     "subscribe": "Subscribe",
-    "get_android_app": "Get the Android app"
+    "get_android_app": "Get the Android app",
+    "restore": "Restore purchases",
+    "restore_none": "No active subscription found for this account.",
+    "auto_renew": "Monthly subscription, renews automatically. Cancel anytime in your account settings.",
+    "terms": "Terms of Use",
+    "privacy": "Privacy Policy"
   },
   "common": { "cancel": "Cancel", "delete": "Delete", "save": "Save", "loading": "Loading…", "close": "Close" },
   "pose": {

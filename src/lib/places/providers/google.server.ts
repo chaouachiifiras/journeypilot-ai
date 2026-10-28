@@ -156,6 +156,53 @@ async function searchText(query: string, creds: { lovableKey: string; connection
   return json.places ?? [];
 }
 
+/**
+ * City autocomplete in any script/language (e.g. Arabic "روم" → "روما"), for the
+ * planner's city field when Photon can't help: Photon only indexes Latin-script
+ * names and only answers in en/de/fr. Returns [] on any failure so the caller can
+ * fall back to Photon.
+ */
+export async function autocompleteCities(query: string, countryCode: string, lang: string) {
+  const creds = googleCredentials();
+  if (!creds) return [];
+  try {
+    const res = await fetch(`${GATEWAY}/places/v1/places:autocomplete`, {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${creds.lovableKey}`,
+        "X-Connection-Api-Key": creds.connectionKey,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        input: query,
+        includedPrimaryTypes: ["(cities)"],
+        includedRegionCodes: [countryCode.toLowerCase()],
+        languageCode: lang,
+      }),
+    });
+    if (!res.ok) return [];
+    const json = (await res.json()) as {
+      suggestions?: Array<{
+        placePrediction?: {
+          structuredFormat?: { mainText?: { text?: string }; secondaryText?: { text?: string } };
+        };
+      }>;
+    };
+    const out: { name: string; admin?: string }[] = [];
+    for (const s of json.suggestions ?? []) {
+      const f = s.placePrediction?.structuredFormat;
+      const name = f?.mainText?.text;
+      if (!name) continue;
+      // secondaryText is "Region, Country" — keep only the region, like Photon's `state`.
+      const admin = f?.secondaryText?.text?.split(/[,،]/)[0]?.trim() || undefined;
+      out.push({ name, admin });
+    }
+    return out;
+  } catch {
+    return [];
+  }
+}
+
 /** Resolve a Google photo reference to a real, displayable photo URL. */
 export async function resolveGooglePhotoUrl(photoName: string, maxWidthPx = 900) {
   const creds = googleCredentials();

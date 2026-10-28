@@ -52,14 +52,9 @@ export const askCopilot = createServerFn({ method: "POST" })
       : "";
     const { text } = await generateText({
       model: gateway("google/gemini-3-flash-preview"),
-      messages: [
-        {
-          role: "system",
-          content:
-            "You are JourneyPilot Copilot — a concise, elegant travel companion. Answer in 3-6 short bullet points max. Give real-time, contextual, practical advice: what to do now, best next stop, photo timing, weather-aware suggestions, food and transport tips. Reply in the user's language.",
-        },
-        { role: "user", content: `${ctx}\n\n${data.question}` },
-      ],
+      instructions:
+        "You are JourneyPilot Copilot — a concise, elegant travel companion. Answer in 3-6 short bullet points max. Give real-time, contextual, practical advice: what to do now, best next stop, photo timing, weather-aware suggestions, food and transport tips. Reply in the user's language.",
+      messages: [{ role: "user", content: `${ctx}\n\n${data.question}` }],
     });
     return { text };
   });

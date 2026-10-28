@@ -24,6 +24,7 @@
     "country_ph": "Japon, Maroc, Italie…",
     "city": "Ville",
     "city_ph": "Kyoto, Marrakech, Rome…",
+    "city_ph_any": "Tapez une ville…",
     "days": "Jours",
     "budget": "Budget",
     "currency": "Devise",
@@ -218,6 +219,7 @@
     "placeholder": "Où partons-nous ?",
     "send": "Envoyer",
     "thinking": "Réflexion…",
+    "preparing": "Préparation de l'assistant…",
     "no_threads": "Aucune conversation"
   },
   "profile": {
@@ -232,12 +234,17 @@
     "subtitle": "Connectez-vous pour sauvegarder vos voyages et les retrouver sur n'importe quel appareil.",
     "log_in": "Se connecter",
     "log_out": "Se déconnecter",
+    "delete_account": "Supprimer mon compte",
+    "delete_account_title": "Supprimer votre compte ?",
+    "delete_account_desc": "Votre compte, vos voyages, vos lieux enregistrés et vos conversations seront définitivement supprimés. Cette action est irréversible. Si vous avez un abonnement, résiliez-le aussi dans les réglages de votre store.",
+    "delete_account_confirm": "Supprimer définitivement",
     "sign_in": "Connexion",
     "sign_up": "Inscription",
     "email": "E-mail",
     "password": "Mot de passe",
     "confirm_password": "Confirmer le mot de passe",
     "continue_with_google": "Continuer avec Google",
+    "continue_with_apple": "Continuer avec Apple",
     "or": "ou",
     "check_email_title": "Vérifiez vos e-mails",
     "check_email_body": "Nous vous avons envoyé un lien de confirmation. Ouvrez-le pour finaliser la création de votre compte.",
@@ -253,7 +260,12 @@
     "subtitle": "Vous avez utilisé votre voyage gratuit. Abonnez-vous pour {{price}} par mois pour continuer à planifier.",
     "subtitle_web": "Vous avez utilisé votre voyage gratuit. Abonnez-vous depuis l'application Android JourneyPilot pour continuer à planifier.",
     "subscribe": "S'abonner",
-    "get_android_app": "Télécharger l'application Android"
+    "get_android_app": "Télécharger l'application Android",
+    "restore": "Restaurer mes achats",
+    "restore_none": "Aucun abonnement actif trouvé sur ce compte.",
+    "auto_renew": "Abonnement mensuel renouvelé automatiquement. Résiliable à tout moment dans les réglages de votre compte.",
+    "terms": "Conditions d’utilisation",
+    "privacy": "Confidentialité"
   },
   "common": { "cancel": "Annuler", "delete": "Supprimer", "save": "Enregistrer", "loading": "Chargement…", "close": "Fermer" },
   "pose": {
