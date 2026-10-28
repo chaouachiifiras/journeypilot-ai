@@ -80,6 +80,7 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
             ? "border-b border-transparent bg-transparent"
             : "border-b border-border bg-background shadow-xs",
         )}
+        style={{ paddingTop: "var(--inset-top)" }}
       >
         <div className="container-page flex h-16 items-center justify-between gap-3">
           <Link to="/" className="group flex min-w-0 items-center gap-2.5">
@@ -179,7 +180,7 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
       <nav
         aria-label={t("brand")}
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card md:hidden"
-        style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
+        style={{ paddingBottom: "var(--inset-bottom)" }}
       >
         <div className="mx-auto grid h-[var(--tabbar-h)] max-w-md grid-cols-3 items-center px-4">
           {links.map((l) => {
