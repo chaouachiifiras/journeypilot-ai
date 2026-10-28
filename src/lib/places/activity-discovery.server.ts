@@ -78,7 +78,7 @@ const PRICE: Record<string, number> = {
  * Experience archetypes. Each is a real intent a traveller has in ANY
  * destination. Irrelevant ones simply return nothing (there is no ski resort
  * in Dubai and no desert safari in Tokyo), so categories are never forced.
- * Kept to 20 distinct intents: near-duplicate queries returned the same places
+ * Kept to 23 distinct intents: near-duplicate queries returned the same places
  * and only multiplied Google calls; Google types still add the finer categories.
  */
 const ARCHETYPES: Array<{ q: (d: string) => string; category: ActivityCategory; weight: number }> = [
@@ -87,6 +87,7 @@ const ARCHETYPES: Array<{ q: (d: string) => string; category: ActivityCategory; 
   { q: (d) => `historical sites in ${d}`, category: "historical", weight: 0.9 },
   { q: (d) => `cultural experiences in ${d}`, category: "cultural", weight: 0.85 },
   { q: (d) => `nature and outdoor activities in ${d}`, category: "nature", weight: 0.85 },
+  { q: (d) => `hiking trails near ${d}`, category: "hiking", weight: 0.75 },
   { q: (d) => `best beaches in ${d}`, category: "beach", weight: 0.8 },
   { q: (d) => `boat tour or cruise in ${d}`, category: "boat", weight: 0.85 },
   { q: (d) => `water sports and water activities in ${d}`, category: "water", weight: 0.8 },
@@ -100,7 +101,9 @@ const ARCHETYPES: Array<{ q: (d: string) => string; category: ActivityCategory; 
   { q: (d) => `shows concerts and live entertainment in ${d}`, category: "entertainment", weight: 0.75 },
   { q: (d) => `family activities with kids in ${d}`, category: "family", weight: 0.8 },
   { q: (d) => `luxury experiences in ${d}`, category: "luxury", weight: 0.75 },
+  { q: (d) => `romantic experiences for couples in ${d}`, category: "romantic", weight: 0.75 },
   { q: (d) => `authentic local experiences in ${d}`, category: "local", weight: 0.8 },
+  { q: (d) => `unusual and unique things to do in ${d}`, category: "unique", weight: 0.8 },
 ];
 
 /** Google types that describe a real, doable experience, with their category. */
