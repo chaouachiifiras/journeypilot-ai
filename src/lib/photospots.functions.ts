@@ -26,6 +26,7 @@ const Input = z.object({
 
 const DISCOVERY = "photo_spot_discovery";
 const IMAGES = "photo_spot_images";
+const SPOT_IMAGES_TTL_MS = 25 * 24 * 60 * 60 * 1000;
 
 export type PhotoSpotItem = {
   name: string;
@@ -140,7 +141,12 @@ export const getPhotoSpots = createServerFn({ method: "POST" })
         .eq("category", IMAGES)
         .eq("status", "ready")
         .maybeSingle();
-      photoCache = ((cachedImgs?.place_data as { photos?: Record<string, SpotPhoto | null> } | null)?.photos) ?? {};
+      const cachedData = cachedImgs?.place_data as
+        | { fetched_at?: string; photos?: Record<string, SpotPhoto | null> }
+        | null;
+      // Google photo URLs are signed and expire after about a month: re-resolve older imagery.
+      const age = cachedData?.fetched_at ? Date.now() - new Date(cachedData.fetched_at).getTime() : Infinity;
+      photoCache = age < SPOT_IMAGES_TTL_MS ? (cachedData?.photos ?? {}) : {};
     }
 
     const missing = visible.filter((s) => !(cacheKey(s) in photoCache));

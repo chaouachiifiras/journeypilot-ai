@@ -2,6 +2,7 @@ import { createFileRoute, useNavigate } from "@tanstack/react-router";
 import { useEffect } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { AuthGate } from "@/components/auth/AuthGate";
 import { useAnonSession } from "@/lib/anon-session";
 import { createThread, listThreads } from "@/lib/chat.functions";
 import { useQuery } from "@tanstack/react-query";
@@ -12,19 +13,19 @@ export const Route = createFileRoute("/chat")({
 });
 
 function ChatIndex() {
-  const { ready } = useAnonSession();
+  const { ready, isAnonymous } = useAnonSession();
   const navigate = useNavigate();
   const list = useServerFn(listThreads);
   const create = useServerFn(createThread);
 
   const { data: threads } = useQuery({
     queryKey: ["threads"],
-    enabled: ready,
+    enabled: ready && !isAnonymous,
     queryFn: () => list(),
   });
 
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || isAnonymous) return;
     if (threads === undefined) return;
     (async () => {
       if (threads.length > 0) {
@@ -34,7 +35,16 @@ function ChatIndex() {
         navigate({ to: "/chat/$threadId", params: { threadId: t.id } });
       }
     })();
-  }, [ready, threads, create, navigate]);
+  }, [ready, isAnonymous, threads, create, navigate]);
+
+  if (ready && isAnonymous) {
+    return (
+      <div className="min-h-screen pb-tabbar">
+        <AppHeader />
+        <AuthGate />
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen pb-tabbar">

@@ -561,12 +561,34 @@ export type Database = {
         }
         Relationships: []
       }
+      user_usage: {
+        Row: {
+          chat_questions: number
+          trips_created: number
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          chat_questions?: number
+          trips_created?: number
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          chat_questions?: number
+          trips_created?: number
+          updated_at?: string
+          user_id?: string
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never
     }
     Functions: {
       delete_my_account: { Args: never; Returns: undefined }
+      increment_usage: { Args: { kind: string }; Returns: number }
     }
     Enums: {
       [_ in never]: never

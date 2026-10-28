@@ -3,6 +3,11 @@ import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
 import { generateText } from "ai";
 import { z } from "zod";
 import { getGateway } from "./ai-gateway.server";
+import { hasActivePremiumEntitlement } from "./revenuecat.server";
+import { PAYWALL_ENABLED } from "./trips.functions";
+
+/** Free accounts get this many assistant questions, ever; after that Premium is required. */
+const FREE_CHAT_LIMIT = 3;
 
 const SYSTEM_PROMPT = `You are JourneyPilot AI — a warm, knowledgeable travel concierge.
 Give crisp, practical, delightful advice on destinations, itineraries, food, culture, safety, budgets, and hidden gems.
@@ -69,6 +74,26 @@ export const sendMessage = createServerFn({ method: "POST" })
   .handler(async ({ data, context }) => {
     const { supabase, userId } = context;
 
+    // Same reasoning as generateTripSkeleton: anonymous sessions are free to mint, so the
+    // quota has to be enforced here rather than only behind the client-side AuthGate.
+    const claims = context.claims as { is_anonymous?: boolean } | undefined;
+    if (claims?.is_anonymous) {
+      throw new Error("Unauthorized: sign in to use the assistant.");
+    }
+
+    if (PAYWALL_ENABLED) {
+      // user_usage, not chat_messages: messages vanish when a thread is deleted.
+      const { data: usage, error: usageErr } = await supabase
+        .from("user_usage")
+        .select("chat_questions")
+        .eq("user_id", userId)
+        .maybeSingle();
+      if (usageErr) throw new Error(usageErr.message);
+      if ((usage?.chat_questions ?? 0) >= FREE_CHAT_LIMIT && !(await hasActivePremiumEntitlement(userId))) {
+        throw new Error("PAYWALL_REQUIRED: Subscribe to JourneyPilot Premium to keep chatting with the assistant.");
+      }
+    }
+
     // Save user message
     await supabase.from("chat_messages").insert({
       thread_id: data.threadId,
@@ -97,6 +122,9 @@ export const sendMessage = createServerFn({ method: "POST" })
       model: gateway("google/gemini-3-flash-preview"),
       messages,
     });
+
+    // Counted only once the assistant actually answered, so a failed reply costs nothing.
+    await supabase.rpc("increment_usage", { kind: "chat" });
 
     await supabase.from("chat_messages").insert({
       thread_id: data.threadId,

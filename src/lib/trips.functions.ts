@@ -1,5 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
+import type { SupabaseClient } from "@supabase/supabase-js";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
+import type { Database } from "@/integrations/supabase/types";
 import { generateText } from "ai";
 import { z } from "zod";
 import { getGateway } from "./ai-gateway.server";
@@ -9,7 +11,7 @@ import { hasActivePremiumEntitlement } from "./revenuecat.server";
 const FREE_TRIP_LIMIT = 1;
 // Requires REVENUECAT_SECRET_API_KEY in Lovable secrets — without it, entitlement checks throw
 // and every user past their free trip is blocked. Set the secret before deploying this.
-const PAYWALL_ENABLED = true;
+export const PAYWALL_ENABLED = true;
 
 const TripInput = z.object({
   country: z.string().min(1),
@@ -128,6 +130,23 @@ function parseJson(text: string): unknown {
   }
 }
 
+/**
+ * Free-trip quota, read from user_usage rather than by counting trips: users can delete
+ * their own trips, which would otherwise hand them a new free trip each time.
+ */
+async function assertTripQuota(supabase: SupabaseClient<Database>, userId: string) {
+  if (!PAYWALL_ENABLED) return;
+  const { data: usage, error } = await supabase
+    .from("user_usage")
+    .select("trips_created")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw new Error(error.message);
+  if ((usage?.trips_created ?? 0) >= FREE_TRIP_LIMIT && !(await hasActivePremiumEntitlement(userId))) {
+    throw new Error("PAYWALL_REQUIRED: Subscribe to JourneyPilot Premium to create more trips.");
+  }
+}
+
 /** Step 1 — creates the trip row and its narrative skeleton (no real venues). */
 export const generateTripSkeleton = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
@@ -143,19 +162,7 @@ export const generateTripSkeleton = createServerFn({ method: "POST" })
       throw new Error("Unauthorized: sign in to create a trip.");
     }
 
-    const { count, error: countErr } = await supabase
-      .from("trips")
-      .select("id", { count: "exact", head: true })
-      .eq("user_id", userId)
-      .neq("status", "error"); // a failed generation must never burn the user's one free trip
-    if (countErr) throw new Error(countErr.message);
-
-    if (PAYWALL_ENABLED && (count ?? 0) >= FREE_TRIP_LIMIT) {
-      const entitled = await hasActivePremiumEntitlement(userId);
-      if (!entitled) {
-        throw new Error("PAYWALL_REQUIRED: Subscribe to JourneyPilot Premium to create more trips.");
-      }
-    }
+    await assertTripQuota(supabase, userId);
 
     const { data: inserted, error: insertErr } = await supabase
       .from("trips")
@@ -221,8 +228,11 @@ export const generateTripPlan = createServerFn({ method: "POST" })
   .middleware([requireSupabaseAuth])
   .inputValidator((raw: unknown) => TripInput.extend({ id: z.string().uuid() }).parse(raw))
   .handler(async ({ data, context }) => {
-    const { supabase } = context;
+    const { supabase, userId } = context;
     const tripId = data.id;
+    // Checked again here: this endpoint is callable on its own, and the trip only counts
+    // against the quota once its plan is generated (below), so a failure never burns it.
+    await assertTripQuota(supabase, userId);
     try {
       const gateway = getGateway();
       const { text } = await generateText({
@@ -231,6 +241,7 @@ export const generateTripPlan = createServerFn({ method: "POST" })
       });
       const plan = parseJson(text);
       await supabase.from("trips").update({ plan: plan as never, status: "ready" }).eq("id", tripId);
+      await supabase.rpc("increment_usage", { kind: "trip" });
       return { id: tripId };
     } catch (err) {
       await supabase.from("trips").update({ status: "error" }).eq("id", tripId);

@@ -18,6 +18,7 @@ import { useAnonSession } from "@/lib/anon-session";
 import { generateTripSkeleton, generateTripPlan } from "@/lib/trips.functions";
 import { searchCities } from "@/lib/geocoding.functions";
 import { getCountryOptions, filterCountries } from "@/lib/countries";
+import { cityExamplesFor } from "@/lib/city-examples";
 import { cn } from "@/lib/utils";
 
 export const Route = createFileRoute("/planner")({
@@ -262,7 +263,7 @@ function Planner() {
                 selected={citySelected}
                 disabled={!countrySelected}
                 disabledHint={t("planner.autocomplete.city_locked")}
-                placeholder={t("planner.city_ph")}
+                placeholder={countryCode ? cityExamplesFor(countryCode) ?? t("planner.city_ph_any") : t("planner.city_ph")}
                 autoComplete="address-level2"
                 minChars={1}
                 debounceMs={350}
@@ -271,7 +272,7 @@ function Planner() {
                 search={(q) =>
                   countryCode
                     ? fetchCities({ data: { query: q, countryCode, language: i18n.language.split("-")[0] ?? "en" } }).then((rows) =>
-                        rows.map((r) => ({ id: `${r.lat},${r.lng}`, label: r.name, sublabel: r.admin })),
+                        rows.map((r) => ({ id: `${r.name}|${r.admin ?? ""}`, label: r.name, sublabel: r.admin })),
                       )
                     : Promise.resolve([])
                 }

@@ -1,6 +1,6 @@
 import { Link, useRouterState } from "@tanstack/react-router";
 import { useTranslation } from "react-i18next";
-import { Check, Compass, Globe, Luggage, Plus } from "lucide-react";
+import { Check, Compass, Globe, Luggage, MessageCircle, Plus } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import i18n, { applyLangDir } from "@/lib/i18n";
 import logo from "@/assets/logo-mark.png";
@@ -64,8 +64,7 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
   const links = [
     { to: "/", label: t("nav.home"), icon: Compass },
     { to: "/planner", label: t("nav.plan"), icon: Plus },
-    // Assistant chat nav link hidden for free launch; route /chat still exists (future Premium).
-    // { to: "/chat", label: t("nav.chat") },
+    { to: "/chat", label: t("nav.chat"), icon: MessageCircle },
     { to: "/profile", label: t("auth.my_trips"), icon: Luggage },
   ] as const;
 
@@ -191,7 +190,7 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card md:hidden"
         style={{ paddingBottom: "env(safe-area-inset-bottom, 0px)" }}
       >
-        <div className="mx-auto grid h-[var(--tabbar-h)] max-w-md grid-cols-3 items-center px-4">
+        <div className="mx-auto grid h-[var(--tabbar-h)] max-w-md grid-cols-4 items-center px-4">
           {links.map((l) => {
             const active = isActive(l.to);
             if (l.to === "/planner") {

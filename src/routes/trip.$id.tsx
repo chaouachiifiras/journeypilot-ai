@@ -23,6 +23,7 @@ import { getPhotoSpots } from "@/lib/photospots.functions";
 import { getPlacePhotos, type PlacePhotoLite } from "@/lib/place-photos.functions";
 import { useAnonSession } from "@/lib/anon-session";
 import { cn } from "@/lib/utils";
+import { markImageBroken, useBrokenImages } from "@/lib/broken-images";
 import { openDirections, openMapSearch, googleSearchUrl, googleDirectionsUrl } from "@/lib/maps";
 
 export const Route = createFileRoute("/trip/$id")({
@@ -207,7 +208,8 @@ function TripView() {
     staleTime: 30 * 60 * 1000,
     queryFn: () => fetchPhotos({ data: { city: tripData!.city!, country: tripData!.country!, places } }),
   });
-  const cover = places.map((p) => photos?.[p.name]).find((p) => p?.url) ?? null;
+  const isBroken = useBrokenImages();
+  const cover = places.map((p) => photos?.[p.name]).find((p) => p?.url && !isBroken(p.url)) ?? null;
 
   if (ready && isAnonymous) {
     return (
@@ -267,7 +269,12 @@ function TripView() {
       {/* ---------------- Cinematic destination header ---------------- */}
       <section className="relative isolate overflow-hidden bg-ink text-white">
         {cover?.url ? (
-          <img src={cover.url} alt="" className="animate-kenburns absolute inset-0 -z-20 h-full w-full object-cover" />
+          <img
+            src={cover.url}
+            alt=""
+            onError={() => markImageBroken(cover.url)}
+            className="animate-kenburns absolute inset-0 -z-20 h-full w-full object-cover"
+          />
         ) : (
           <div className="absolute inset-0 -z-20 bg-gradient-brand">
             <TopoPattern />
@@ -867,7 +874,7 @@ function TimelineSlotCard({
   label,
   slot,
   currency,
-  photo,
+  photo: photoProp,
 }: {
   label: (typeof ITINERARY_SLOTS)[number];
   slot: Slot;
@@ -877,6 +884,9 @@ function TimelineSlotCard({
   const { t } = useTranslation();
   const Icon = SLOT_ICON[label];
   const [detailOpen, setDetailOpen] = useState(false);
+  // An expired/broken photo URL falls back to the icon placeholder (and hides its credit).
+  const isBroken = useBrokenImages();
+  const photo = photoProp?.url && !isBroken(photoProp.url) ? photoProp : null;
 
   return (
     <div className="relative">
@@ -895,6 +905,7 @@ function TimelineSlotCard({
             <img
               src={photo.url}
               alt={slot.name || t(`trip.slots.${label}`)}
+              onError={() => markImageBroken(photo.url)}
               loading="lazy"
               decoding="async"
               className="absolute inset-0 h-full w-full object-cover transition-transform duration-700 hover:scale-[1.03]"
@@ -1004,7 +1015,12 @@ function SlotDetailSheet({
             className="relative block h-80 w-full overflow-hidden bg-secondary text-start sm:h-[28rem]"
           >
             {photo?.url ? (
-              <img src={photo.url} alt={slot.name || t(`trip.slots.${label}`)} className="absolute inset-0 h-full w-full object-cover" />
+              <img
+                src={photo.url}
+                alt={slot.name || t(`trip.slots.${label}`)}
+                onError={() => markImageBroken(photo.url)}
+                className="absolute inset-0 h-full w-full object-cover"
+              />
             ) : (
               <div className="absolute inset-0 flex items-center justify-center bg-gradient-brand">
                 <TopoPattern />

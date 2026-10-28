@@ -7,6 +7,8 @@ import { useTranslation } from "react-i18next";
 import ReactMarkdown from "react-markdown";
 import { Plus, Send, Trash2, MessageSquare, Sparkles, Loader2 } from "lucide-react";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { AuthGate } from "@/components/auth/AuthGate";
+import { PaywallDialog } from "@/components/paywall/PaywallDialog";
 import { useAnonSession } from "@/lib/anon-session";
 import { listThreads, createThread, deleteThread, listMessages, sendMessage } from "@/lib/chat.functions";
 import { cn } from "@/lib/utils";
@@ -20,7 +22,7 @@ type Msg = { id: string; role: "user" | "assistant"; message: { content: string 
 
 function ChatThread() {
   const { threadId } = Route.useParams();
-  const { ready } = useAnonSession();
+  const { ready, isAnonymous } = useAnonSession();
   const { t } = useTranslation();
   const qc = useQueryClient();
   const navigate = useNavigate();
@@ -33,18 +35,21 @@ function ChatThread() {
 
   const [input, setInput] = useState("");
   const [pending, setPending] = useState(false);
+  const [paywallOpen, setPaywallOpen] = useState(false);
+  // Question held back by the paywall, sent again once the user subscribes.
+  const blockedRef = useRef<string | null>(null);
   const scrollRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLTextAreaElement>(null);
 
   const { data: threads = [] } = useQuery({
     queryKey: ["threads"],
-    enabled: ready,
+    enabled: ready && !isAnonymous,
     queryFn: () => listT(),
   });
 
   const { data: messages = [] } = useQuery({
     queryKey: ["messages", threadId],
-    enabled: ready && !!threadId,
+    enabled: ready && !isAnonymous && !!threadId,
     queryFn: () => listM({ data: { threadId } }) as Promise<Msg[]>,
   });
 
@@ -56,8 +61,8 @@ function ChatThread() {
     inputRef.current?.focus();
   }, [threadId]);
 
-  const onSend = async () => {
-    const text = input.trim();
+  const onSend = async (resend?: string) => {
+    const text = (resend ?? input).trim();
     if (!text || pending) return;
     setInput("");
     setPending(true);
@@ -76,7 +81,16 @@ function ChatThread() {
       await qc.invalidateQueries({ queryKey: ["messages", threadId] });
       await qc.invalidateQueries({ queryKey: ["threads"] });
     } catch (err) {
-      toast.error(err instanceof Error ? err.message : "Failed");
+      const message = err instanceof Error ? err.message : String(err);
+      if (message.startsWith("PAYWALL_REQUIRED")) {
+        // The server refused before saving anything: drop the optimistic bubble, keep the text.
+        qc.setQueryData<Msg[]>(["messages", threadId], (old = []) => old.filter((m) => m.id !== optimistic.id));
+        setInput(text);
+        blockedRef.current = text;
+        setPaywallOpen(true);
+      } else {
+        toast.error(message || "Failed");
+      }
     } finally {
       setPending(false);
       inputRef.current?.focus();
@@ -99,8 +113,17 @@ function ChatThread() {
     }
   };
 
+  if (ready && isAnonymous) {
+    return (
+      <div className="min-h-screen pb-tabbar">
+        <AppHeader />
+        <AuthGate />
+      </div>
+    );
+  }
+
   return (
-    <div className="min-h-screen flex flex-col">
+    <div className="min-h-screen flex flex-col pb-tabbar">
       <AppHeader />
       <div className="mx-auto flex flex-1 w-full max-w-6xl gap-6 px-4 md:px-6 py-6">
         {/* Sidebar */}
@@ -234,7 +257,7 @@ function ChatThread() {
                 className="flex-1 resize-none bg-transparent px-2 py-1.5 text-sm outline-none max-h-32"
               />
               <button
-                onClick={onSend}
+                onClick={() => onSend()}
                 disabled={pending || !input.trim()}
                 className="inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-primary text-primary-foreground disabled:opacity-40 transition-opacity hover:opacity-90"
                 aria-label={t("chat.send")}
@@ -245,6 +268,20 @@ function ChatThread() {
           </div>
         </main>
       </div>
+
+      <PaywallDialog
+        open={paywallOpen}
+        onOpenChange={setPaywallOpen}
+        onSubscribed={() => {
+          setPaywallOpen(false);
+          const text = blockedRef.current;
+          blockedRef.current = null;
+          if (text) {
+            setInput("");
+            onSend(text);
+          }
+        }}
+      />
     </div>
   );
 }

@@ -24,6 +24,7 @@
     "country_ph": "日本、摩洛哥、意大利…",
     "city": "城市",
     "city_ph": "京都、马拉喀什、罗马…",
+    "city_ph_any": "输入城市…",
     "days": "天数",
     "budget": "预算",
     "currency": "货币",

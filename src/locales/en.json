@@ -24,6 +24,7 @@
     "country_ph": "Japan, Morocco, Italy…",
     "city": "City",
     "city_ph": "Kyoto, Marrakech, Rome…",
+    "city_ph_any": "Type a city…",
     "days": "Days",
     "budget": "Budget",
     "currency": "Currency",

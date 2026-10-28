@@ -135,7 +135,7 @@ export async function geocodeCity(city: string, country: string): Promise<GeoAre
   });
 }
 
-export type SettlementMatch = { name: string; admin?: string; lat: number; lng: number };
+export type SettlementMatch = { name: string; admin?: string; lat?: number; lng?: number };
 
 const SETTLEMENT_TTL = 60 * 60 * 1000;
 const settlementCache = new Map<string, CacheEntry<SettlementMatch[]>>();
