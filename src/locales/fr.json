@@ -257,15 +257,21 @@
   },
   "paywall": {
     "title": "Passer à Premium",
-    "subtitle": "Vous avez utilisé votre voyage gratuit. Abonnez-vous pour {{price}} par mois pour continuer à planifier.",
+    "subtitle": "Vous avez utilisé votre voyage gratuit. Choisissez une formule pour continuer à planifier.",
     "subtitle_web": "Vous avez utilisé votre voyage gratuit. Abonnez-vous depuis l'application Android JourneyPilot pour continuer à planifier.",
     "subscribe": "S'abonner",
     "get_android_app": "Télécharger l'application Android",
     "restore": "Restaurer mes achats",
     "restore_none": "Aucun abonnement actif trouvé sur ce compte.",
-    "auto_renew": "Abonnement mensuel renouvelé automatiquement. Résiliable à tout moment dans les réglages de votre compte.",
+    "auto_renew": "Renouvellement automatique. Résiliable à tout moment dans les réglages de votre compte.",
     "terms": "Conditions d’utilisation",
-    "privacy": "Confidentialité"
+    "privacy": "Confidentialité",
+    "plan_annual": "Annuel",
+    "plan_monthly": "Mensuel",
+    "per_year": "{{price}} / an",
+    "per_month": "{{price}} / mois",
+    "annual_equiv": "Soit {{price}} / mois",
+    "save": "−{{percent}} %"
   },
   "common": { "cancel": "Annuler", "delete": "Supprimer", "save": "Enregistrer", "loading": "Chargement…", "close": "Fermer" },
   "pose": {

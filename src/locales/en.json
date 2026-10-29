@@ -257,15 +257,21 @@
   },
   "paywall": {
     "title": "Upgrade to Premium",
-    "subtitle": "You've used your free trip. Subscribe for {{price}}/month to keep planning.",
+    "subtitle": "You've used your free trip. Choose a plan to keep planning.",
     "subtitle_web": "You've used your free trip. Subscribe from the JourneyPilot Android app to keep planning.",
     "subscribe": "Subscribe",
     "get_android_app": "Get the Android app",
     "restore": "Restore purchases",
     "restore_none": "No active subscription found for this account.",
-    "auto_renew": "Monthly subscription, renews automatically. Cancel anytime in your account settings.",
+    "auto_renew": "Renews automatically. Cancel anytime in your account settings.",
     "terms": "Terms of Use",
-    "privacy": "Privacy Policy"
+    "privacy": "Privacy Policy",
+    "plan_annual": "Yearly",
+    "plan_monthly": "Monthly",
+    "per_year": "{{price}} / year",
+    "per_month": "{{price}} / month",
+    "annual_equiv": "Just {{price}} / month",
+    "save": "Save {{percent}}%"
   },
   "common": { "cancel": "Cancel", "delete": "Delete", "save": "Save", "loading": "Loading…", "close": "Close" },
   "pose": {

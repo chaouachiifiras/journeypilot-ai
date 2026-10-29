@@ -257,15 +257,21 @@
   },
   "paywall": {
     "title": "Auf Premium upgraden",
-    "subtitle": "Sie haben Ihre kostenlose Reise bereits genutzt. Abonnieren Sie für {{price}} pro Monat, um weiter zu planen.",
+    "subtitle": "Du hast deine kostenlose Reise genutzt. Wähle ein Abo, um weiter zu planen.",
     "subtitle_web": "Sie haben Ihre kostenlose Reise bereits genutzt. Abonnieren Sie über die JourneyPilot Android-App, um weiter zu planen.",
     "subscribe": "Abonnieren",
     "get_android_app": "Android-App herunterladen",
     "restore": "Käufe wiederherstellen",
     "restore_none": "Für dieses Konto wurde kein aktives Abo gefunden.",
-    "auto_renew": "Monatsabo, verlängert sich automatisch. Jederzeit in den Kontoeinstellungen kündbar.",
+    "auto_renew": "Verlängert sich automatisch. Jederzeit in den Kontoeinstellungen kündbar.",
     "terms": "Nutzungsbedingungen",
-    "privacy": "Datenschutz"
+    "privacy": "Datenschutz",
+    "plan_annual": "Jährlich",
+    "plan_monthly": "Monatlich",
+    "per_year": "{{price}} / Jahr",
+    "per_month": "{{price}} / Monat",
+    "annual_equiv": "Nur {{price}} / Monat",
+    "save": "−{{percent}} %"
   },
   "common": { "cancel": "Abbrechen", "delete": "Löschen", "save": "Speichern", "loading": "Wird geladen…", "close": "Schließen" },
   "ui": {

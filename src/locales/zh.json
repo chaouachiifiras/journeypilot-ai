@@ -256,15 +256,21 @@
   },
   "paywall": {
     "title": "升级到高级版",
-    "subtitle": "您的免费行程已用完。订阅（每月 {{price}}）即可继续规划。",
+    "subtitle": "你已使用免费行程。选择一个方案继续规划。",
     "subtitle_web": "您的免费行程已用完。请从 JourneyPilot 安卓应用订阅以继续规划。",
     "subscribe": "订阅",
     "get_android_app": "获取安卓应用",
     "restore": "恢复购买",
     "restore_none": "此账户未找到有效订阅。",
-    "auto_renew": "按月订阅，自动续订。可随时在账户设置中取消。",
+    "auto_renew": "自动续订。可随时在账户设置中取消。",
     "terms": "使用条款",
-    "privacy": "隐私政策"
+    "privacy": "隐私政策",
+    "plan_annual": "年度",
+    "plan_monthly": "月度",
+    "per_year": "{{price}} / 年",
+    "per_month": "{{price}} / 月",
+    "annual_equiv": "仅 {{price}} / 月",
+    "save": "省 {{percent}}%"
   },
   "common": { "cancel": "取消", "delete": "删除", "save": "保存", "loading": "加载中…", "close": "关闭" },
   "ui": {

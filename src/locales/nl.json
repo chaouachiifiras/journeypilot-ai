@@ -257,15 +257,21 @@
   },
   "paywall": {
     "title": "Upgraden naar Premium",
-    "subtitle": "U heeft uw gratis reis gebruikt. Abonneer u voor {{price}} per maand om te blijven plannen.",
+    "subtitle": "Je hebt je gratis reis gebruikt. Kies een abonnement om verder te plannen.",
     "subtitle_web": "U heeft uw gratis reis gebruikt. Abonneer u via de JourneyPilot Android-app om te blijven plannen.",
     "subscribe": "Abonneren",
     "get_android_app": "Download de Android-app",
     "restore": "Aankopen herstellen",
     "restore_none": "Geen actief abonnement gevonden voor dit account.",
-    "auto_renew": "Maandabonnement, wordt automatisch verlengd. Op elk moment opzegbaar in je accountinstellingen.",
+    "auto_renew": "Wordt automatisch verlengd. Op elk moment op te zeggen in je accountinstellingen.",
     "terms": "Gebruiksvoorwaarden",
-    "privacy": "Privacy"
+    "privacy": "Privacy",
+    "plan_annual": "Jaarlijks",
+    "plan_monthly": "Maandelijks",
+    "per_year": "{{price}} / jaar",
+    "per_month": "{{price}} / maand",
+    "annual_equiv": "Slechts {{price}} / maand",
+    "save": "−{{percent}}%"
   },
   "common": { "cancel": "Annuleren", "delete": "Verwijderen", "save": "Opslaan", "loading": "Laden…", "close": "Sluiten" },
   "ui": {
