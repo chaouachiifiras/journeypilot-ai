@@ -233,6 +233,8 @@
     "title": "Bienvenue",
     "subtitle": "Connectez-vous pour sauvegarder vos voyages et les retrouver sur n'importe quel appareil.",
     "log_in": "Se connecter",
+    "go_premium": "Passer à Premium",
+    "premium_active": "Premium actif",
     "log_out": "Se déconnecter",
     "delete_account": "Supprimer mon compte",
     "delete_account_title": "Supprimer votre compte ?",

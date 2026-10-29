@@ -236,6 +236,8 @@
     "title": "مرحباً بك",
     "subtitle": "سجّل الدخول لحفظ رحلاتك ومتابعتها من أي جهاز.",
     "log_in": "تسجيل الدخول",
+    "go_premium": "الترقية إلى Premium",
+    "premium_active": "Premium مفعّل",
     "log_out": "تسجيل الخروج",
     "delete_account": "حذف الحساب",
     "delete_account_title": "هل تريد حذف حسابك؟",

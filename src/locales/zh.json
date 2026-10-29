@@ -232,6 +232,8 @@
     "title": "欢迎",
     "subtitle": "登录以保存您的行程，并在任意设备上继续查看。",
     "log_in": "登录",
+    "go_premium": "升级到 Premium",
+    "premium_active": "Premium 已激活",
     "log_out": "退出登录",
     "delete_account": "删除账户",
     "delete_account_title": "删除您的账户？",
