@@ -28,7 +28,9 @@ const Input = z.object({
       }),
     )
     .min(1)
-    .max(40),
+    // A 30-day trip has 6 slots a day; the old cap of 40 rejected every trip of 7+ days
+    // outright, so none of their photos loaded.
+    .max(200),
 });
 
 export type PlacePhotoLite = {
@@ -84,17 +86,23 @@ export const getPlacePhotos = createServerFn({ method: "POST" })
 
     if (missing.length) {
       const { bestPhotoForSpot } = await import("@/lib/places/photospot.server");
-      const resolved = await Promise.all(
-        missing.map(async (p) => {
-          const photo = await bestPhotoForSpot(
-            { name: p.name, lat: p.lat, lng: p.lng },
-            data.city,
-            data.country,
-            { preferExterior: true },
-          ).catch(() => null);
-          return { key: placeKey(p.name, data.city), name: p.name, photo };
-        }),
-      );
+      // A few lookups at a time: each one makes several Google/Wikimedia/cache requests,
+      // and firing 40+ at once overloads the server runtime.
+      const resolved: Array<{ key: string; name: string; photo: Awaited<ReturnType<typeof bestPhotoForSpot>> | null }> = [];
+      for (let i = 0; i < missing.length; i += 8) {
+        const batch = await Promise.all(
+          missing.slice(i, i + 8).map(async (p) => {
+            const photo = await bestPhotoForSpot(
+              { name: p.name, lat: p.lat, lng: p.lng },
+              data.city,
+              data.country,
+              { preferExterior: true },
+            ).catch(() => null);
+            return { key: placeKey(p.name, data.city), name: p.name, photo };
+          }),
+        );
+        resolved.push(...batch);
+      }
 
       await supabase.from("place_photos").upsert(
         resolved.map((r) => ({
