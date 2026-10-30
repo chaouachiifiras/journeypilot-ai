@@ -27,5 +27,21 @@ export const searchCities = createServerFn({ method: "POST" })
       const google = await autocompleteCities(data.query, data.countryCode, data.language);
       if (google.length) return google;
     }
-    return searchSettlements(data.query, data.countryCode, data.language);
+    const photon = await searchSettlements(data.query, data.countryCode, data.language);
+    // Photon types some major cities as provinces/states (Tokyo is a "province"), which the
+    // settlement filter drops, leaving only small namesakes (e.g. 東洋町 for "Tokyo"). When no
+    // result starts with what was typed, ask Google and put its matches first.
+    const typed = normalizeName(data.query);
+    if (typed.length >= 3 && !photon.some((r) => normalizeName(r.name).startsWith(typed))) {
+      const google = await autocompleteCities(data.query, data.countryCode, data.language);
+      if (google.length) {
+        const seen = new Set(google.map((r) => normalizeName(r.name)));
+        return [...google, ...photon.filter((r) => !seen.has(normalizeName(r.name)))].slice(0, 8);
+      }
+    }
+    return photon;
   });
+
+function normalizeName(value: string) {
+  return value.toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "").trim();
+}
