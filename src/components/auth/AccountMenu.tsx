@@ -109,20 +109,23 @@ export function AccountMenu({ onImage = false }: { onImage?: boolean }) {
           </DropdownMenuItem>
           {isNative &&
             (isPremium ? (
-              <DropdownMenuItem disabled className="text-primary opacity-100">
-                <Crown />
-                {t("auth.premium_active")}
-              </DropdownMenuItem>
+              <>
+                <DropdownMenuItem disabled className="text-primary opacity-100">
+                  <Crown />
+                  {t("auth.premium_active")}
+                </DropdownMenuItem>
+                {/* Only subscribers have something to manage; for everyone else the store page is empty. */}
+                <DropdownMenuItem onClick={() => Browser.open({ url: SUBSCRIPTIONS_URL })}>
+                  <CreditCard />
+                  {t("auth.manage_subscription")}
+                </DropdownMenuItem>
+              </>
             ) : (
               <DropdownMenuItem onClick={() => setPaywallOpen(true)} className="font-semibold text-primary focus:text-primary">
                 <Crown />
                 {t("auth.go_premium")}
               </DropdownMenuItem>
             ))}
-          <DropdownMenuItem onClick={() => Browser.open({ url: SUBSCRIPTIONS_URL })}>
-            <CreditCard />
-            {t("auth.manage_subscription")}
-          </DropdownMenuItem>
           <DropdownMenuSeparator />
           <DropdownMenuItem onClick={() => signOut()} className="text-destructive focus:text-destructive">
             <LogOut />
