@@ -15,6 +15,7 @@ import { AuthGate } from "@/components/auth/AuthGate";
 import { PaywallDialog } from "@/components/paywall/PaywallDialog";
 import { PlaceAutocomplete, type AutocompleteOption } from "@/components/planner/PlaceAutocomplete";
 import { useAnonSession } from "@/lib/anon-session";
+import { logEvent } from "@/lib/analytics";
 import { generateTripSkeleton, generateTripPlan } from "@/lib/trips.functions";
 import { searchCities } from "@/lib/geocoding.functions";
 import { getCountryOptions, filterCountries } from "@/lib/countries";
@@ -166,6 +167,7 @@ function Planner() {
       const skeleton = await createSkeleton({ data: payload });
       setPhase(1);
       await createPlan({ data: { ...payload, id: skeleton.id } });
+      logEvent("trip_generated", { country: payload.country, days: payload.days });
       setPhase(2);
       navigate({ to: "/trip/$id", params: { id: skeleton.id } });
     } catch (err) {

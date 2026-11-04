@@ -17,6 +17,7 @@
   "dependencies": {
     "@ai-sdk/openai-compatible": "^3.0.7",
     "@ai-sdk/react": "^4.0.23",
+    "@capacitor-firebase/analytics": "^8.6.0",
     "@capacitor/android": "^8.5.1",
     "@capacitor/app": "^8",
     "@capacitor/browser": "^8",

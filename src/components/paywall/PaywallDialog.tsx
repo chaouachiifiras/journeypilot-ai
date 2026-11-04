@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
+import { logEvent } from "@/lib/analytics";
 
 const PLAY_STORE_URL = "https://play.google.com/store/apps/details?id=com.journeypilot.ai";
 // App Store guideline 3.1.2 asks subscription screens to link the Terms of Use (EULA) and
@@ -76,6 +77,12 @@ export function PaywallDialog({
       if (!pkg) throw new Error("No subscription package available.");
       const { customerInfo } = await Purchases.purchasePackage({ aPackage: pkg });
       if (customerInfo.entitlements.active[ENTITLEMENT_ID]) {
+        // GA4's standard purchase event, so Google Ads can import it with its value.
+        logEvent("purchase", {
+          value: pkg.product.price,
+          currency: pkg.product.currencyCode,
+          item_id: pkg.product.identifier,
+        });
         onSubscribed();
       }
     } catch (err: unknown) {

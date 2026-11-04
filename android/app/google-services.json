@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "518214982387",
+    "project_id": "journeypilot-ai",
+    "storage_bucket": "journeypilot-ai.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:518214982387:android:0678fd49bfc47b2e15b586",
+        "android_client_info": {
+          "package_name": "com.journeypilot.ai"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDPXH1qxN7qbuhXh5K2qVe8FAxr3re97pA"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
