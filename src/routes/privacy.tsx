@@ -11,7 +11,7 @@ function Privacy() {
       <AppHeader />
       <div className="mx-auto max-w-3xl px-6 py-16">
         <h1 className="font-display text-4xl tracking-tight">Politique de confidentialité</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Dernière mise à jour : 23 septembre 2026</p>
+        <p className="mt-2 text-sm text-muted-foreground">Dernière mise à jour : 4 novembre 2026</p>
 
         <div className="mt-10 space-y-8 text-sm leading-relaxed text-muted-foreground">
           <section>
@@ -42,6 +42,17 @@ function Privacy() {
                 d'usage de base (pages visitées, type d'appareil) pour le bon fonctionnement et l'amélioration du
                 service.
               </li>
+              <li>
+                <span className="text-foreground font-medium">Mesure d'audience (application mobile) :</span> des
+                événements d'utilisation (première ouverture, itinéraire généré, souscription d'un abonnement avec
+                son montant et sa devise), un identifiant d'installation de l'application et, sur Android,
+                l'identifiant publicitaire de l'appareil.
+              </li>
+              <li>
+                <span className="text-foreground font-medium">Abonnements :</span> l'état de votre abonnement
+                Premium. Le paiement est traité par l'App Store ou Google Play : nous n'avons jamais accès à vos
+                coordonnées bancaires.
+              </li>
             </ul>
           </section>
 
@@ -52,6 +63,11 @@ function Privacy() {
               <li>Générer et personnaliser vos itinéraires de voyage.</li>
               <li>Sauvegarder vos voyages pour que vous puissiez les retrouver sur n'importe quel appareil.</li>
               <li>Faire fonctionner et sécuriser l'application (authentification, prévention des abus).</li>
+              <li>Gérer votre abonnement Premium.</li>
+              <li>
+                Mesurer l'utilisation de l'application et l'efficacité de nos campagnes publicitaires (par exemple,
+                savoir combien d'installations et d'abonnements proviennent d'une publicité).
+              </li>
             </ul>
             <p className="mt-2">Nous ne vendons jamais vos données personnelles.</p>
           </section>
@@ -84,8 +100,16 @@ function Privacy() {
                 licence libre.
               </li>
               <li>
-                <span className="text-foreground font-medium">Google Sign-In</span> — connexion optionnelle par
-                compte Google.
+                <span className="text-foreground font-medium">Google Sign-In, Sign in with Apple</span> — connexion
+                optionnelle par compte Google ou Apple.
+              </li>
+              <li>
+                <span className="text-foreground font-medium">Google Firebase Analytics</span> — mesure d'audience
+                de l'application mobile et mesure des conversions de nos campagnes Google Ads.
+              </li>
+              <li>
+                <span className="text-foreground font-medium">RevenueCat</span> — gestion des abonnements achetés
+                via l'App Store ou Google Play.
               </li>
             </ul>
           </section>
@@ -94,7 +118,9 @@ function Privacy() {
             <h2 className="font-display text-xl text-foreground">5. Conservation des données</h2>
             <p className="mt-2">
               Vos voyages et votre compte sont conservés tant que vous utilisez l'application. Vous pouvez
-              demander la suppression complète de vos données à tout moment (voir Contact ci-dessous).
+              supprimer votre compte et toutes vos données à tout moment depuis le menu du compte ("Supprimer mon
+              compte"), ou en faire la demande par e-mail (voir Contact ci-dessous). Les données de mesure
+              d'audience sont conservées au maximum 14 mois par Google Analytics.
             </p>
           </section>
 
@@ -103,7 +129,13 @@ function Privacy() {
             <p className="mt-2">
               L'application utilise le stockage local de votre navigateur (localStorage/sessionStorage) pour
               maintenir votre session connectée, notamment via l'option "Rester connecté". Aucun cookie
-              publicitaire tiers n'est utilisé.
+              publicitaire tiers n'est utilisé sur le site web.
+            </p>
+            <p className="mt-2">
+              Dans l'application mobile, Firebase Analytics utilise un identifiant d'installation et, sur Android,
+              l'identifiant publicitaire. Vous pouvez réinitialiser ou supprimer l'identifiant publicitaire dans
+              les paramètres de votre appareil (Paramètres → Google → Annonces). Sur iOS, l'application n'accède
+              pas à l'identifiant publicitaire (IDFA).
             </p>
           </section>
 
