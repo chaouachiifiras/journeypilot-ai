@@ -1,177 +1,54 @@
 import { createFileRoute } from "@tanstack/react-router";
+import { useTranslation } from "react-i18next";
 import { AppHeader } from "@/components/layout/AppHeader";
+import { privacyPolicyFor } from "@/lib/privacy-policy";
+
+const CONTACT_EMAIL = "chaouachiifiras@gmail.com";
 
 export const Route = createFileRoute("/privacy")({
   component: Privacy,
 });
 
 function Privacy() {
+  const { i18n } = useTranslation();
+  const policy = privacyPolicyFor(i18n.language);
+
   return (
     <div className="min-h-screen pb-tabbar">
       <AppHeader />
       <div className="mx-auto max-w-3xl px-6 py-16">
-        <h1 className="font-display text-4xl tracking-tight">Politique de confidentialité</h1>
-        <p className="mt-2 text-sm text-muted-foreground">Dernière mise à jour : 4 novembre 2026</p>
+        <h1 className="font-display text-4xl tracking-tight">{policy.title}</h1>
+        <p className="mt-2 text-sm text-muted-foreground">{policy.updated}</p>
 
         <div className="mt-10 space-y-8 text-sm leading-relaxed text-muted-foreground">
-          <section>
-            <h2 className="font-display text-xl text-foreground">1. À propos</h2>
-            <p className="mt-2">
-              JourneyPilot AI ("nous", "l'application") est une application de planification de voyages assistée
-              par IA. Cette politique explique quelles données nous collectons, pourquoi, et comment vous pouvez
-              les contrôler.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="font-display text-xl text-foreground">2. Données que nous collectons</h2>
-            <ul className="mt-2 list-disc space-y-1.5 ps-5">
-              <li>
-                <span className="text-foreground font-medium">Compte :</span> si vous créez un compte, nous
-                stockons votre adresse e-mail et, si vous vous connectez avec Google, les informations de base de
-                votre profil Google (nom, e-mail). Vous pouvez aussi utiliser l'application en tant qu'invité, sans
-                créer de compte — une session anonyme est alors utilisée.
-              </li>
-              <li>
-                <span className="text-foreground font-medium">Voyages :</span> les informations que vous saisissez
-                pour générer un itinéraire (destination, dates, budget, style de voyage, centres d'intérêt,
-                préférences alimentaires, besoins d'accessibilité) et les itinéraires générés.
-              </li>
-              <li>
-                <span className="text-foreground font-medium">Données techniques :</span> des informations
-                d'usage de base (pages visitées, type d'appareil) pour le bon fonctionnement et l'amélioration du
-                service.
-              </li>
-              <li>
-                <span className="text-foreground font-medium">Mesure d'audience (application mobile) :</span> des
-                événements d'utilisation (première ouverture, itinéraire généré, souscription d'un abonnement avec
-                son montant et sa devise), un identifiant d'installation de l'application et, sur Android,
-                l'identifiant publicitaire de l'appareil.
-              </li>
-              <li>
-                <span className="text-foreground font-medium">Abonnements :</span> l'état de votre abonnement
-                Premium. Le paiement est traité par l'App Store ou Google Play : nous n'avons jamais accès à vos
-                coordonnées bancaires.
-              </li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="font-display text-xl text-foreground">3. Comment nous utilisons ces données</h2>
-            <p className="mt-2">Vos données servent uniquement à :</p>
-            <ul className="mt-2 list-disc space-y-1.5 ps-5">
-              <li>Générer et personnaliser vos itinéraires de voyage.</li>
-              <li>Sauvegarder vos voyages pour que vous puissiez les retrouver sur n'importe quel appareil.</li>
-              <li>Faire fonctionner et sécuriser l'application (authentification, prévention des abus).</li>
-              <li>Gérer votre abonnement Premium.</li>
-              <li>
-                Mesurer l'utilisation de l'application et l'efficacité de nos campagnes publicitaires (par exemple,
-                savoir combien d'installations et d'abonnements proviennent d'une publicité).
-              </li>
-            </ul>
-            <p className="mt-2">Nous ne vendons jamais vos données personnelles.</p>
-          </section>
-
-          <section>
-            <h2 className="font-display text-xl text-foreground">4. Services tiers</h2>
-            <p className="mt-2">
-              Pour fonctionner, l'application partage certaines données (destination, préférences) avec les
-              services suivants, uniquement dans la mesure nécessaire à la fonctionnalité concernée :
-            </p>
-            <ul className="mt-2 list-disc space-y-1.5 ps-5">
-              <li>
-                <span className="text-foreground font-medium">Supabase / Lovable Cloud</span> — hébergement de la
-                base de données et de l'authentification.
-              </li>
-              <li>
-                <span className="text-foreground font-medium">Fournisseurs de modèles IA</span> — génération du
-                contenu de l'itinéraire (texte uniquement, pas de données d'identification directe).
-              </li>
-              <li>
-                <span className="text-foreground font-medium">Google Maps / Places</span> — photos de lieux,
-                informations sur les hôtels/restaurants/activités.
-              </li>
-              <li>
-                <span className="text-foreground font-medium">OpenStreetMap (Nominatim), Photon</span> — recherche
-                et suggestion de villes/pays.
-              </li>
-              <li>
-                <span className="text-foreground font-medium">Wikimedia Commons</span> — photos de lieux sous
-                licence libre.
-              </li>
-              <li>
-                <span className="text-foreground font-medium">Google Sign-In, Sign in with Apple</span> — connexion
-                optionnelle par compte Google ou Apple.
-              </li>
-              <li>
-                <span className="text-foreground font-medium">Google Firebase Analytics</span> — mesure d'audience
-                de l'application mobile et mesure des conversions de nos campagnes Google Ads.
-              </li>
-              <li>
-                <span className="text-foreground font-medium">RevenueCat</span> — gestion des abonnements achetés
-                via l'App Store ou Google Play.
-              </li>
-            </ul>
-          </section>
-
-          <section>
-            <h2 className="font-display text-xl text-foreground">5. Conservation des données</h2>
-            <p className="mt-2">
-              Vos voyages et votre compte sont conservés tant que vous utilisez l'application. Vous pouvez
-              supprimer votre compte et toutes vos données à tout moment depuis le menu du compte ("Supprimer mon
-              compte"), ou en faire la demande par e-mail (voir Contact ci-dessous). Les données de mesure
-              d'audience sont conservées au maximum 14 mois par Google Analytics.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="font-display text-xl text-foreground">6. Cookies et stockage local</h2>
-            <p className="mt-2">
-              L'application utilise le stockage local de votre navigateur (localStorage/sessionStorage) pour
-              maintenir votre session connectée, notamment via l'option "Rester connecté". Aucun cookie
-              publicitaire tiers n'est utilisé sur le site web.
-            </p>
-            <p className="mt-2">
-              Dans l'application mobile, Firebase Analytics utilise un identifiant d'installation et, sur Android,
-              l'identifiant publicitaire. Vous pouvez réinitialiser ou supprimer l'identifiant publicitaire dans
-              les paramètres de votre appareil (Paramètres → Google → Annonces). Sur iOS, l'application n'accède
-              pas à l'identifiant publicitaire (IDFA).
-            </p>
-          </section>
-
-          <section>
-            <h2 className="font-display text-xl text-foreground">7. Vos droits</h2>
-            <p className="mt-2">
-              Vous pouvez accéder à, corriger ou supprimer vos données, ou retirer votre consentement à tout
-              moment, en nous contactant à l'adresse ci-dessous.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="font-display text-xl text-foreground">8. Confidentialité des enfants</h2>
-            <p className="mt-2">
-              L'application ne s'adresse pas aux enfants de moins de 13 ans et ne collecte pas sciemment de
-              données les concernant.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="font-display text-xl text-foreground">9. Modifications</h2>
-            <p className="mt-2">
-              Cette politique peut être mise à jour occasionnellement. La date de dernière mise à jour figure en
-              haut de cette page.
-            </p>
-          </section>
-
-          <section>
-            <h2 className="font-display text-xl text-foreground">10. Contact</h2>
-            <p className="mt-2">
-              Pour toute question ou demande relative à vos données :{" "}
-              <a href="mailto:chaouachiifiras@gmail.com" className="text-primary underline">
-                chaouachiifiras@gmail.com
-              </a>
-            </p>
-          </section>
+          {policy.sections.map((section) => (
+            <section key={section.title}>
+              <h2 className="font-display text-xl text-foreground">{section.title}</h2>
+              {section.blocks.map((block, i) =>
+                "text" in block ? (
+                  <p key={i} className="mt-2">
+                    {block.text}
+                    {section.email && (
+                      <>
+                        {" "}
+                        <a href={`mailto:${CONTACT_EMAIL}`} className="text-primary underline">
+                          {CONTACT_EMAIL}
+                        </a>
+                      </>
+                    )}
+                  </p>
+                ) : (
+                  <ul key={i} className="mt-2 list-disc space-y-1.5 ps-5">
+                    {block.items.map((item) => (
+                      <li key={item.text}>
+                        {item.label && <span className="text-foreground font-medium">{item.label}</span>} {item.text}
+                      </li>
+                    ))}
+                  </ul>
+                ),
+              )}
+            </section>
+          ))}
         </div>
       </div>
     </div>
