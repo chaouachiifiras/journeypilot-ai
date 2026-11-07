@@ -10,6 +10,8 @@ export type MapMarker = {
   category: "hotel" | "restaurant" | "activity" | "photo" | "gem" | "itinerary";
   day?: number;
   order?: number;
+  /** Overrides the category color, e.g. the day color for itinerary stops. */
+  color?: string;
 };
 
 const CATEGORY_COLOR: Record<MapMarker["category"], string> = {
@@ -37,11 +39,13 @@ function ensureLeafletCss() {
 export function TripMap({
   markers,
   route,
+  routeColor = "#0f766e",
   height = 480,
 }: {
   markers: MapMarker[];
   /** ordered lat/lng list to draw a polyline through */
   route?: Array<{ lat: number; lng: number }>;
+  routeColor?: string;
   height?: number;
 }) {
   const { t, i18n } = useTranslation();
@@ -96,7 +100,7 @@ export function TripMap({
       );
 
       valid.forEach((m) => {
-        const color = CATEGORY_COLOR[m.category];
+        const color = m.color ?? CATEGORY_COLOR[m.category];
         const badge = m.day ?? "";
         const icon = L.divIcon({
           className: "trip-map-pin",
@@ -131,7 +135,7 @@ export function TripMap({
           .map((p) => [p.lat, p.lng] as [number, number]);
         if (pts.length > 1) {
           L.polyline(pts, {
-            color: "#0f766e",
+            color: routeColor,
             weight: 3,
             opacity: 0.7,
             dashArray: "6,8",
@@ -158,7 +162,7 @@ export function TripMap({
     return () => {
       cancelled = true;
     };
-  }, [markers, route, t, i18n.language]);
+  }, [markers, route, routeColor, t, i18n.language]);
 
   useEffect(() => {
     return () => {

@@ -1292,7 +1292,7 @@ function MapTab({ plan }: { plan: Plan }) {
     const routePoints: Array<{ lat: number; lng: number }> = [];
     if (layers.itinerary || !allDays) {
       const days = plan.itinerary ?? [];
-      days.forEach((d) => {
+      days.forEach((d, i) => {
         if (dayFilter !== "all" && d.day !== dayFilter) return;
         SLOTS.forEach((slot) => {
           const raw = d[slot] ?? (slot === "afternoon" ? d.evening : undefined);
@@ -1305,6 +1305,8 @@ function MapTab({ plan }: { plan: Plan }) {
               subtitle: `${t(`trip.slots.${slot}`)} — ${raw.desc ?? ""}`.slice(0, 120),
               category: "itinerary",
               day: d.day,
+              // Same color as the day's chip above the map.
+              color: DAY_COLORS[i % DAY_COLORS.length],
             });
             routePoints.push({ lat: raw.lat, lng: raw.lng });
           }
@@ -1321,6 +1323,8 @@ function MapTab({ plan }: { plan: Plan }) {
   ];
 
   const days = plan.itinerary?.map((d) => d.day) ?? [];
+  const selectedIndex = dayFilter === "all" ? -1 : days.indexOf(dayFilter);
+  const routeColor = selectedIndex >= 0 ? DAY_COLORS[selectedIndex % DAY_COLORS.length] : undefined;
 
   return (
     <div className="space-y-4">
@@ -1362,7 +1366,7 @@ function MapTab({ plan }: { plan: Plan }) {
 
       <div className="card overflow-hidden p-1.5">
         <div className="overflow-hidden rounded-[1.1rem]">
-          <TripMap markers={markers} route={route} height={520} />
+          <TripMap markers={markers} route={route} routeColor={routeColor} height={520} />
         </div>
       </div>
 
