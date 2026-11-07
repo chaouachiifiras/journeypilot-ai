@@ -33,7 +33,6 @@ export async function signInWithPassword(email: string, password: string, rememb
 }
 
 type OAuthProvider = "google" | "apple";
-const PROVIDER_LABEL: Record<OAuthProvider, string> = { google: "Google", apple: "Apple" };
 
 /** Starts the Google OAuth flow, upgrading the anonymous session in place when possible. */
 export function signInWithGoogle() {
@@ -65,7 +64,7 @@ async function signInWithOAuthProvider(provider: OAuthProvider) {
   // but it requires "Allow manual linking" enabled on the Supabase project,
   // which isn't always on. Both failure modes (identity already tied to a
   // real account, or manual linking disabled outright) fall back to a plain
-  // sign-in; guest trips just won't carry over in that case.
+  // sign-in, silently: guest trips just won't carry over in that case.
   const shouldFallBack =
     anon &&
     (result.error?.code === "identity_already_exists" ||
@@ -73,7 +72,6 @@ async function signInWithOAuthProvider(provider: OAuthProvider) {
       /manual linking/i.test(result.error?.message ?? ""));
 
   if (shouldFallBack) {
-    toast.warning(`Signing you into your ${PROVIDER_LABEL[provider]} account — guest trips won't transfer.`);
     result = await supabase.auth.signInWithOAuth({ provider, options });
   }
 

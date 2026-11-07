@@ -61,12 +61,13 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
     return () => document.removeEventListener("mousedown", close);
   }, [open]);
 
+  // The assistant isn't a nav entry: it's the floating button below, reachable from every page.
   const links = [
     { to: "/", label: t("nav.home"), icon: Compass },
     { to: "/planner", label: t("nav.plan"), icon: Plus },
-    { to: "/chat", label: t("nav.chat"), icon: MessageCircle },
     { to: "/profile", label: t("auth.my_trips"), icon: Luggage },
   ] as const;
+  const showAssistantButton = !pathname.startsWith("/chat");
 
   const isActive = (to: string) => (to === "/" ? pathname === "/" : pathname === to || pathname.startsWith(to + "/"));
   const onImage = overlay && !scrolled;
@@ -191,7 +192,7 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
         className="fixed inset-x-0 bottom-0 z-40 border-t border-border bg-card md:hidden"
         style={{ paddingBottom: "var(--inset-bottom)" }}
       >
-        <div className="mx-auto grid h-[var(--tabbar-h)] max-w-md grid-cols-4 items-center px-4">
+        <div className="mx-auto grid h-[var(--tabbar-h)] max-w-md grid-cols-3 items-center px-4">
           {links.map((l) => {
             const active = isActive(l.to);
             if (l.to === "/planner") {
@@ -230,6 +231,17 @@ export function AppHeader({ overlay = false }: { overlay?: boolean }) {
           })}
         </div>
       </nav>
+
+      {/* Floating assistant button, above the tab bar on phones. */}
+      {showAssistantButton && (
+        <Link
+          to="/chat"
+          aria-label={t("nav.chat")}
+          className="fixed end-4 bottom-[calc(var(--tabbar-h)+var(--inset-bottom)+1rem)] z-40 flex h-14 w-14 items-center justify-center rounded-full bg-gradient-brand text-primary-foreground shadow-lift ring-4 ring-background transition-transform active:scale-95 md:bottom-6 md:end-6"
+        >
+          <MessageCircle className="h-6 w-6" />
+        </Link>
+      )}
     </>
   );
 }

@@ -1260,34 +1260,37 @@ function MapTab({ plan }: { plan: Plan }) {
 
   const { markers, route } = useMemo(() => {
     const all: MapMarker[] = [];
-    if (layers.hotel) {
+    // Hotels, restaurants, activities, photo spots and gems aren't tied to a day,
+    // so a selected day shows only that day's itinerary stops.
+    const allDays = dayFilter === "all";
+    if (allDays && layers.hotel) {
       plan.hotels?.forEach((h) => {
         if (hasCoord(h)) all.push({ lat: h.lat, lng: h.lng, title: h.name, subtitle: h.area, category: "hotel" });
       });
     }
-    if (layers.restaurant) {
+    if (allDays && layers.restaurant) {
       plan.restaurants?.forEach((r) => {
         if (hasCoord(r)) all.push({ lat: r.lat, lng: r.lng, title: r.name, subtitle: r.cuisine, category: "restaurant" });
       });
     }
-    if (layers.activity) {
+    if (allDays && layers.activity) {
       plan.activities?.forEach((a) => {
         if (hasCoord(a)) all.push({ lat: a.lat, lng: a.lng, title: a.name, subtitle: a.category, category: "activity" });
       });
     }
-    if (layers.photo) {
+    if (allDays && layers.photo) {
       plan.photo_spots?.forEach((p) => {
         if (hasCoord(p)) all.push({ lat: p.lat, lng: p.lng, title: p.name, subtitle: p.style ? t(`trip.photo_modes.${p.style}`, { defaultValue: p.style }) : undefined, category: "photo" });
       });
     }
-    if (layers.gem) {
+    if (allDays && layers.gem) {
       plan.hidden_gems?.forEach((g) => {
         if (hasCoord(g)) all.push({ lat: g.lat, lng: g.lng, title: g.name, subtitle: t("trip.hidden_gem_badge"), category: "gem" });
       });
     }
 
     const routePoints: Array<{ lat: number; lng: number }> = [];
-    if (layers.itinerary) {
+    if (layers.itinerary || !allDays) {
       const days = plan.itinerary ?? [];
       days.forEach((d) => {
         if (dayFilter !== "all" && d.day !== dayFilter) return;

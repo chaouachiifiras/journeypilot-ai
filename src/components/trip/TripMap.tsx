@@ -172,7 +172,8 @@ export function TripMap({
   }, []);
 
   return (
-    <div className="rounded-2xl overflow-hidden border border-border shadow-soft">
+    // isolate keeps Leaflet's high z-index panes inside the map, below the tab bar and floating buttons.
+    <div className="isolate rounded-2xl overflow-hidden border border-border shadow-soft">
       <div ref={ref} style={{ height, width: "100%" }} />
     </div>
   );
