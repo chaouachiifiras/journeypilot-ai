@@ -3,6 +3,7 @@ import { Browser } from "@capacitor/browser";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { setAuthRemember } from "@/integrations/supabase/rememberableStorage";
+import { postLoginPath } from "@/lib/pending-trip";
 
 // GoTrue's redirect allow-list only accepts HTTPS URLs on this app's own
 // domain, not a custom scheme — /auth-callback is a bounce page that hands
@@ -29,7 +30,7 @@ export async function signInWithPassword(email: string, password: string, rememb
   setAuthRemember(remember);
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
-  window.location.assign("/profile");
+  window.location.assign(postLoginPath());
 }
 
 type OAuthProvider = "google" | "apple";
@@ -53,7 +54,7 @@ async function signInWithOAuthProvider(provider: OAuthProvider) {
   const native = Capacitor.isNativePlatform();
   const { data: sessionData } = await supabase.auth.getSession();
   const anon = sessionData.session?.user.is_anonymous ?? false;
-  const redirectTo = native ? NATIVE_REDIRECT : `${window.location.origin}/profile`;
+  const redirectTo = native ? NATIVE_REDIRECT : `${window.location.origin}${postLoginPath()}`;
   const options = { redirectTo, skipBrowserRedirect: native };
 
   let result = anon
@@ -90,7 +91,7 @@ export async function completeNativeOAuth(url: string) {
     toast.error(error.message);
     return;
   }
-  window.location.assign("/profile");
+  window.location.assign(postLoginPath());
 }
 
 export async function signOut() {

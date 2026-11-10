@@ -44,9 +44,23 @@ function AppleIcon() {
   );
 }
 
-export function AuthDialog({ open, onOpenChange }: { open: boolean; onOpenChange: (v: boolean) => void }) {
+export function AuthDialog({
+  open,
+  onOpenChange,
+  title,
+  description,
+}: {
+  open: boolean;
+  onOpenChange: (v: boolean) => void;
+  /** Overrides the default heading, e.g. "last step" when a trip is waiting for sign-in. */
+  title?: string;
+  description?: string;
+}) {
   const { t } = useTranslation();
   const [confirmSent, setConfirmSent] = useState(false);
+  // E-mail sign-up sends the user out of the app to confirm their address, so Google comes
+  // first and the e-mail forms only show on demand.
+  const [showEmail, setShowEmail] = useState(false);
   const [googleLoading, setGoogleLoading] = useState(false);
   const [appleLoading, setAppleLoading] = useState(false);
 
@@ -73,6 +87,7 @@ export function AuthDialog({ open, onOpenChange }: { open: boolean; onOpenChange
   const handleOpenChange = (v: boolean) => {
     if (!v) {
       setConfirmSent(false);
+      setShowEmail(false);
       signInForm.reset();
       signUpForm.reset();
     }
@@ -134,8 +149,8 @@ export function AuthDialog({ open, onOpenChange }: { open: boolean; onOpenChange
               <span className="mx-auto flex h-12 w-12 items-center justify-center rounded-2xl bg-card shadow-soft ring-1 ring-border sm:mx-0">
                 <img src={logo} alt="" className="h-7 w-7" />
               </span>
-              <DialogTitle>{t("auth.title")}</DialogTitle>
-              <DialogDescription>{t("auth.subtitle")}</DialogDescription>
+              <DialogTitle>{title ?? t("auth.title")}</DialogTitle>
+              <DialogDescription>{description ?? t("auth.subtitle")}</DialogDescription>
             </DialogHeader>
 
             {SHOW_APPLE_SIGN_IN && (
@@ -161,6 +176,11 @@ export function AuthDialog({ open, onOpenChange }: { open: boolean; onOpenChange
               <div className="h-px flex-1 bg-border" />
             </div>
 
+            {!showEmail ? (
+              <Button type="button" variant="ghost" className="w-full" onClick={() => setShowEmail(true)}>
+                {t("auth.continue_with_email")}
+              </Button>
+            ) : (
             <Tabs defaultValue="in">
               <TabsList className="grid w-full grid-cols-2">
                 <TabsTrigger value="in">{t("auth.sign_in")}</TabsTrigger>
@@ -278,6 +298,7 @@ export function AuthDialog({ open, onOpenChange }: { open: boolean; onOpenChange
                 </Form>
               </TabsContent>
             </Tabs>
+            )}
           </>
         )}
       </DialogContent>

@@ -11,7 +11,8 @@ import {
 } from "lucide-react";
 import mountains from "@/assets/scene-mountains.jpg";
 import { AppHeader } from "@/components/layout/AppHeader";
-import { AuthGate } from "@/components/auth/AuthGate";
+import { AuthDialog } from "@/components/auth/AuthDialog";
+import { savePendingTrip, readPendingTrip, clearPendingTrip } from "@/lib/pending-trip";
 import { PaywallDialog } from "@/components/paywall/PaywallDialog";
 import { PlaceAutocomplete, type AutocompleteOption } from "@/components/planner/PlaceAutocomplete";
 import { useAnonSession } from "@/lib/anon-session";
@@ -114,7 +115,14 @@ function Planner() {
   const [submitting, setSubmitting] = useState(false);
   const [phase, setPhase] = useState<0 | 1 | 2>(0);
   const [paywallOpen, setPaywallOpen] = useState(false);
+  const [authOpen, setAuthOpen] = useState(false);
   const pendingPayloadRef = useRef<TripPayload | null>(null);
+  const resumedRef = useRef(false);
+
+  // Funnel step 1: the planner form is shown (anonymous visitors included).
+  useEffect(() => {
+    logEvent("planner_started");
+  }, []);
 
   const toggleInterest = (k: string) =>
     setInterests((prev) => (prev.includes(k) ? prev.filter((x) => x !== k) : [...prev, k]));
@@ -182,6 +190,22 @@ function Planner() {
     }
   };
 
+  // Back from sign-in (the login reloads the page): generate the trip that was waiting.
+  useEffect(() => {
+    if (!ready || isAnonymous || resumedRef.current) return;
+    const pending = readPendingTrip<TripPayload>();
+    if (!pending) return;
+    resumedRef.current = true;
+    clearPendingTrip();
+    setAuthOpen(false);
+    setCountry(pending.country);
+    setCity(pending.city);
+    logEvent("login_success");
+    submitTrip(pending);
+    // submitTrip is recreated every render; only the session state should trigger this.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [ready, isAnonymous]);
+
   const onSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     if (!ready) return;
@@ -189,7 +213,7 @@ function Planner() {
       toast.error(t("planner.errors.select_destination"));
       return;
     }
-    submitTrip({
+    const payload: TripPayload = {
       country, city, days,
       budget: Number(budget),
       currency,
@@ -204,18 +228,17 @@ function Planner() {
       children_count: hasChildren ? parseChildrenCount(childrenCount) : undefined,
       food_preferences: foodPref || undefined,
       accessibility: accessibility || undefined,
-    });
+    };
+    // Guests fill the whole form first; sign-in is only asked for at the very end, and the
+    // trip is generated automatically once they're back (see the effect above).
+    if (isAnonymous) {
+      savePendingTrip(payload);
+      logEvent("login_prompt_shown");
+      setAuthOpen(true);
+      return;
+    }
+    submitTrip(payload);
   };
-
-
-  if (ready && isAnonymous) {
-    return (
-      <div className="min-h-screen pb-tabbar">
-        <AppHeader />
-        <AuthGate />
-      </div>
-    );
-  }
 
   const canSubmit = !submitting && ready && countrySelected && citySelected;
 
@@ -496,6 +519,13 @@ function Planner() {
           setPaywallOpen(false);
           if (pendingPayloadRef.current) submitTrip(pendingPayloadRef.current);
         }}
+      />
+
+      <AuthDialog
+        open={authOpen}
+        onOpenChange={setAuthOpen}
+        title={t("auth.finish_title")}
+        description={t("auth.finish_subtitle")}
       />
     </div>
   );
