@@ -83,8 +83,14 @@ async function signInWithOAuthProvider(provider: OAuthProvider) {
 
 /** Completes the native OAuth round trip once the app is reopened via the auth-callback deep link. */
 export async function completeNativeOAuth(url: string) {
-  const code = new URL(url).searchParams.get("code");
-  if (!code) return;
+  const params = new URL(url).searchParams;
+  const code = params.get("code");
+  if (!code) {
+    await Browser.close().catch(() => {});
+    const err = params.get("error_description") ?? params.get("error");
+    if (err) toast.error(err.replace(/\+/g, " "));
+    return;
+  }
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   await Browser.close().catch(() => {});
   if (error) {

@@ -18,6 +18,7 @@ import { reportLovableError } from "../lib/lovable-error-reporting";
 import "@/lib/i18n";
 import i18n, { applyLangDir } from "@/lib/i18n";
 import { completeNativeOAuth } from "@/lib/auth";
+import { readPendingTrip } from "@/lib/pending-trip";
 import { useAnonSession } from "@/lib/anon-session";
 import { ensureRevenueCatIdentity } from "@/lib/revenuecat-identity";
 import { installDebugCapture } from "@/lib/debug-console";
@@ -133,9 +134,18 @@ function RootShell({ children }: { children: ReactNode }) {
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
   const { ready, userId, isAnonymous } = useAnonSession();
+  const router = useRouter();
   useEffect(() => {
     applyLangDir(i18n.language ?? "en");
   }, []);
+  // A guest filled the planner then signed in: whatever page the sign-in landed on
+  // (OAuth return, deep link, account menu), go back to the planner, which generates it.
+  useEffect(() => {
+    if (!ready || isAnonymous) return;
+    if (!readPendingTrip()) return;
+    if (router.state.location.pathname === "/planner") return;
+    router.navigate({ to: "/planner" });
+  }, [ready, isAnonymous, router]);
   useEffect(() => {
     if (!Capacitor.isNativePlatform()) return;
     const sub = CapacitorApp.addListener("appUrlOpen", ({ url }) => {
