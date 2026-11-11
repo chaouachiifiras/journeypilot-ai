@@ -3,7 +3,9 @@ import { Browser } from "@capacitor/browser";
 import { toast } from "sonner";
 import { supabase } from "@/integrations/supabase/client";
 import { setAuthRemember } from "@/integrations/supabase/rememberableStorage";
-import { postLoginPath } from "@/lib/pending-trip";
+import { postLoginPath, readPendingTrip } from "@/lib/pending-trip";
+
+const hasPendingTrip = () => readPendingTrip() !== null;
 
 // GoTrue's redirect allow-list only accepts HTTPS URLs on this app's own
 // domain, not a custom scheme — /auth-callback is a bounce page that hands
@@ -28,9 +30,14 @@ export async function signUpWithPassword(email: string, password: string) {
 /** Logs into an existing account. Replaces the current (guest or other) session. */
 export async function signInWithPassword(email: string, password: string, remember = true) {
   setAuthRemember(remember);
+  // Read before signing in: the planner consumes the pending trip as soon as the session
+  // flips to signed-in, so reading it afterwards races with that.
+  const tripWaiting = hasPendingTrip();
   const { error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
-  window.location.assign(postLoginPath());
+  // The open planner generates the waiting trip in place; a reload would abort it.
+  if (tripWaiting) return;
+  window.location.assign("/profile");
 }
 
 type OAuthProvider = "google" | "apple";
@@ -91,13 +98,18 @@ export async function completeNativeOAuth(url: string) {
     if (err) toast.error(err.replace(/\+/g, " "));
     return;
   }
+  // Read before the exchange: it fires SIGNED_IN, and the planner then consumes the
+  // pending trip and starts generating it — reloading to "My trips" would abort that.
+  const tripWaiting = hasPendingTrip();
   const { error } = await supabase.auth.exchangeCodeForSession(code);
   await Browser.close().catch(() => {});
   if (error) {
     toast.error(error.message);
     return;
   }
-  window.location.assign(postLoginPath());
+  // The planner (or the root, which routes back to it) resumes the trip in place.
+  if (tripWaiting) return;
+  window.location.assign("/profile");
 }
 
 export async function signOut() {
