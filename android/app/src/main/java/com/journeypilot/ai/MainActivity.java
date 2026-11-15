@@ -10,6 +10,8 @@ public class MainActivity extends BridgeActivity {
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
+        // Local plugin (not an npm package), so Capacitor can't auto-register it.
+        registerPlugin(MetaEventsPlugin.class);
         super.onCreate(savedInstanceState);
 
         WebView webView = getBridge().getWebView();

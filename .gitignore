@@ -27,6 +27,7 @@ dist-ssr
 
 # Android release signing — never commit
 android/keystore.properties
+android/meta.properties
 android/app/*.jks
 android/app/*.keystore
 

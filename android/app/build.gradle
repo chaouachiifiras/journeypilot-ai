@@ -6,6 +6,21 @@ if (keystorePropertiesFile.exists()) {
     keystoreProperties.load(new FileInputStream(keystorePropertiesFile))
 }
 
+// Meta (Facebook) App Events. The App ID is public; the client token lives in the
+// git-ignored android/meta.properties (META_CLIENT_TOKEN=...), copied from the Meta app
+// dashboard: JourneyPilot AI Ads > Paramètres de l'app > Avancé > Sécurité > Token client.
+def metaPropertiesFile = rootProject.file('meta.properties')
+def metaProperties = new Properties()
+if (metaPropertiesFile.exists()) {
+    metaProperties.load(new FileInputStream(metaPropertiesFile))
+}
+def metaClientToken = metaProperties.getProperty('META_CLIENT_TOKEN', '')
+gradle.taskGraph.whenReady { graph ->
+    if (metaClientToken.isEmpty() && graph.allTasks.any { it.name.toLowerCase().contains('release') }) {
+        throw new GradleException("android/meta.properties with META_CLIENT_TOKEN is required for release builds (Meta App Events).")
+    }
+}
+
 android {
     namespace = "com.journeypilot.ai"
     compileSdk = rootProject.ext.compileSdkVersion
@@ -13,9 +28,11 @@ android {
         applicationId "com.journeypilot.ai"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 12
-        versionName "1.8"
+        versionCode 13
+        versionName "1.9"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+        resValue "string", "facebook_app_id", "1952312895747630"
+        resValue "string", "facebook_client_token", metaClientToken
         aaptOptions {
              // Files and dirs to omit from the packaged assets dir, modified to accommodate modern web apps.
              // Default: https://android.googlesource.com/platform/frameworks/base/+/282e181b58cf72b6ca770dc7ca5f91f135444502/tools/aapt/AaptAssets.cpp#61
@@ -72,6 +89,7 @@ dependencies {
     implementation "androidx.coordinatorlayout:coordinatorlayout:$androidxCoordinatorLayoutVersion"
     implementation "androidx.core:core-splashscreen:$coreSplashScreenVersion"
     implementation project(':capacitor-android')
+    implementation 'com.facebook.android:facebook-core:18.0.3'
     testImplementation "junit:junit:$junitVersion"
     androidTestImplementation "androidx.test.ext:junit:$androidxJunitVersion"
     androidTestImplementation "androidx.test.espresso:espresso-core:$androidxEspressoCoreVersion"
