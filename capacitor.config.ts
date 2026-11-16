@@ -24,6 +24,18 @@ const config: CapacitorConfig = {
     contentInset: "never",
     backgroundColor: "#f6f2ea",
   },
+  experimental: {
+    ios: {
+      spm: {
+        // Firebase Analytics without the advertising identifier (IDFA): the app
+        // does not track users across apps, so no App Tracking Transparency prompt.
+        swiftToolsVersion: "6.1",
+        packageTraits: {
+          "@capacitor-firebase/analytics": ["AnalyticsWithoutAdIdSupport"],
+        },
+      },
+    },
+  },
 };
 
 export default config;

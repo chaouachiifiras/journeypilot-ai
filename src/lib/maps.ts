@@ -11,6 +11,8 @@
 // Chrome Custom Tabs on Android (Safari View Controller on iOS, a normal new
 // tab on web), which reliably works from inside the WebView.
 import { Browser } from "@capacitor/browser";
+import { AppLauncher } from "@capacitor/app-launcher";
+import { Capacitor } from "@capacitor/core";
 
 export function googleDirectionsUrl(lat: number, lng: number) {
   return `https://www.google.com/maps/dir/?api=1&destination=${lat},${lng}`;
@@ -46,11 +48,35 @@ async function openExternal(primary: string, fallback: string) {
   }
 }
 
-export function openDirections(lat: number, lng: number) {
+export function appleDirectionsUrl(lat: number, lng: number) {
+  return `https://maps.apple.com/?daddr=${lat},${lng}`;
+}
+export function appleSearchUrl(query: string) {
+  return `https://maps.apple.com/?q=${encodeURIComponent(query)}`;
+}
+
+/**
+ * On iOS, hands a maps.apple.com link to the system (UIApplication.open), which
+ * opens the native Maps app directly instead of a web page. Returns false when
+ * not on iOS or when the system refuses, so callers fall back to Google Maps.
+ */
+async function openInAppleMaps(url: string): Promise<boolean> {
+  if (Capacitor.getPlatform() !== "ios") return false;
+  try {
+    const { completed } = await AppLauncher.openUrl({ url });
+    return completed;
+  } catch {
+    return false;
+  }
+}
+
+export async function openDirections(lat: number, lng: number) {
+  if (await openInAppleMaps(appleDirectionsUrl(lat, lng))) return;
   openExternal(googleDirectionsUrl(lat, lng), osmDirectionsUrl(lat, lng));
 }
 
-export function openMapSearch(query: string) {
+export async function openMapSearch(query: string) {
+  if (await openInAppleMaps(appleSearchUrl(query))) return;
   openExternal(googleSearchUrl(query), osmSearchUrl(query));
 }
 

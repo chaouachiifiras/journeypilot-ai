@@ -9,8 +9,14 @@ import {
   Compass, Wallet, Bus, CloudSun, ShieldCheck, Clock, Gem, ExternalLink,
   Sunrise, Sunset, Moon, Sun, Utensils, X, CalendarDays, Footprints, Lightbulb,
   Navigation, Sparkles, Star, PiggyBank, LifeBuoy, TrendingUp, CircleDollarSign, Map as MapIcon,
-  Heart, Timer, Route as RouteIcon, AlertCircle,
+  Heart, Timer, Route as RouteIcon, AlertCircle, Share2, CalendarPlus, WifiOff, Loader2,
 } from "lucide-react";
+import { toast } from "sonner";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import {
+  addTripToCalendar, CalendarPermissionError, isIOS, isNative, isOffline, offlineTrips, shareTrip,
+  type ShareableDay, type ShareableTrip,
+} from "@/lib/native-trip";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { TripMap, MapLegend, type MapMarker } from "@/components/trip/TripMap";
@@ -175,22 +181,39 @@ function TripView() {
     goToRelativeTab(forward ? 1 : -1);
   };
 
-  const { data, isLoading } = useQuery({
+  // On-device copy of this trip (native app only): shown at once, and kept when
+  // there is no connection, so an opened trip stays readable offline.
+  const cachedTrip = useMemo(() => offlineTrips.getTrip<Record<string, unknown>>(id), [id]);
+  const cachedSkeleton = useMemo(() => offlineTrips.getSkeleton<Record<string, unknown>>(id), [id]);
+
+  const { data: fetchedTrip, isError: tripError } = useQuery({
     queryKey: ["trip", id],
-    enabled: ready,
+    enabled: ready && !isAnonymous,
+    retry: cachedTrip ? 1 : 3,
     refetchInterval: (q) => {
       const s = (q.state.data as { status?: string } | undefined)?.status;
       return s === "pending" ? 2500 : false;
     },
-    queryFn: () => fetchTrip({ data: { id } }),
+    queryFn: async () => {
+      const row = await fetchTrip({ data: { id } });
+      if ((row as { status?: string } | null)?.status === "ready") offlineTrips.saveTrip(id, row);
+      return row;
+    },
   });
+  const data = fetchedTrip !== undefined ? fetchedTrip : cachedTrip;
+  const showingOfflineCopy = fetchedTrip === undefined && !!cachedTrip && (tripError || isOffline() || isAnonymous);
 
   // Narrative structure (Overview / Map / Itinerary) comes from trip_skeleton in Supabase.
-  const { data: skeletonRow } = useQuery({
+  const { data: fetchedSkeleton } = useQuery({
     queryKey: ["trip-skeleton", id],
-    enabled: ready,
-    queryFn: () => fetchSkeleton({ data: { trip_id: id } }),
+    enabled: ready && !isAnonymous,
+    queryFn: async () => {
+      const row = await fetchSkeleton({ data: { trip_id: id } });
+      if (row) offlineTrips.saveSkeleton(id, row);
+      return row;
+    },
   });
+  const skeletonRow = fetchedSkeleton !== undefined ? fetchedSkeleton : cachedSkeleton;
   const skeleton = skeletonRow as {
     title?: string; tagline?: string; overview?: string; best_time_to_visit?: string | null;
     days?: Array<{ day_number?: number; theme_title?: string; tip?: string }>;
@@ -211,7 +234,7 @@ function TripView() {
   const isBroken = useBrokenImages();
   const cover = places.map((p) => photos?.[p.name]).find((p) => p?.url && !isBroken(p.url)) ?? null;
 
-  if (ready && isAnonymous) {
+  if (ready && isAnonymous && !cachedTrip) {
     return (
       <div className="min-h-screen pb-tabbar">
         <AppHeader />
@@ -220,7 +243,7 @@ function TripView() {
     );
   }
 
-  if (isLoading || !data) {
+  if (!data) {
     return (
       <div className="min-h-screen pb-tabbar">
         <AppHeader />
@@ -305,12 +328,25 @@ function TripView() {
                 <span className="tabular">{trip.budget}</span> {trip.currency}
               </HeroChip>
             </div>
+            <TripActions
+              trip={{ city: trip.city, country: trip.country, days: trip.days, itinerary: plan.itinerary }}
+              dayTitle={(d) => dayMeta(d.day)?.theme_title || d.title}
+            />
           </motion.div>
         </div>
         {cover?.credit && (
           <span className="absolute bottom-2 end-3 max-w-[45%] truncate text-[10px] text-[rgba(255,255,255,0.6)]">{cover.credit}</span>
         )}
       </section>
+
+      {showingOfflineCopy && (
+        <div className="border-b border-border bg-copper-soft">
+          <div className="container-page flex max-w-5xl items-center gap-2 py-2.5 text-xs font-semibold text-copper">
+            <WifiOff className="h-4 w-4 shrink-0" />
+            {t("native.offline_copy")}
+          </div>
+        </div>
+      )}
 
       {/* ---------------- Sticky section tabs ---------------- */}
       <div className="sticky top-[calc(4rem+var(--inset-top))] z-30 border-b border-border bg-background">
@@ -430,6 +466,81 @@ function HeroChip({ icon: Icon, children }: { icon: typeof Clock; children: Reac
       <Icon className="h-4 w-4 text-[#e9c27f]" />
       {children}
     </span>
+  );
+}
+
+/** Share the trip through the system share sheet; on iOS, also add it to the Calendar. */
+function TripActions({ trip, dayTitle }: { trip: ShareableTrip; dayTitle: (d: ShareableDay) => string }) {
+  const { t } = useTranslation();
+  const [calendarOpen, setCalendarOpen] = useState(false);
+  const [startDate, setStartDate] = useState(() => {
+    const d = new Date();
+    d.setDate(d.getDate() + 7);
+    return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
+  });
+  const [adding, setAdding] = useState(false);
+  const canUseCalendar = isNative() && isIOS();
+  const dayCount = trip.itinerary?.length ?? 0;
+
+  const onShare = async () => {
+    try {
+      await shareTrip(trip, t, dayTitle);
+      if (!isNative() && !navigator.share) toast.success(t("trip.copied"));
+    } catch {
+      /* share sheet dismissed */
+    }
+  };
+
+  const onAddToCalendar = async () => {
+    const [y, m, d] = startDate.split("-").map(Number);
+    if (!y || !m || !d) return;
+    setAdding(true);
+    try {
+      const count = await addTripToCalendar(trip, new Date(y, m - 1, d), t, dayTitle);
+      toast.success(t("native.calendar_added", { count }));
+      setCalendarOpen(false);
+    } catch (err) {
+      toast.error(err instanceof CalendarPermissionError ? t("native.calendar_denied") : t("native.calendar_failed"));
+    } finally {
+      setAdding(false);
+    }
+  };
+
+  return (
+    <>
+      <div className="mt-5 flex flex-wrap gap-2">
+        <button type="button" onClick={onShare} className="btn btn-glass btn-sm">
+          <Share2 /> {t("native.share_trip")}
+        </button>
+        {canUseCalendar && dayCount > 0 && (
+          <button type="button" onClick={() => setCalendarOpen(true)} className="btn btn-glass btn-sm">
+            <CalendarPlus /> {t("native.add_to_calendar")}
+          </button>
+        )}
+      </div>
+      {canUseCalendar && (
+        <Dialog open={calendarOpen} onOpenChange={setCalendarOpen}>
+          <DialogContent>
+            <DialogHeader>
+              <DialogTitle>{t("native.add_to_calendar")}</DialogTitle>
+              <DialogDescription>{t("native.calendar_explainer", { count: dayCount })}</DialogDescription>
+            </DialogHeader>
+            <label className="mt-2 block text-sm font-semibold">
+              {t("native.start_date")}
+              <input
+                type="date"
+                value={startDate}
+                onChange={(e) => setStartDate(e.target.value)}
+                className="mt-2 block h-11 w-full rounded-xl border border-border bg-card px-3 text-base"
+              />
+            </label>
+            <button type="button" onClick={onAddToCalendar} disabled={adding || !startDate} className="btn btn-primary mt-4 w-full">
+              {adding ? <Loader2 className="animate-spin" /> : <CalendarPlus />} {t("native.add_days", { count: dayCount })}
+            </button>
+          </DialogContent>
+        </Dialog>
+      )}
+    </>
   );
 }
 

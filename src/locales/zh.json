@@ -371,5 +371,17 @@
     "profile": {
       "open": "打开行程"
     }
+  },
+  "native": {
+    "share_trip": "分享",
+    "add_to_calendar": "添加到日历",
+    "start_date": "行程第一天",
+    "calendar_explainer_other": "将您的 {{count}} 天行程作为全天事件添加到日历，并附上每天的站点。JourneyPilot 只会添加事件，绝不会读取您的日历。",
+    "add_days_other": "添加 {{count}} 天",
+    "calendar_added_other": "已将 {{count}} 天添加到日历",
+    "calendar_denied": "日历访问已关闭。您可以在“设置 › JourneyPilot AI”中允许。",
+    "calendar_failed": "无法将行程添加到日历，请重试。",
+    "offline_copy": "您当前离线：这是保存在设备上的副本。",
+    "shared_with": "由 JourneyPilot AI 规划"
   }
 }

@@ -403,5 +403,29 @@
     "profile": {
       "open": "فتح الرحلة"
     }
+  },
+  "native": {
+    "share_trip": "مشاركة",
+    "add_to_calendar": "إضافة إلى التقويم",
+    "start_date": "أول يوم في الرحلة",
+    "calendar_explainer_one": "يضيف يومك كحدث يستمر طوال اليوم في التقويم مع محطاته. يمكن لـ JourneyPilot إضافة أحداث لكنه لا يقرأ تقويمك أبداً.",
+    "calendar_explainer_two": "يضيف يوميك كحدثين يستمران طوال اليوم في التقويم مع محطاتهما. يمكن لـ JourneyPilot إضافة أحداث لكنه لا يقرأ تقويمك أبداً.",
+    "calendar_explainer_few": "يضيف أيامك الـ {{count}} كأحداث تستمر طوال اليوم في التقويم مع محطاتها. يمكن لـ JourneyPilot إضافة أحداث لكنه لا يقرأ تقويمك أبداً.",
+    "calendar_explainer_many": "يضيف أيامك الـ {{count}} كأحداث تستمر طوال اليوم في التقويم مع محطاتها. يمكن لـ JourneyPilot إضافة أحداث لكنه لا يقرأ تقويمك أبداً.",
+    "calendar_explainer_other": "يضيف أيامك الـ {{count}} كأحداث تستمر طوال اليوم في التقويم مع محطاتها. يمكن لـ JourneyPilot إضافة أحداث لكنه لا يقرأ تقويمك أبداً.",
+    "add_days_one": "إضافة يوم واحد",
+    "add_days_two": "إضافة يومين",
+    "add_days_few": "إضافة {{count}} أيام",
+    "add_days_many": "إضافة {{count}} يوماً",
+    "add_days_other": "إضافة {{count}} يوم",
+    "calendar_added_one": "تمت إضافة يوم واحد إلى التقويم",
+    "calendar_added_two": "تمت إضافة يومين إلى التقويم",
+    "calendar_added_few": "تمت إضافة {{count}} أيام إلى التقويم",
+    "calendar_added_many": "تمت إضافة {{count}} يوماً إلى التقويم",
+    "calendar_added_other": "تمت إضافة {{count}} يوم إلى التقويم",
+    "calendar_denied": "الوصول إلى التقويم متوقف. يمكنك السماح به من الإعدادات › JourneyPilot AI.",
+    "calendar_failed": "تعذّرت إضافة الرحلة إلى التقويم. حاول مرة أخرى.",
+    "offline_copy": "أنت غير متصل: هذه النسخة المحفوظة على جهازك.",
+    "shared_with": "تم التخطيط بواسطة JourneyPilot AI"
   }
 }

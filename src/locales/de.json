@@ -373,5 +373,20 @@
     "profile": {
       "open": "Reise öffnen"
     }
+  },
+  "native": {
+    "share_trip": "Teilen",
+    "add_to_calendar": "Zum Kalender hinzufügen",
+    "start_date": "Erster Reisetag",
+    "calendar_explainer_one": "Fügt deinen Tag als ganztägiges Ereignis mit seinen Stationen in deinen Kalender ein. JourneyPilot kann Ereignisse hinzufügen, liest deinen Kalender aber nie.",
+    "calendar_explainer_other": "Fügt deine {{count}} Tage als ganztägige Ereignisse mit ihren Stationen in deinen Kalender ein. JourneyPilot kann Ereignisse hinzufügen, liest deinen Kalender aber nie.",
+    "add_days_one": "1 Tag hinzufügen",
+    "add_days_other": "{{count}} Tage hinzufügen",
+    "calendar_added_one": "1 Tag zum Kalender hinzugefügt",
+    "calendar_added_other": "{{count}} Tage zum Kalender hinzugefügt",
+    "calendar_denied": "Der Kalenderzugriff ist aus. Du kannst ihn unter Einstellungen › JourneyPilot AI erlauben.",
+    "calendar_failed": "Die Reise konnte nicht zum Kalender hinzugefügt werden. Bitte versuche es erneut.",
+    "offline_copy": "Du bist offline: Das ist die auf deinem Gerät gespeicherte Kopie.",
+    "shared_with": "Geplant mit JourneyPilot AI"
   }
 }

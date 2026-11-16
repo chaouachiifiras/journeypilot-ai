@@ -49,6 +49,15 @@
 	<false/>
 	<key>LSRequiresIPhoneOS</key>
 	<true/>
+	<!-- "Add to Calendar" on a trip: one all-day event per itinerary day.
+	     The app only asks for write-only access (iOS 17+) and never reads events;
+	     the full-access key is still declared because the calendar plugin checks it. -->
+	<key>NSCalendarsWriteOnlyAccessUsageDescription</key>
+	<string>JourneyPilot AI adds the days of your trip to your calendar when you tap "Add to Calendar".</string>
+	<key>NSCalendarsUsageDescription</key>
+	<string>JourneyPilot AI adds the days of your trip to your calendar when you tap "Add to Calendar".</string>
+	<key>NSCalendarsFullAccessUsageDescription</key>
+	<string>JourneyPilot AI adds the days of your trip to your calendar when you tap "Add to Calendar". It never reads your existing events.</string>
 	<key>UIApplicationSceneManifest</key>
 	<dict>
 		<key>UIApplicationSupportsMultipleScenes</key>

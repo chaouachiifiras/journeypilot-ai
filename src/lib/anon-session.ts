@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+import { clearOfflineTrips } from "@/lib/native-trip";
 
 type SessionUser = { id: string; is_anonymous?: boolean; email?: string } | null | undefined;
 
@@ -31,6 +32,8 @@ export function useAnonSession() {
     })();
     const { data: sub } = supabase.auth.onAuthStateChange((event, s) => {
       if (event === "SIGNED_OUT") {
+        // The offline copies belong to the account that just signed out.
+        clearOfflineTrips();
         // Keep the app usable after a sign-out: re-establish a fresh anonymous session.
         supabase.auth.signInAnonymously().then(({ data, error }) => {
           if (error) console.error("re-anon sign-in failed", error);

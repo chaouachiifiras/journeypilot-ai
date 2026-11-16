@@ -6,10 +6,12 @@ import { useTranslation } from "react-i18next";
 import { AppHeader } from "@/components/layout/AppHeader";
 import { AuthGate } from "@/components/auth/AuthGate";
 import { useAnonSession } from "@/lib/anon-session";
-import { listTrips } from "@/lib/trips.functions";
+import { getTrip, listTrips } from "@/lib/trips.functions";
 import { ArrowUpRight, CalendarDays, Compass, Loader2, Plane, Plus, Sparkles, Wallet } from "lucide-react";
 import mountains from "@/assets/scene-mountains.jpg";
 import { cn } from "@/lib/utils";
+import { isNative, offlineTrips } from "@/lib/native-trip";
+import { useMemo } from "react";
 
 export const Route = createFileRoute("/profile")({
   component: Profile,
@@ -19,14 +21,36 @@ function Profile() {
   const { ready, isAnonymous } = useAnonSession();
   const { t, i18n } = useTranslation();
   const list = useServerFn(listTrips);
+  const fetchTrip = useServerFn(getTrip);
 
-  const { data: trips = [], isLoading } = useQuery({
+  // On-device copy of the list (native app only), so saved trips can still be
+  // opened without a connection.
+  const cachedList = useMemo(() => offlineTrips.getList<Awaited<ReturnType<typeof list>>>(), []);
+  const { data: fetched, isLoading: fetching } = useQuery({
     queryKey: ["trips"],
     enabled: ready && !isAnonymous,
-    queryFn: () => list(),
+    retry: cachedList ? 1 : 3,
+    queryFn: async () => {
+      const rows = await list();
+      offlineTrips.saveList(rows);
+      // Download the most recent ready trips not yet on the device, in the
+      // background, so they open offline even if never viewed on this phone.
+      if (isNative()) {
+        for (const r of rows.filter((x) => x.status === "ready" && !offlineTrips.getTrip(x.id)).slice(0, 10)) {
+          fetchTrip({ data: { id: r.id } })
+            .then((row) => {
+              if ((row as { status?: string } | null)?.status === "ready") offlineTrips.saveTrip(r.id, row);
+            })
+            .catch(() => {});
+        }
+      }
+      return rows;
+    },
   });
+  const trips = fetched ?? cachedList ?? [];
+  const isLoading = fetching && !cachedList;
 
-  if (ready && isAnonymous) {
+  if (ready && isAnonymous && !cachedList?.length) {
     return (
       <div className="min-h-screen pb-tabbar">
         <AppHeader />

@@ -396,5 +396,20 @@
     "profile": {
       "open": "Open trip"
     }
+  },
+  "native": {
+    "share_trip": "Share",
+    "add_to_calendar": "Add to Calendar",
+    "start_date": "First day of the trip",
+    "calendar_explainer_one": "Adds your day as an all-day event in your Calendar, with its stops. JourneyPilot can add events but never reads your calendar.",
+    "calendar_explainer_other": "Adds your {{count}} days as all-day events in your Calendar, each with its stops. JourneyPilot can add events but never reads your calendar.",
+    "add_days_one": "Add 1 day",
+    "add_days_other": "Add {{count}} days",
+    "calendar_added_one": "1 day added to your Calendar",
+    "calendar_added_other": "{{count}} days added to your Calendar",
+    "calendar_denied": "Calendar access is off. You can allow it in Settings › JourneyPilot AI.",
+    "calendar_failed": "Couldn't add the trip to your Calendar. Please try again.",
+    "offline_copy": "You're offline: this is the copy saved on your device.",
+    "shared_with": "Planned with JourneyPilot AI"
   }
 }

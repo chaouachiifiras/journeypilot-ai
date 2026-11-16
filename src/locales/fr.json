@@ -396,5 +396,20 @@
     "profile": {
       "open": "Ouvrir le voyage"
     }
+  },
+  "native": {
+    "share_trip": "Partager",
+    "add_to_calendar": "Ajouter au Calendrier",
+    "start_date": "Premier jour du voyage",
+    "calendar_explainer_one": "Ajoute votre journée comme événement « toute la journée » dans votre Calendrier, avec ses étapes. JourneyPilot peut ajouter des événements mais ne lit jamais votre calendrier.",
+    "calendar_explainer_other": "Ajoute vos {{count}} jours comme événements « toute la journée » dans votre Calendrier, chacun avec ses étapes. JourneyPilot peut ajouter des événements mais ne lit jamais votre calendrier.",
+    "add_days_one": "Ajouter 1 jour",
+    "add_days_other": "Ajouter {{count}} jours",
+    "calendar_added_one": "1 jour ajouté à votre Calendrier",
+    "calendar_added_other": "{{count}} jours ajoutés à votre Calendrier",
+    "calendar_denied": "L'accès au Calendrier est désactivé. Vous pouvez l'autoriser dans Réglages › JourneyPilot AI.",
+    "calendar_failed": "Impossible d'ajouter le voyage au Calendrier. Réessayez.",
+    "offline_copy": "Vous êtes hors ligne : voici la copie enregistrée sur votre appareil.",
+    "shared_with": "Préparé avec JourneyPilot AI"
   }
 }

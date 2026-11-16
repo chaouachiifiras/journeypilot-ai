@@ -373,5 +373,20 @@
     "profile": {
       "open": "Reis openen"
     }
+  },
+  "native": {
+    "share_trip": "Delen",
+    "add_to_calendar": "Toevoegen aan Agenda",
+    "start_date": "Eerste dag van de reis",
+    "calendar_explainer_one": "Zet je dag als hele-dag-afspraak met de stops in je Agenda. JourneyPilot kan afspraken toevoegen maar leest je agenda nooit.",
+    "calendar_explainer_other": "Zet je {{count}} dagen als hele-dag-afspraken met de stops in je Agenda. JourneyPilot kan afspraken toevoegen maar leest je agenda nooit.",
+    "add_days_one": "1 dag toevoegen",
+    "add_days_other": "{{count}} dagen toevoegen",
+    "calendar_added_one": "1 dag toegevoegd aan je Agenda",
+    "calendar_added_other": "{{count}} dagen toegevoegd aan je Agenda",
+    "calendar_denied": "Toegang tot Agenda staat uit. Je kunt dit toestaan in Instellingen › JourneyPilot AI.",
+    "calendar_failed": "De reis kon niet aan je Agenda worden toegevoegd. Probeer het opnieuw.",
+    "offline_copy": "Je bent offline: dit is de kopie die op je toestel is opgeslagen.",
+    "shared_with": "Gepland met JourneyPilot AI"
   }
 }
